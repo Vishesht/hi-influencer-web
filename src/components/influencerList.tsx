@@ -13,6 +13,7 @@ import {
 import { styled } from "@mui/system";
 import { influencersData } from "./dummyData";
 import StarIcon from "@mui/icons-material/Star";
+import { useRouter } from "next/navigation";
 
 // Styled component for the horizontal list
 const HorizontalList = styled(Box)(({ theme }) => ({
@@ -23,14 +24,37 @@ const HorizontalList = styled(Box)(({ theme }) => ({
 }));
 
 const InfluencerList = ({ header }: { header: string }) => {
+  const router = useRouter();
+
   return (
     <Container>
-      <Typography style={{ marginTop: 32 }} variant="h5" gutterBottom>
-        {header}
-      </Typography>
+      <Box
+        style={{ marginTop: 32 }}
+        display="flex"
+        alignItems="flex-end"
+        justifyContent="space-between"
+      >
+        <Box>
+          <Typography sx={{ fontWeight: "bold" }} variant="h5">
+            {header}
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            Hire top influencer across all platforms
+          </Typography>
+        </Box>
+
+        <Typography variant="body2" gutterBottom>
+          See more
+        </Typography>
+      </Box>
+
       <HorizontalList>
         {influencersData.map((influencer, index) => (
-          <Card key={index} sx={{ width: 300 }}>
+          <Card
+            onClick={() => router.push("/influencer-profile")}
+            key={index}
+            sx={{ width: 300 }}
+          >
             <CardMedia
               component="img"
               image={influencer.image}

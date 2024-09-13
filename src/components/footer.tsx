@@ -9,7 +9,7 @@ import { styled } from "@mui/system";
 // Styled component for the footer
 const FooterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: "#000",
-  padding: theme.spacing(4),
+  padding: theme.spacing(8),
   marginTop: "auto",
 }));
 
@@ -24,17 +24,17 @@ const Footer = () => {
   return (
     <FooterContainer>
       <Container>
-        <Typography variant="h6" align="center" gutterBottom>
+        <Typography color="#fff" variant="h6" align="center" gutterBottom>
           Company Name
         </Typography>
         <Typography variant="body2" align="center" color="#fff">
           © {new Date().getFullYear()} Your Company Name. All rights reserved.
         </Typography>
         <Box display="flex" justifyContent="center" mt={2}>
-          <Link href="/privacy-policy" color="inherit" variant="body2" mx={1}>
+          <Link color="#fff" href="/privacy-policy" variant="body2" mx={1}>
             Privacy Policy
           </Link>
-          <Link href="/terms-of-service" color="inherit" variant="body2" mx={1}>
+          <Link color="#fff" href="/terms-of-service" variant="body2" mx={1}>
             Terms of Service
           </Link>
         </Box>

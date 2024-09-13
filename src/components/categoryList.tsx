@@ -23,19 +23,19 @@ const HorizontalList = styled(Box)(({ theme }) => ({
 // Sample influencer data
 const influencers = [
   {
-    name: "John Doe",
+    name: "Fashion",
     image: "https://via.placeholder.com/150",
   },
   {
-    name: "John Doe",
+    name: "Music & Dance",
     image: "https://via.placeholder.com/150",
   },
   {
-    name: "John Doe",
+    name: "Beauty",
     image: "https://via.placeholder.com/150",
   },
   {
-    name: "John Doe",
+    name: "Travel",
     image: "https://via.placeholder.com/150",
   },
   // Add more influencer objects here
@@ -43,13 +43,13 @@ const influencers = [
 
 const CategoryList = ({ header }: { header: string }) => {
   return (
-    <Container>
-      <Typography style={{ marginTop: 22 }} variant="h4" gutterBottom>
+    <Container style={{ marginBottom: 44 }}>
+      <Typography sx={{ fontWeight: "bold", marginTop: 5 }} variant="h5">
         {header}
       </Typography>
       <HorizontalList>
         {influencers.map((influencer, index) => (
-          <Card key={index} sx={{ width: 300 }}>
+          <Card key={index} sx={{ width: "100%" }}>
             <CardMedia
               component="img"
               height="140"

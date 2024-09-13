@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import Header from "@/components/header";
 import InfluencerList from "@/components/influencerList";
@@ -6,7 +8,7 @@ import Footer from "@/components/footer";
 
 export default function Home() {
   return (
-    <div>
+    <div style={{ paddingTop: 22 }}>
       <Header />
       <InfluencerList header="Featured" />
       <InfluencerList header="Instagram" />
