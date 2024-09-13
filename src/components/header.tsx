@@ -11,15 +11,24 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { Container, Box, Divider } from "@mui/material";
+import {
+  Container,
+  Box,
+  Divider,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import ListModal from "./ListModal";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const socialMediaPlatforms = ["Instagram", "Facebook", "YouTube", "Others"];
 const categories = ["Fashion", "Tech", "Lifestyle", "Travel", "Others"];
 
 const Header = ({ search = true }) => {
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [platformModalOpen, setPlatformModalOpen] = useState(false);
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
@@ -48,55 +57,68 @@ const Header = ({ search = true }) => {
             />
           </Typography>
 
-          {/* Nav Links */}
-          <Button color="inherit">Home</Button>
-          <Button onClick={() => router.push("/orders")} color="inherit">
-            Orders
-          </Button>
-          <Button color="inherit">ADs</Button>
-          <Button color="inherit">Download</Button>
+          {/* Mobile Menu Icon */}
+          {isMobile && (
+            <IconButton
+              edge="end"
+              color="inherit"
+              sx={{ ml: 1 }}
+              onClick={() => setDrawerOpen(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
 
-          {/* Post a Campaign Button */}
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{
-              backgroundColor: "#F653E1", // Primary background color
-              marginLeft: "20px",
-              padding: "4px 10px", // Adjust padding for better size
-              borderRadius: "50px", // Rounded corners
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Soft shadow effect
-              fontWeight: "bold", // Bold text
-              fontSize: "16px", // Font size adjustment
-              textTransform: "none", // Prevent uppercase transformation
-              transition: "background-color 0.3s ease, box-shadow 0.3s ease", // Smooth transitions
-              "&:hover": {
-                backgroundColor: "#e44bcf", // Hover background color
-                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)", // Darker shadow on hover
-              },
-              "&:active": {
-                backgroundColor: "#d43bbf", // Darker background on click
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)", // Lighter shadow on click
-              },
-            }}
-          >
-            Post a Campaign
-          </Button>
+          {/* Desktop Nav Links */}
+          {!isMobile && (
+            <>
+              <Button color="inherit">Home</Button>
+              <Button onClick={() => router.push("/orders")} color="inherit">
+                Orders
+              </Button>
+              <Button color="inherit">ADs</Button>
+              <Button color="inherit">Download</Button>
+              {/* Post a Campaign Button */}
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{
+                  backgroundColor: "#F653E1",
+                  marginLeft: "20px",
+                  padding: "4px 10px",
+                  borderRadius: "50px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                  textTransform: "none",
+                  transition:
+                    "background-color 0.3s ease, box-shadow 0.3s ease",
+                  "&:hover": {
+                    backgroundColor: "#e44bcf",
+                    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
+                  },
+                  "&:active": {
+                    backgroundColor: "#d43bbf",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                  },
+                }}
+              >
+                Post a Campaign
+              </Button>
+            </>
+          )}
 
-          {/* Avatar with Drawer */}
-          <IconButton
-            edge="end"
-            color="inherit"
-            sx={{ marginLeft: "10px" }}
-            onClick={() => setDrawerOpen(true)}
-          >
-            <Avatar sx={{ bgcolor: "#FFF3E0", color: "#000" }}>V</Avatar>
-          </IconButton>
-
-          {/* Drawer Icon */}
-          {/* <IconButton edge="end" color="inherit">
-            <MenuIcon />
-          </IconButton> */}
+          {/* Avatar for Mobile */}
+          {!isMobile && (
+            <IconButton
+              edge="end"
+              color="inherit"
+              sx={{ marginLeft: "10px" }}
+              onClick={() => setDrawerOpen(true)}
+            >
+              <Avatar sx={{ bgcolor: "#FFF3E0", color: "#000" }}>V</Avatar>
+            </IconButton>
+          )}
         </Toolbar>
 
         {/* Secondary section */}
@@ -122,49 +144,55 @@ const Header = ({ search = true }) => {
 
             {/* Input fields */}
             <Container
-              sx={{ mt: 4, display: "flex", justifyContent: "center" }}
+              sx={{
+                mt: 4,
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: isMobile ? "column" : "row",
+              }}
             >
               <input
                 placeholder="Choose a platform"
                 style={{
-                  padding: "12px 20px", // Adjusted padding for a better appearance
-                  borderRadius: "50px", // Keeps the rounded corners
-                  marginRight: "10px",
+                  padding: "12px 20px",
+                  borderRadius: "50px",
+                  marginRight: isMobile ? "0" : "10px",
+                  marginBottom: isMobile ? "10px" : "0",
                   width: "340px",
-                  border: "1px solid #ddd", // Slightly lighter border color for a softer look
+                  border: "1px solid #ddd",
                   backgroundColor: "#fff",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Adds shadow to the input
-                  transition: "box-shadow 0.3s ease, border-color 0.3s ease", // Smooth transition effects
-                  fontSize: "16px", // Adjust font size for readability
-                  outline: "none", // Removes the default outline
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+                  fontSize: "16px",
+                  outline: "none",
                 }}
                 onClick={() => setPlatformModalOpen(true)}
                 onFocus={(e) =>
                   (e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)")
-                } // Darker shadow on focus
+                }
                 onBlur={(e) =>
                   (e.target.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)")
-                } // Resets shadow when focus is lost
+                }
               />
 
               <input
                 placeholder="Enter keywords, niches or categories"
                 style={{
-                  padding: "12px 20px", // Adjusted padding for a better appearance
-                  borderRadius: "50px", // Keeps the rounded corners
-                  marginRight: "10px",
+                  padding: "12px 20px",
+                  borderRadius: "50px",
+                  marginRight: isMobile ? "0" : "10px",
                   width: "340px",
-                  border: "1px solid #ddd", // Slightly lighter border color for a softer look
+                  border: "1px solid #ddd",
                   backgroundColor: "#fff",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Adds shadow to the input
-                  transition: "box-shadow 0.3s ease, border-color 0.3s ease", // Smooth transition effects
-                  fontSize: "16px", // Adjust font size for readability
-                  outline: "none", // Removes the default outline
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+                  fontSize: "16px",
+                  outline: "none",
                 }}
                 onClick={() => setCategoryModalOpen(true)}
                 onFocus={(e) =>
                   (e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)")
-                } // Darker shadow on focus
+                }
                 onBlur={(e) =>
                   (e.target.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)")
                 }
@@ -173,6 +201,7 @@ const Header = ({ search = true }) => {
           </Container>
         )}
       </Container>
+
       <ListModal
         title={"Select Platform"}
         platformModalOpen={platformModalOpen}
@@ -180,7 +209,6 @@ const Header = ({ search = true }) => {
         socialMediaPlatforms={socialMediaPlatforms}
       />
 
-      {/* Category Modal */}
       <ListModal
         title={"Select Category"}
         platformModalOpen={categoryModalOpen}
@@ -188,11 +216,11 @@ const Header = ({ search = true }) => {
         socialMediaPlatforms={categories}
       />
 
-      {/* Drawer for Profile */}
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        sx={{ display: { xs: "block", md: "none" } }} // Show drawer only on mobile
       >
         <Box
           sx={{ width: 250, p: 2 }}
@@ -200,7 +228,6 @@ const Header = ({ search = true }) => {
           onClick={() => setDrawerOpen(false)}
           onKeyDown={() => setDrawerOpen(false)}
         >
-          {/* User Info */}
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Avatar sx={{ bgcolor: "#FFF3E0", color: "#000", mr: 2 }}>V</Avatar>
             <Box>
@@ -212,25 +239,16 @@ const Header = ({ search = true }) => {
 
           {/* Menu Items */}
           <List>
-            <ListItem onClick={() => handleListItemClick("/profile")}>
-              <ListItemText
-                primary="Profile"
-                sx={{ color: "black" }} // Set text color to black
-              />
+            <ListItem button onClick={() => handleListItemClick("/profile")}>
+              <ListItemText primary="Profile" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem onClick={() => handleListItemClick("/orders")}>
-              <ListItemText
-                primary="Your Orders"
-                sx={{ color: "black" }} // Set text color to black
-              />
+            <ListItem button onClick={() => handleListItemClick("/orders")}>
+              <ListItemText primary="Your Orders" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem onClick={() => handleListItemClick("/payments")}>
-              <ListItemText
-                primary="Payments"
-                sx={{ color: "black" }} // Set text color to black
-              />
+            <ListItem button onClick={() => handleListItemClick("/payments")}>
+              <ListItemText primary="Payments" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem onClick={() => handleListItemClick("/logout")}>
+            <ListItem button onClick={() => handleListItemClick("/logout")}>
               <ListItemText
                 primary="Logout"
                 sx={{ color: "black" }} // Set text color to black

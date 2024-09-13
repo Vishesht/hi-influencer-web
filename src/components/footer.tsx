@@ -22,19 +22,19 @@ const SocialIcons = styled(Box)(({ theme }) => ({
 
 const Footer = () => {
   return (
-    <FooterContainer>
+    <FooterContainer sx={{ backgroundColor: "#fff" }}>
       <Container>
-        <Typography color="#fff" variant="h6" align="center" gutterBottom>
-          Company Name
+        <Typography color="#000" variant="h6" align="center" gutterBottom>
+          HI - INFLUENCER
         </Typography>
-        <Typography variant="body2" align="center" color="#fff">
-          © {new Date().getFullYear()} Your Company Name. All rights reserved.
+        <Typography variant="body2" align="center" color="#000">
+          © {new Date().getFullYear()} Your Hi Influencer. All rights reserved.
         </Typography>
         <Box display="flex" justifyContent="center" mt={2}>
-          <Link color="#fff" href="/privacy-policy" variant="body2" mx={1}>
+          <Link color="#000" href="/privacy-policy" variant="body2" mx={1}>
             Privacy Policy
           </Link>
-          <Link color="#fff" href="/terms-of-service" variant="body2" mx={1}>
+          <Link color="#000" href="/terms-of-service" variant="body2" mx={1}>
             Terms of Service
           </Link>
         </Box>
