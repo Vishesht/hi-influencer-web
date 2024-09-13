@@ -187,6 +187,26 @@ export const influencersData = [
       { type: "Image", price: "Rs.300/image" },
       { type: "Video", price: "Rs.500/video" },
     ],
+    reviewsData: [
+      {
+        id: "1",
+        user: "Alice Smith",
+        rating: 4,
+        comment: "Great influencer! Very professional and effective.",
+      },
+      {
+        id: "2",
+        user: "Bob Johnson",
+        rating: 5,
+        comment: "Absolutely amazing experience! Highly recommend.",
+      },
+      {
+        id: "3",
+        user: "Charlie Brown",
+        rating: 3,
+        comment: "Decent influencer, but could improve on communication.",
+      },
+    ],
   },
   {
     id: "4",
