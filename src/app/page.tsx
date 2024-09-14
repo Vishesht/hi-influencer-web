@@ -12,9 +12,15 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import ListModal from "@/components/ListModal";
+
+const socialMediaPlatforms = ["Instagram", "Facebook", "YouTube", "Others"];
+const categories = ["Fashion", "Tech", "Lifestyle", "Travel", "Others"];
 
 export default function Home() {
   const theme = useTheme();
+  const [platformModalOpen, setPlatformModalOpen] = React.useState(false);
+  const [categoryModalOpen, setCategoryModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
@@ -62,7 +68,7 @@ export default function Home() {
               fontSize: "16px",
               outline: "none",
             }}
-            // onClick={() => setPlatformModalOpen(true)}
+            onClick={() => setPlatformModalOpen(true)}
             onFocus={(e) =>
               (e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)")
             }
@@ -85,7 +91,7 @@ export default function Home() {
               fontSize: "16px",
               outline: "none",
             }}
-            // onClick={() => setCategoryModalOpen(true)}
+            onClick={() => setCategoryModalOpen(true)}
             onFocus={(e) =>
               (e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)")
             }
@@ -99,6 +105,20 @@ export default function Home() {
       <InfluencerList header="Instagram" />
       <InfluencerList header="Youtube" />
       <CategoryList header="Categories" />
+
+      <ListModal
+        title={"Select Platform"}
+        platformModalOpen={platformModalOpen}
+        setPlatformModalOpen={() => setPlatformModalOpen(false)}
+        socialMediaPlatforms={socialMediaPlatforms}
+      />
+
+      <ListModal
+        title={"Select Category"}
+        platformModalOpen={categoryModalOpen}
+        setPlatformModalOpen={() => setCategoryModalOpen(false)}
+        socialMediaPlatforms={categories}
+      />
     </Box>
   );
 }

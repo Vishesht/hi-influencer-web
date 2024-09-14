@@ -19,19 +19,13 @@ import {
   useTheme,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import ListModal from "./ListModal";
 import MenuIcon from "@mui/icons-material/Menu";
-
-const socialMediaPlatforms = ["Instagram", "Facebook", "YouTube", "Others"];
-const categories = ["Fashion", "Tech", "Lifestyle", "Travel", "Others"];
 
 const Header = () => {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [platformModalOpen, setPlatformModalOpen] = useState(false);
-  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleListItemClick = (path) => {
@@ -137,20 +131,6 @@ const Header = () => {
 
         {/* Secondary section */}
       </Container>
-
-      <ListModal
-        title={"Select Platform"}
-        platformModalOpen={platformModalOpen}
-        setPlatformModalOpen={() => setPlatformModalOpen(false)}
-        socialMediaPlatforms={socialMediaPlatforms}
-      />
-
-      <ListModal
-        title={"Select Category"}
-        platformModalOpen={categoryModalOpen}
-        setPlatformModalOpen={() => setCategoryModalOpen(false)}
-        socialMediaPlatforms={categories}
-      />
 
       <Drawer
         anchor="right"
