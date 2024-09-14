@@ -97,7 +97,6 @@ const InfluencerProfile = ({ searchParams }) => {
 
   return (
     <>
-      <Header search={false} />
       <ProfileContainer>
         <ImageGallery images={influencer?.images} />
 
@@ -137,6 +136,17 @@ const InfluencerProfile = ({ searchParams }) => {
               variant="body1"
             >
               {influencer.category} - {influencer.location}
+            </Typography>
+            <Typography
+              sx={{
+                color: "text.secondary",
+                fontFamily: "Roboto, sans-serif",
+                mt: 1,
+                mb: 4,
+              }}
+              variant="body2"
+            >
+              {influencer.description}
             </Typography>
           </Container>
           <PlatformList>
@@ -183,6 +193,7 @@ const InfluencerProfile = ({ searchParams }) => {
           >
             Details
           </Typography>
+
           <InfoDetail>
             <strong>Gender:</strong> {influencer.gender}
           </InfoDetail>
@@ -231,7 +242,6 @@ const InfluencerProfile = ({ searchParams }) => {
 
         {/* Reviews */}
         <ReviewsList reviewsData={influencer?.reviewsData} />
-        <Footer />
       </ProfileContainer>
     </>
   );

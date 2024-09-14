@@ -25,7 +25,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 const socialMediaPlatforms = ["Instagram", "Facebook", "YouTube", "Others"];
 const categories = ["Fashion", "Tech", "Lifestyle", "Travel", "Others"];
 
-const Header = ({ search = true }) => {
+const Header = () => {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -76,7 +76,7 @@ const Header = ({ search = true }) => {
               <Button onClick={() => router.push("/orders")} color="inherit">
                 Orders
               </Button>
-              <Button color="inherit">ADs</Button>
+              <Button color="inherit">Payment</Button>
               <Button color="inherit">Download</Button>
               {/* Post a Campaign Button */}
               <Button
@@ -103,7 +103,7 @@ const Header = ({ search = true }) => {
                   },
                 }}
               >
-                Post a Campaign
+                Post a Ads
               </Button>
             </>
           )}
@@ -114,7 +114,8 @@ const Header = ({ search = true }) => {
               edge="end"
               color="inherit"
               sx={{ marginLeft: "10px" }}
-              onClick={() => setDrawerOpen(true)}
+              // onClick={() => setDrawerOpen(true)}
+              onClick={() => router.push("/profile")}
             >
               <Avatar sx={{ bgcolor: "#FFF3E0", color: "#000" }}>V</Avatar>
             </IconButton>
@@ -122,84 +123,6 @@ const Header = ({ search = true }) => {
         </Toolbar>
 
         {/* Secondary section */}
-        {search && (
-          <Container sx={{ textAlign: "center", mt: 4 }}>
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={{
-                fontWeight: "bold",
-                background: "linear-gradient(90deg, #FF76C6, #B64DFF)",
-                WebkitBackgroundClip: "text",
-                color: "transparent",
-                fontFamily: "Helvetica",
-              }}
-            >
-              Connect brands with influencers.
-            </Typography>
-            <Typography color="grey" variant="body1" sx={{ mt: 2 }}>
-              Connect with top Instagram, YouTube, and Facebook influencers to
-              create engaging content and promote your brand effectively.
-            </Typography>
-
-            {/* Input fields */}
-            <Container
-              sx={{
-                mt: 4,
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: isMobile ? "column" : "row",
-              }}
-            >
-              <input
-                placeholder="Choose a platform"
-                style={{
-                  padding: "12px 20px",
-                  borderRadius: "50px",
-                  marginRight: isMobile ? "0" : "10px",
-                  marginBottom: isMobile ? "10px" : "0",
-                  width: "340px",
-                  border: "1px solid #ddd",
-                  backgroundColor: "#fff",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  transition: "box-shadow 0.3s ease, border-color 0.3s ease",
-                  fontSize: "16px",
-                  outline: "none",
-                }}
-                onClick={() => setPlatformModalOpen(true)}
-                onFocus={(e) =>
-                  (e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)")
-                }
-                onBlur={(e) =>
-                  (e.target.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)")
-                }
-              />
-
-              <input
-                placeholder="Enter keywords, niches or categories"
-                style={{
-                  padding: "12px 20px",
-                  borderRadius: "50px",
-                  marginRight: isMobile ? "0" : "10px",
-                  width: "340px",
-                  border: "1px solid #ddd",
-                  backgroundColor: "#fff",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  transition: "box-shadow 0.3s ease, border-color 0.3s ease",
-                  fontSize: "16px",
-                  outline: "none",
-                }}
-                onClick={() => setCategoryModalOpen(true)}
-                onFocus={(e) =>
-                  (e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)")
-                }
-                onBlur={(e) =>
-                  (e.target.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)")
-                }
-              />
-            </Container>
-          </Container>
-        )}
       </Container>
 
       <ListModal
