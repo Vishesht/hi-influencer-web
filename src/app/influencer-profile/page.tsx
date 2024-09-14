@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -9,6 +9,7 @@ import {
   CardContent,
   Grid,
   Card,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import Header from "@/components/header";
@@ -16,6 +17,7 @@ import ImageGallery from "@/components/imageGallery";
 import Image from "next/image";
 import ReviewsList from "@/components/reviewsList";
 import Footer from "@/components/footer";
+import HireModal from "@/components/HireModal";
 
 // Styled components
 const ProfileContainer = styled(Container)(({ theme }) => ({
@@ -58,6 +60,11 @@ const PackageCard = styled(Card)(({ theme }) => ({
 }));
 
 const InfluencerProfile = ({ searchParams }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleOpen = () => setModalOpen(true);
+  const handleClose = () => setModalOpen(false);
+
   const influencer = JSON.parse(searchParams.influencer);
 
   // const SocialMediaIcon = (platformData, src) => (
@@ -94,6 +101,15 @@ const InfluencerProfile = ({ searchParams }) => {
       </IconButton>
     );
   };
+
+  const HireButton = styled(Button)(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    backgroundColor: "#dc004e",
+    color: "#fff",
+    "&:hover": {
+      backgroundColor: "#1976d2",
+    },
+  }));
 
   return (
     <>
@@ -211,7 +227,7 @@ const InfluencerProfile = ({ searchParams }) => {
             Packages
           </Typography>
           <PackageGrid container spacing={3}>
-            {influencer.packages.map((pkg, index) => (
+            {influencer?.packages.map((pkg, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <PackageCard>
                   <CardContent>
@@ -233,6 +249,13 @@ const InfluencerProfile = ({ searchParams }) => {
                     <Typography variant="body2">
                       <strong>Engagement:</strong> {pkg.engagement}
                     </Typography>
+                    <HireButton
+                      onClick={handleOpen}
+                      variant="contained"
+                      fullWidth
+                    >
+                      Hire
+                    </HireButton>
                   </CardContent>
                 </PackageCard>
               </Grid>
@@ -243,6 +266,7 @@ const InfluencerProfile = ({ searchParams }) => {
         {/* Reviews */}
         <ReviewsList reviewsData={influencer?.reviewsData} />
       </ProfileContainer>
+      <HireModal open={modalOpen} onClose={handleClose} />
     </>
   );
 };

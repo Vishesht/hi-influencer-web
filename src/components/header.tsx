@@ -72,14 +72,27 @@ const Header = () => {
           {/* Desktop Nav Links */}
           {!isMobile && (
             <>
-              <Button color="inherit">Home</Button>
+              <Button onClick={() => router.push("/")} color="inherit">
+                Home
+              </Button>
+              <Button onClick={() => router.push("/ads")} color="inherit">
+                Ads
+              </Button>
               <Button onClick={() => router.push("/orders")} color="inherit">
                 Orders
               </Button>
-              <Button color="inherit">Payment</Button>
-              <Button color="inherit">Download</Button>
+              <Button
+                onClick={() => router.push("/paymentHistory")}
+                color="inherit"
+              >
+                Payment
+              </Button>
+              <Button onClick={() => router.push("/download")} color="inherit">
+                Download
+              </Button>
               {/* Post a Campaign Button */}
               <Button
+                onClick={() => router.push("/create-ad")}
                 variant="contained"
                 color="secondary"
                 sx={{
@@ -103,7 +116,7 @@ const Header = () => {
                   },
                 }}
               >
-                Post a Ads
+                Post Ads
               </Button>
             </>
           )}

@@ -15,6 +15,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { styled } from "@mui/system";
+import { useRouter } from "next/navigation";
 
 // Sample data
 const user = {
@@ -76,6 +77,8 @@ const GalleryImage = styled(CardMedia)(({ theme }) => ({
 }));
 
 const ProfilePage = () => {
+  const router = useRouter();
+
   return (
     <Container>
       <Box textAlign="center" my={4}>
@@ -148,10 +151,18 @@ const ProfilePage = () => {
 
         {/* Buttons */}
         <Box mt={4} display="flex" justifyContent="center" gap={2}>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => router.push("/orders")}
+          >
             Your Orders
           </Button>
-          <Button variant="outlined" color="secondary">
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => router.push("/edit-profile")}
+          >
             Edit Profile
           </Button>
         </Box>
