@@ -63,7 +63,6 @@ const ProfilePage = () => {
 
         // Fetch user data from the API
         const response = await axios.get(`${BaseUrl}/api/users/${data._id}`);
-        console.log("first21", response.data);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -76,6 +75,14 @@ const ProfilePage = () => {
   if (!user) {
     return <Typography>Loading...</Typography>;
   }
+  const filteredArr = user.platform.filter(
+    (item) => item.platformLink.trim() !== ""
+  );
+
+  const handleClick = (link) => {
+    const url = link.startsWith("http") ? link : `http://${link}`;
+    window.open(url, "_blank", "noopener noreferrer");
+  };
 
   return (
     <Container>
@@ -133,8 +140,9 @@ const ProfilePage = () => {
         {/* Social Media Platforms */}
         <Box mt={4} mb={4}>
           <Box display="flex" justifyContent="center" flexWrap="wrap">
-            {user.platform?.map((platform, index) => (
+            {filteredArr?.map((platform, index) => (
               <SocialMediaCard
+                onClick={() => handleClick(platform.platformLink)}
                 key={index}
                 sx={{
                   display: "flex",
