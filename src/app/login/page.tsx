@@ -47,18 +47,20 @@ export default function LoginPage() {
           photoURL: user.photoURL || "http://example.com/default-photo.jpg",
         };
 
-        const response = await axios.post(`${BaseUrl}/api/users`, userData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        // Save the response data to local storage
-        if (typeof window !== "undefined") {
-          localStorage.setItem("userData", JSON.stringify(response.data));
-        }
+        await axios
+          .put(`${BaseUrl}/api/users`, userData, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            console.log("first", response.data);
+            localStorage.setItem("userData", JSON.stringify(response.data));
+          })
+          .catch((err) =>
+            console.log("Something wrong. Please try again.", err)
+          );
       }
-      router.push("/");
     } catch (error) {
       console.error(
         "Error logging in with Gmail or sending data to API:",

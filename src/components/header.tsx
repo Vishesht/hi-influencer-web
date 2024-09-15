@@ -53,6 +53,7 @@ const Header = () => {
     try {
       await signOut(auth);
       setAnchorEl(null);
+      localStorage.removeItem("userData");
       router.push("/login");
     } catch (error) {
       console.error("Error signing out:", error);

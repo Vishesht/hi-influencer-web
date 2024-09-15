@@ -28,8 +28,8 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 }));
 
 const ProfileImage = styled("img")(({ theme }) => ({
-  width: "100%",
-  height: "36%",
+  width: "150px",
+  height: "150px",
   borderRadius: "50%",
   objectFit: "cover",
   marginBottom: theme.spacing(2),
@@ -100,7 +100,6 @@ const EditProfile: React.FC = () => {
 
         // Fetch user data from the API
         const response = await axios.get(`${BaseUrl}/api/users/${data._id}`);
-        console.log("first-response", response);
         setUserData(response.data);
         setBio(response.data.bio);
         setAddress(response.data.address);
@@ -208,7 +207,7 @@ const EditProfile: React.FC = () => {
 
   return (
     <StyledContainer>
-      <Typography variant="h4" sx={{ mb: 4 }} gutterBottom>
+      <Typography variant="h5" sx={{ mb: 4 }} gutterBottom>
         Edit Profile
       </Typography>
 
