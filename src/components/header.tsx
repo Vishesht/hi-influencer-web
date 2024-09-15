@@ -204,7 +204,7 @@ const Header = () => {
           </Box>
           <Divider />
           <List>
-            <ListItem button onClick={() => handleListItemClick("/profile")}>
+            <ListItem button onClick={() => handleListItemClick("/user")}>
               <ListItemText primary="Profile" sx={{ color: "black" }} />
             </ListItem>
             <ListItem button onClick={() => handleListItemClick("/orders")}>
@@ -255,7 +255,7 @@ const Header = () => {
             {user?.email}
           </Typography>
           <Button
-            onClick={() => handleListItemClick("/profile")}
+            onClick={() => handleListItemClick("/user")}
             fullWidth
             sx={{ mb: 1 }}
           >

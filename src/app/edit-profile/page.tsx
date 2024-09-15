@@ -177,7 +177,7 @@ const EditProfile: React.FC = () => {
           },
         })
         .then(() => {
-          router.push("/profile");
+          router.push("/user");
           alert("Profile updated successfully");
         });
     } catch (error) {
