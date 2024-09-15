@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "./LoadingSpinner";
+import { ProfileCheckRegex } from "@/common/utils";
 
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -12,6 +13,13 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   const { user, loading } = useAuth();
   const router = useRouter();
   const path = usePathname();
+
+  const useProfilePathCheck = () => {
+    const profilePathRegex = ProfileCheckRegex;
+    return profilePathRegex.test(path);
+  };
+
+  const isuserProfile: boolean = useProfilePathCheck();
 
   useEffect(() => {
     if (!loading) {
@@ -22,7 +30,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
         }
       } else {
         // Unauthenticated users should be redirected to login page
-        if (path !== "/login" && path !== "/signup") {
+        if (path !== "/login" && path !== "/signup" && !isuserProfile) {
           router.push("/login");
         }
       }

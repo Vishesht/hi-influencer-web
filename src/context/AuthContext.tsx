@@ -2,11 +2,11 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../app/firebase"; // Adjust the path as needed
 
 interface AuthContextType {
-  user: any; // Replace 'any' with your user type if you have one
+  user: any;
   loading: boolean;
 }
 

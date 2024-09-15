@@ -8,16 +8,13 @@ import {
   Grid,
   IconButton,
   MenuItem,
-  Modal,
   Select,
   TextField,
   Typography,
-  Divider,
   FormControl,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import UploadIcon from "@mui/icons-material/Upload";
-import CloseIcon from "@mui/icons-material/Close";
 import { BaseUrl } from "@/common/utils";
 import { useRouter } from "next/navigation";
 
@@ -34,25 +31,6 @@ const ProfileImage = styled("img")(({ theme }) => ({
   objectFit: "cover",
   marginBottom: theme.spacing(2),
   border: `4px solid ${theme.palette.primary.main}`,
-}));
-
-const ModalContent = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  padding: theme.spacing(3),
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[5],
-  maxWidth: "500px",
-  margin: "auto",
-}));
-
-const ModalHeader = styled(Box)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-}));
-
-const ModalCloseButton = styled(IconButton)(({ theme }) => ({
-  color: theme.palette.grey[500],
 }));
 
 const categories = ["Influencer", "Blogger", "Content Creator", "Photographer"];
@@ -77,10 +55,12 @@ const EditProfile: React.FC = () => {
   const [imageUri, setImageUri] = useState<string | ArrayBuffer | null>(null);
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedState, setSelectedState] = useState("");
-  const [dob, setDob] = useState<Date | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [, setDob] = useState<Date | null>(null);
+  const [, setShowDatePicker] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [userData, setUserData] = useState<any>(null);
   const [bio, setBio] = useState("");
   const [address, setAddress] = useState("");
@@ -110,6 +90,8 @@ const EditProfile: React.FC = () => {
         setPhoneNumber(response.data.phoneNumber);
         setPlatform(response.data.platform);
         setSelectedCategory(response.data.category);
+        setUsername(response.data.username);
+        setName(response.data.name);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -129,10 +111,10 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDob(new Date(event.target.value));
-    setShowDatePicker(false);
-  };
+  // const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDob(new Date(event.target.value));
+  //   setShowDatePicker(false);
+  // };
 
   const handleSave = async () => {
     try {
@@ -145,6 +127,8 @@ const EditProfile: React.FC = () => {
 
       const updatedData = {
         _id: data._id,
+        name: name,
+        username: username,
         email: data.email,
         isInfluencer: false,
         phoneNumber: phoneNumber,
@@ -247,7 +231,18 @@ const EditProfile: React.FC = () => {
                 label="Name"
                 variant="outlined"
                 margin="normal"
-                defaultValue={userData.name}
+                defaultValue={name || userData.name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Username"
+                variant="outlined"
+                margin="normal"
+                defaultValue={userData.username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -405,15 +400,15 @@ const EditProfile: React.FC = () => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Address"
+                label="Address (optional)"
                 variant="outlined"
                 margin="normal"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12}>
-              {/* <TextField
+            {/* <Grid item xs={12}>
+              <TextField
                 fullWidth
                 label="Date of Birth"
                 variant="outlined"
@@ -430,7 +425,7 @@ const EditProfile: React.FC = () => {
                 }}
                 onClick={() => setShowDatePicker(true)}
                 readOnly
-              /> */}
+              />
               <Modal
                 open={showDatePicker}
                 onClose={() => setShowDatePicker(false)}
@@ -445,16 +440,16 @@ const EditProfile: React.FC = () => {
                     </ModalCloseButton>
                   </ModalHeader>
                   <Divider />
-                  {/* <Input
+                   <Input
                     type="date"
                     value={dob ? dob?.toISOString().substr(0, 10) : ""}
                     onChange={handleDateChange}
                     fullWidth
                     margin="normal"
-                  /> */}
+                  /> 
                 </ModalContent>
               </Modal>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth margin="normal">
                 <Select
@@ -481,6 +476,14 @@ const EditProfile: React.FC = () => {
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 type="tel"
               />
+              <Typography
+                variant="inherit"
+                sx={{ color: "GrayText", fontFamily: "initial" }}
+                gutterBottom
+              >
+                We respect your privacy. Your phone number will be kept
+                confidential and will not be disclosed to any third parties.
+              </Typography>
             </Grid>
             <Button
               variant="contained"

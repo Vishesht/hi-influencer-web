@@ -20,17 +20,24 @@ import {
   Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useRouter } from "next/navigation";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { usePathname, useRouter } from "next/navigation";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../app/firebase";
+import { ProfileCheckRegex } from "@/common/utils";
 
 const Header = () => {
   const router = useRouter();
   const theme = useTheme();
+  const path = usePathname();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<any>(null);
+
+  const useProfilePathCheck = () => {
+    const profilePathRegex = ProfileCheckRegex;
+    return profilePathRegex.test(path);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -70,14 +77,14 @@ const Header = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
+  const isuserProfile: boolean = useProfilePathCheck();
   return (
     <AppBar sx={{ mt: 5 }} position="static" color="transparent" elevation={0}>
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           {/* Logo */}
           <Typography
-            onClick={() => router.push("/")}
+            onClick={() => (!isuserProfile ? router.push("/") : null)}
             variant="h6"
             component="div"
             sx={{ flexGrow: 1 }}
@@ -90,7 +97,7 @@ const Header = () => {
           </Typography>
 
           {/* Mobile Menu Icon */}
-          {isMobile && (
+          {!isuserProfile && isMobile && (
             <IconButton
               edge="end"
               color="inherit"
@@ -102,7 +109,7 @@ const Header = () => {
           )}
 
           {/* Desktop Nav Links */}
-          {!isMobile && (
+          {!isMobile && !isuserProfile && (
             <>
               <Button onClick={() => router.push("/")} color="inherit">
                 Home
@@ -151,7 +158,7 @@ const Header = () => {
           )}
 
           {/* Avatar for Mobile */}
-          {!isMobile && user && (
+          {!isMobile && user && !isuserProfile && (
             <Tooltip title="Click to view options" arrow>
               <IconButton
                 edge="end"

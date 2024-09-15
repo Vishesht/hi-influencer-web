@@ -6,31 +6,23 @@ import {
   Card,
   CardContent,
   Container,
-  Divider,
   FormControl,
   FormControlLabel,
-  FormGroup,
   InputLabel,
   MenuItem,
   Select,
   TextField,
   Typography,
-  Grid,
   IconButton,
   Chip,
   Checkbox,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
-}));
-
-const UploadButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(2),
 }));
 
 const ImageGrid = styled(Box)(({ theme }) => ({

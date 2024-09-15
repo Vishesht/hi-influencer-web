@@ -15,12 +15,13 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { BaseUrl } from "@/common/utils";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
-import { BaseUrl } from "@/common/utils";
 
 interface User {
   emailVerified: boolean;
+  email: string;
   photoURL: string;
   platform: Array<any>;
   category: string;
@@ -30,7 +31,6 @@ interface User {
   images: Array<string>;
 }
 
-// Styled components with custom shadow values
 const SocialMediaCard = styled(Card)(({ theme }) => ({
   display: "flex",
   width: 140,
@@ -56,36 +56,47 @@ const GalleryImage = styled(CardMedia)(({ theme }) => ({
   },
 }));
 
-const ProfilePage = () => {
-  const [user, setUser] = useState<User>(null);
+export default function Username({ params }) {
   const router = useRouter();
+  const [user, setUser] = useState<User>(null);
+  const [error, setError] = useState<string | null>(null);
+  const userData: any = localStorage.getItem("userData");
+  const data = JSON.parse(userData);
 
   useEffect(() => {
-    const userData: any = localStorage.getItem("userData");
-    const data = JSON.parse(userData);
-    const fetchUserData = async () => {
+    const fetchUser = async () => {
       try {
-        // Retrieve the user ID from local storage
-
-        if (!data._id) {
-          console.error("User ID not found in local storage.");
-          return;
-        }
-
-        // Fetch user data from the API
-        const response = await axios.get(`${BaseUrl}/api/users/${data._id}`);
+        const response = await axios.get(
+          `${BaseUrl}/api/user/${params.username}`
+        );
         setUser(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      } catch (err) {
+        setError("User not found or error fetching data.");
+        console.error(err);
       }
     };
 
-    fetchUserData();
-  }, []);
+    fetchUser();
+  }, [params.username]);
+
+  if (error) {
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: "20%",
+          marginBottom: "6%",
+        }}
+      >
+        {error}
+      </div>
+    );
+  }
 
   if (!user) {
-    return <Typography>Loading...</Typography>;
+    return <div>Loading...</div>;
   }
+
   const filteredArr = user.platform.filter(
     (item) => item.platformLink.trim() !== ""
   );
@@ -94,7 +105,6 @@ const ProfilePage = () => {
     const url = link.startsWith("http") ? link : `http://${link}`;
     window.open(url, "_blank", "noopener noreferrer");
   };
-
   return (
     <Container>
       <Box textAlign="center" my={4}>
@@ -176,25 +186,19 @@ const ProfilePage = () => {
             ))}
           </Box>
         </Box>
-
+        {console.log("first22", data?.email === user.email)}
         {/* Buttons */}
-        <Box mt={4} display="flex" justifyContent="center" gap={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => router.push("/orders")}
-          >
-            Your Orders
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => router.push("/edit-profile")}
-          >
-            Edit Profile
-          </Button>
-        </Box>
-
+        {data && data?.email === user.email && (
+          <Box mt={4} display="flex" justifyContent="center" gap={2}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push("/edit-profile")}
+            >
+              Edit Profile
+            </Button>
+          </Box>
+        )}
         {/* Profile Images */}
         <Box mt={4}>
           {user.images.length > 0 && (
@@ -219,6 +223,4 @@ const ProfilePage = () => {
       </Box>
     </Container>
   );
-};
-
-export default ProfilePage;
+}

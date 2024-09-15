@@ -84,6 +84,7 @@ const InfluencerList = ({ header }: { header: string }) => {
       <HorizontalList>
         {influencersData.map((influencer, index) => (
           <Link
+            key={index}
             href={{
               pathname: "/influencer-profile",
               query: {

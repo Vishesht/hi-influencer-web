@@ -5,6 +5,8 @@ import React from "react";
 import { Container, Typography, Box, Link, IconButton } from "@mui/material";
 import { Facebook, Twitter, Instagram, LinkedIn } from "@mui/icons-material";
 import { styled } from "@mui/system";
+import { usePathname } from "next/navigation";
+import { ProfileCheckRegex } from "@/common/utils";
 
 // Styled component for the footer
 const FooterContainer = styled(Box)(({ theme }) => ({
@@ -21,6 +23,16 @@ const SocialIcons = styled(Box)(({ theme }) => ({
 }));
 
 const Footer = () => {
+  const path = usePathname();
+
+  const useProfilePathCheck = () => {
+    const profilePathRegex = ProfileCheckRegex;
+    return profilePathRegex.test(path);
+  };
+  const isuserProfile: boolean = useProfilePathCheck();
+  if (isuserProfile) {
+    return <></>;
+  }
   return (
     <FooterContainer sx={{ backgroundColor: "#fff" }}>
       <Container>

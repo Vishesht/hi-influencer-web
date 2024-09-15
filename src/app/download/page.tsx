@@ -72,8 +72,8 @@ const Download: React.FC = () => {
           </Typography>
           <Typography variant="body1" paragraph>
             Download our app to get started on the go. Access all the features
-            of our platform right from your mobile device. Whether you're on iOS
-            or Android, we have you covered!
+            of our platform right from your mobile device. Whether you are on
+            iOS or Android, we have you covered!
           </Typography>
         </CardContent>
       </InfoCard>

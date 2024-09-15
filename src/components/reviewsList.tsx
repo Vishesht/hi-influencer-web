@@ -17,7 +17,7 @@ const ReviewsContainer = styled(Box)(({ theme }) => ({
 }));
 
 // Styled card for each review
-const ReviewCard = styled(Card)(({ theme }) => ({
+const ReviewCard = styled(Card)(({}) => ({
   transition: "box-shadow 0.3s ease",
   "&:hover": {
     boxShadow: `0 8px 16px rgba(0, 0, 0, 0.2)`,
@@ -25,7 +25,7 @@ const ReviewCard = styled(Card)(({ theme }) => ({
 }));
 
 // Custom Rating component using star icons
-const CustomRating = styled(Rating)(({ theme }) => ({
+const CustomRating = styled(Rating)(({}) => ({
   "& .MuiRating-icon": {
     // color: theme.palette.primary.main,
   },
