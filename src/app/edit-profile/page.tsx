@@ -1,13 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Button,
   Container,
   Grid,
   IconButton,
-  Input,
-  InputAdornment,
   MenuItem,
   Modal,
   Select,
@@ -18,8 +17,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import UploadIcon from "@mui/icons-material/Upload";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import CloseIcon from "@mui/icons-material/Close";
+import { BaseUrl } from "@/common/utils";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -74,17 +73,52 @@ const genderList = ["Male", "Female", "Others"];
 
 const EditProfile: React.FC = () => {
   const [imageUri, setImageUri] = useState<string | ArrayBuffer | null>(null);
-  const [openGenderModal, setOpenGenderModal] = useState(false);
   const [selectedGender, setSelectedGender] = useState("");
-  const [openStateModal, setOpenStateModal] = useState(false);
   const [selectedState, setSelectedState] = useState("");
   const [dob, setDob] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [openCategoryModal, setOpenCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("+91");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [userData, setUserData] = useState<any>(null);
+  const [bio, setBio] = useState("");
+  const [address, setAddress] = useState("");
+  const [instagramLink, setInstagramLink] = useState("");
+  const [fbLink, setFbLink] = useState("");
+  const [youtubeLink, setYoutubeLink] = useState("");
+  const [twitterLink, setTwitterLink] = useState("");
+  const [platform, setPlatform] = useState([]);
 
-  // Handle image upload
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Retrieve the user ID from local storage
+        const userData = localStorage.getItem("userData");
+        const data = JSON.parse(userData);
+
+        if (!data._id) {
+          console.error("User ID not found in local storage.");
+          return;
+        }
+
+        // Fetch user data from the API
+        const response = await axios.get(`${BaseUrl}/api/users/${data._id}`);
+        console.log("first-response", response);
+        setUserData(response.data);
+        setImageUri(response.data.photoURL);
+        setSelectedGender(response.data.gender);
+        setSelectedState(response.data.state);
+        // setDob(new Date(response.data.dob));
+        setPhoneNumber(response.data.phoneNumber);
+        setPlatform(response.data.platform);
+        // setSelectedCategory(response.data.category);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -96,11 +130,70 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  // Handle date change
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDob(new Date(event.target.value));
     setShowDatePicker(false);
   };
+
+  const handleSave = async () => {
+    try {
+      const userData = localStorage.getItem("userData");
+      const data = JSON.parse(userData);
+      if (!data._id) {
+        console.error("User ID not found in local storage.");
+        return;
+      }
+
+      const updatedData = {
+        _id: data._id,
+        email: data.email,
+        isInfluencer: false,
+        phoneNumber: phoneNumber,
+        gender: selectedGender,
+        // dob: dob?.toISOString().split("T")[0],
+        bio: bio,
+        state: selectedState,
+        address: address,
+        platform: [
+          {
+            platform: "Instagram",
+            followers: "",
+            platformLink: platform[0].platformLink,
+          },
+          {
+            platform: "Facebook",
+            followers: "",
+            platformLink: platform[1].platformLink,
+          },
+          {
+            platform: "Youtube",
+            followers: "",
+            platformLink: platform[2].platformLink,
+          },
+          {
+            platform: "Twitter",
+            followers: "",
+            platformLink: platform[3].platformLink,
+          },
+        ],
+        category: selectedCategory,
+      };
+      const input = JSON.stringify(updatedData);
+      await axios.put(`${BaseUrl}/api/users`, input, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      alert("Profile updated successfully");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
+  if (!userData) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <StyledContainer>
@@ -120,10 +213,7 @@ const EditProfile: React.FC = () => {
               onChange={handleImageUpload}
             />
             <ProfileImage
-              src={
-                (imageUri as string) ||
-                "https://randomuser.me/api/portraits/men/41.jpg"
-              }
+              src={imageUri || "https://randomuser.me/api/portraits/men/41.jpg"}
               alt="Profile Image"
             />
             <Button
@@ -147,6 +237,7 @@ const EditProfile: React.FC = () => {
                 label="Name"
                 variant="outlined"
                 margin="normal"
+                defaultValue={userData.name}
               />
             </Grid>
             <Grid item xs={12}>
@@ -157,6 +248,8 @@ const EditProfile: React.FC = () => {
                 margin="normal"
                 multiline
                 rows={4}
+                defaultValue={userData.bio}
+                onChange={(e) => setBio(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -165,6 +258,11 @@ const EditProfile: React.FC = () => {
                 label="Instagram"
                 variant="outlined"
                 margin="normal"
+                defaultValue={
+                  platform?.find((p) => p.platform === "Instagram")
+                    ?.platformLink || ""
+                }
+                onChange={(e) => setInstagramLink(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -173,14 +271,24 @@ const EditProfile: React.FC = () => {
                 label="Facebook"
                 variant="outlined"
                 margin="normal"
+                defaultValue={
+                  platform?.find((p) => p.platform === "Facebook")
+                    ?.platformLink || ""
+                }
+                onChange={(e) => setFbLink(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="YouTube"
+                label="Youtube"
                 variant="outlined"
                 margin="normal"
+                defaultValue={
+                  platform?.find((p) => p.platform === "Youtube")
+                    ?.platformLink || ""
+                }
+                onChange={(e) => setYoutubeLink(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -189,6 +297,11 @@ const EditProfile: React.FC = () => {
                 label="Twitter"
                 variant="outlined"
                 margin="normal"
+                defaultValue={
+                  platform?.find((p) => p.platform === "Twitter")
+                    ?.platformLink || ""
+                }
+                onChange={(e) => setTwitterLink(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -229,15 +342,17 @@ const EditProfile: React.FC = () => {
                 label="Address"
                 variant="outlined"
                 margin="normal"
+                defaultValue={userData.address}
+                onChange={(e) => setAddress(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              {/* <TextField
                 fullWidth
                 label="Date of Birth"
                 variant="outlined"
                 margin="normal"
-                value={dob ? dob.toDateString() : ""}
+                value={dob ? dob?.toISOString().split("T")[0] : ""}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -249,7 +364,7 @@ const EditProfile: React.FC = () => {
                 }}
                 onClick={() => setShowDatePicker(true)}
                 readOnly
-              />
+              /> */}
               <Modal
                 open={showDatePicker}
                 onClose={() => setShowDatePicker(false)}
@@ -264,13 +379,13 @@ const EditProfile: React.FC = () => {
                     </ModalCloseButton>
                   </ModalHeader>
                   <Divider />
-                  <Input
+                  {/* <Input
                     type="date"
-                    value={dob ? dob.toISOString().substr(0, 10) : ""}
+                    value={dob ? dob?.toISOString().substr(0, 10) : ""}
                     onChange={handleDateChange}
                     fullWidth
                     margin="normal"
-                  />
+                  /> */}
                 </ModalContent>
               </Modal>
             </Grid>
@@ -306,6 +421,7 @@ const EditProfile: React.FC = () => {
               color="primary"
               fullWidth
               style={{ marginTop: 36 }}
+              onClick={handleSave}
             >
               Save
             </Button>

@@ -14,6 +14,8 @@ import {
 import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
 import { auth, provider, signInWithPopup } from "../firebase";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { BaseUrl } from "@/common/utils";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,11 +34,36 @@ export default function LoginPage() {
 
   const handleGmailLogin = async () => {
     try {
-      await signInWithPopup(auth, provider);
-      console.log("User logged in with Gmail");
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      if (user.email) {
+        // Extract user details from the Firebase user object
+        const userData = {
+          name: user.displayName || "Unknown User",
+          email: user.email,
+          isInfluencer: false,
+          emailVerified: user.emailVerified || false,
+          photoURL: user.photoURL || "http://example.com/default-photo.jpg",
+        };
+
+        const response = await axios.post(`${BaseUrl}/api/users`, userData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        // Save the response data to local storage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("userData", JSON.stringify(response.data));
+        }
+      }
       router.push("/");
     } catch (error) {
-      console.error("Error logging in with Gmail:", error);
+      console.error(
+        "Error logging in with Gmail or sending data to API:",
+        error
+      );
     }
   };
 
