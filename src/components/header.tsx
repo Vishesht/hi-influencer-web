@@ -1,12 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, MouseEvent } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
-import Modal from "@mui/material/Modal";
+import Popover from "@mui/material/Popover";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -17,21 +17,58 @@ import {
   Divider,
   useMediaQuery,
   useTheme,
+  Tooltip,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useRouter } from "next/navigation";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../app/firebase";
 
 const Header = () => {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [user, setUser] = useState<any>(null);
 
-  const handleListItemClick = (path) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleListItemClick = (path: string) => {
     router.push(path);
-    setDrawerOpen(false); // Ensure drawer closes after navigation
+    setAnchorEl(null); // Close popover after navigation
   };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      setAnchorEl(null);
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <AppBar sx={{ mt: 5 }} position="static" color="transparent" elevation={0}>
@@ -75,10 +112,7 @@ const Header = () => {
               <Button onClick={() => router.push("/orders")} color="inherit">
                 Orders
               </Button>
-              <Button
-                onClick={() => router.push("/paymentHistory")}
-                color="inherit"
-              >
+              <Button onClick={() => router.push("/payments")} color="inherit">
                 Payment
               </Button>
               <Button onClick={() => router.push("/download")} color="inherit">
@@ -116,22 +150,27 @@ const Header = () => {
           )}
 
           {/* Avatar for Mobile */}
-          {!isMobile && (
-            <IconButton
-              edge="end"
-              color="inherit"
-              sx={{ marginLeft: "10px" }}
-              // onClick={() => setDrawerOpen(true)}
-              onClick={() => router.push("/profile")}
-            >
-              <Avatar sx={{ bgcolor: "#FFF3E0", color: "#000" }}>V</Avatar>
-            </IconButton>
+          {!isMobile && user && (
+            <Tooltip title="Click to view options" arrow>
+              <IconButton
+                edge="end"
+                color="inherit"
+                sx={{ marginLeft: "10px" }}
+                onClick={handleClick}
+              >
+                <Avatar
+                  src={user.photoURL}
+                  sx={{ bgcolor: "#FFF3E0", color: "#000" }}
+                >
+                  {!user.photoURL && user.displayName?.[0]}
+                </Avatar>
+              </IconButton>
+            </Tooltip>
           )}
         </Toolbar>
-
-        {/* Secondary section */}
       </Container>
 
+      {/* Drawer for Mobile */}
       <Drawer
         anchor="right"
         open={drawerOpen}
@@ -145,15 +184,17 @@ const Header = () => {
           onKeyDown={() => setDrawerOpen(false)}
         >
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-            <Avatar sx={{ bgcolor: "#FFF3E0", color: "#000", mr: 2 }}>V</Avatar>
-            <Box>
-              <Typography variant="h6">John Doe</Typography>
-              <Typography color="textSecondary">Fashion Influencer</Typography>
+            <Avatar src={user?.photoURL} sx={{ width: 50, height: 50 }}>
+              {!user?.photoURL && user?.displayName?.[0]}
+            </Avatar>
+            <Box sx={{ ml: 2 }}>
+              <Typography variant="body1">{user?.displayName}</Typography>
+              <Typography variant="body2" color="textSecondary">
+                {user?.email}
+              </Typography>
             </Box>
           </Box>
           <Divider />
-
-          {/* Menu Items */}
           <List>
             <ListItem button onClick={() => handleListItemClick("/profile")}>
               <ListItemText primary="Profile" sx={{ color: "black" }} />
@@ -164,15 +205,78 @@ const Header = () => {
             <ListItem button onClick={() => handleListItemClick("/payments")}>
               <ListItemText primary="Payments" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem button onClick={() => handleListItemClick("/logout")}>
-              <ListItemText
-                primary="Logout"
-                sx={{ color: "black" }} // Set text color to black
-              />
+            <ListItem button onClick={handleSignOut}>
+              <ListItemText primary="Logout" sx={{ color: "black" }} />
             </ListItem>
           </List>
         </Box>
       </Drawer>
+
+      {/* Popover for Desktop */}
+      <Popover
+        id={id}
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        sx={{ p: 2 }}
+      >
+        <Box
+          sx={{
+            padding: 2,
+            width: 200,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {/* <Avatar src={user?.photoURL} sx={{ width: 80, height: 80, mb: 2 }}>
+            {!user?.photoURL && user?.displayName?.[0]}
+          </Avatar> */}
+          <Typography variant="h6" gutterBottom>
+            {user?.displayName}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            {user?.email}
+          </Typography>
+          <Button
+            onClick={() => handleListItemClick("/profile")}
+            fullWidth
+            sx={{ mb: 1 }}
+          >
+            Profile
+          </Button>
+          <Button
+            onClick={() => handleListItemClick("/orders")}
+            fullWidth
+            sx={{ mb: 1 }}
+          >
+            Your Orders
+          </Button>
+          <Button
+            onClick={() => handleListItemClick("/payments")}
+            fullWidth
+            sx={{ mb: 1 }}
+          >
+            Payments
+          </Button>
+          <Button
+            onClick={handleSignOut}
+            fullWidth
+            variant="contained"
+            color="secondary"
+          >
+            Logout
+          </Button>
+        </Box>
+      </Popover>
     </AppBar>
   );
 };
