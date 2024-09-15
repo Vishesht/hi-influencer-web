@@ -1,9 +1,12 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { AuthProvider } from "@/context/AuthContext";
+import AuthRedirectWrapper from "@/components/AuthRedirectWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,9 +33,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AppRouterCacheProvider options={{ key: "css" }}>
-          <Header />
-          {children}
-          <Footer />
+          <AuthProvider>
+            <AuthRedirectWrapper>
+              <Header />
+              {children}
+              <Footer />
+            </AuthRedirectWrapper>
+          </AuthProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
