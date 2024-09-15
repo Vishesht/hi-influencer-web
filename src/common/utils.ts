@@ -1,3 +1,3 @@
 export const BaseUrl = "http://localhost:5001";
 
-export const ProfileCheckRegex = /^\/profile\/[^\/]+$/;
+export const ProfileCheckRegex = /^\/user\/[^\/]+$/;
