@@ -19,6 +19,7 @@ import { styled } from "@mui/material/styles";
 import UploadIcon from "@mui/icons-material/Upload";
 import CloseIcon from "@mui/icons-material/Close";
 import { BaseUrl } from "@/common/utils";
+import { useRouter } from "next/navigation";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -72,6 +73,7 @@ const indianStates = [
 const genderList = ["Male", "Female", "Others"];
 
 const EditProfile: React.FC = () => {
+  const router = useRouter();
   const [imageUri, setImageUri] = useState<string | ArrayBuffer | null>(null);
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedState, setSelectedState] = useState("");
@@ -82,11 +84,7 @@ const EditProfile: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [bio, setBio] = useState("");
   const [address, setAddress] = useState("");
-  const [instagramLink, setInstagramLink] = useState("");
-  const [fbLink, setFbLink] = useState("");
-  const [youtubeLink, setYoutubeLink] = useState("");
-  const [twitterLink, setTwitterLink] = useState("");
-  const [platform, setPlatform] = useState([]);
+  const [platform, setPlatform] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -104,13 +102,15 @@ const EditProfile: React.FC = () => {
         const response = await axios.get(`${BaseUrl}/api/users/${data._id}`);
         console.log("first-response", response);
         setUserData(response.data);
+        setBio(response.data.bio);
+        setAddress(response.data.address);
         setImageUri(response.data.photoURL);
         setSelectedGender(response.data.gender);
         setSelectedState(response.data.state);
         // setDob(new Date(response.data.dob));
         setPhoneNumber(response.data.phoneNumber);
         setPlatform(response.data.platform);
-        // setSelectedCategory(response.data.category);
+        setSelectedCategory(response.data.category);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -158,34 +158,45 @@ const EditProfile: React.FC = () => {
           {
             platform: "Instagram",
             followers: "",
-            platformLink: platform[0].platformLink,
+            platformLink:
+              platform.find((p) => p.platform === "Instagram")?.platformLink ||
+              "",
           },
           {
             platform: "Facebook",
             followers: "",
-            platformLink: platform[1].platformLink,
+            platformLink:
+              platform.find((p) => p.platform === "Facebook")?.platformLink ||
+              "",
           },
           {
             platform: "Youtube",
             followers: "",
-            platformLink: platform[2].platformLink,
+            platformLink:
+              platform.find((p) => p.platform === "Youtube")?.platformLink ||
+              "",
           },
           {
             platform: "Twitter",
             followers: "",
-            platformLink: platform[3].platformLink,
+            platformLink:
+              platform.find((p) => p.platform === "Twitter")?.platformLink ||
+              "",
           },
         ],
         category: selectedCategory,
       };
-      const input = JSON.stringify(updatedData);
-      await axios.put(`${BaseUrl}/api/users`, input, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
 
-      alert("Profile updated successfully");
+      await axios
+        .put(`${BaseUrl}/api/users`, updatedData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(() => {
+          router.push("/profile");
+          alert("Profile updated successfully");
+        });
     } catch (error) {
       console.error("Error updating profile:", error);
     }
@@ -248,7 +259,7 @@ const EditProfile: React.FC = () => {
                 margin="normal"
                 multiline
                 rows={4}
-                defaultValue={userData.bio}
+                value={bio}
                 onChange={(e) => setBio(e.target.value)}
               />
             </Grid>
@@ -258,11 +269,25 @@ const EditProfile: React.FC = () => {
                 label="Instagram"
                 variant="outlined"
                 margin="normal"
-                defaultValue={
-                  platform?.find((p) => p.platform === "Instagram")
+                value={
+                  platform.find((p) => p.platform === "Instagram")
                     ?.platformLink || ""
                 }
-                onChange={(e) => setInstagramLink(e.target.value)}
+                onChange={(e) => {
+                  const updatedPlatform = [...platform];
+                  const index = updatedPlatform.findIndex(
+                    (p) => p.platform === "Instagram"
+                  );
+                  if (index !== -1) {
+                    updatedPlatform[index].platformLink = e.target.value;
+                  } else {
+                    updatedPlatform.push({
+                      platform: "Instagram",
+                      platformLink: e.target.value,
+                    });
+                  }
+                  setPlatform(updatedPlatform);
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -271,11 +296,25 @@ const EditProfile: React.FC = () => {
                 label="Facebook"
                 variant="outlined"
                 margin="normal"
-                defaultValue={
-                  platform?.find((p) => p.platform === "Facebook")
+                value={
+                  platform.find((p) => p.platform === "Facebook")
                     ?.platformLink || ""
                 }
-                onChange={(e) => setFbLink(e.target.value)}
+                onChange={(e) => {
+                  const updatedPlatform = [...platform];
+                  const index = updatedPlatform.findIndex(
+                    (p) => p.platform === "Facebook"
+                  );
+                  if (index !== -1) {
+                    updatedPlatform[index].platformLink = e.target.value;
+                  } else {
+                    updatedPlatform.push({
+                      platform: "Facebook",
+                      platformLink: e.target.value,
+                    });
+                  }
+                  setPlatform(updatedPlatform);
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -284,11 +323,25 @@ const EditProfile: React.FC = () => {
                 label="Youtube"
                 variant="outlined"
                 margin="normal"
-                defaultValue={
-                  platform?.find((p) => p.platform === "Youtube")
+                value={
+                  platform.find((p) => p.platform === "Youtube")
                     ?.platformLink || ""
                 }
-                onChange={(e) => setYoutubeLink(e.target.value)}
+                onChange={(e) => {
+                  const updatedPlatform = [...platform];
+                  const index = updatedPlatform.findIndex(
+                    (p) => p.platform === "Youtube"
+                  );
+                  if (index !== -1) {
+                    updatedPlatform[index].platformLink = e.target.value;
+                  } else {
+                    updatedPlatform.push({
+                      platform: "Youtube",
+                      platformLink: e.target.value,
+                    });
+                  }
+                  setPlatform(updatedPlatform);
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -297,11 +350,25 @@ const EditProfile: React.FC = () => {
                 label="Twitter"
                 variant="outlined"
                 margin="normal"
-                defaultValue={
-                  platform?.find((p) => p.platform === "Twitter")
+                value={
+                  platform.find((p) => p.platform === "Twitter")
                     ?.platformLink || ""
                 }
-                onChange={(e) => setTwitterLink(e.target.value)}
+                onChange={(e) => {
+                  const updatedPlatform = [...platform];
+                  const index = updatedPlatform.findIndex(
+                    (p) => p.platform === "Twitter"
+                  );
+                  if (index !== -1) {
+                    updatedPlatform[index].platformLink = e.target.value;
+                  } else {
+                    updatedPlatform.push({
+                      platform: "Twitter",
+                      platformLink: e.target.value,
+                    });
+                  }
+                  setPlatform(updatedPlatform);
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -342,7 +409,7 @@ const EditProfile: React.FC = () => {
                 label="Address"
                 variant="outlined"
                 margin="normal"
-                defaultValue={userData.address}
+                value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
             </Grid>

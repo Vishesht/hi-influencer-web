@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { styled } from "@mui/system";
@@ -144,6 +145,7 @@ const ProfilePage = () => {
               >
                 {platform.platform === "Instagram" && <InstagramIcon />}
                 {platform.platform === "Facebook" && <FacebookIcon />}
+                {platform.platform === "Youtube" && <YouTubeIcon />}
                 {platform.platform === "Twitter" && <TwitterIcon />}
                 <Box ml={1}>
                   <Typography variant="body1">
