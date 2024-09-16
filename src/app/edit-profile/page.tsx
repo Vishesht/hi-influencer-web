@@ -24,6 +24,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, storage } from "../firebase";
 import { Edit as EditIcon } from "@mui/icons-material";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { add } from "@/lib/features/login/loginSlice";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -85,6 +87,7 @@ const socialMediaPlatforms = [
 
 const EditProfile: React.FC = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedState, setSelectedState] = useState("");
@@ -101,9 +104,8 @@ const EditProfile: React.FC = () => {
     description: "",
   });
   const [openDialog, setOpenDialog] = useState(false);
-
-  const localStorageItem = localStorage.getItem("userData");
-  const data = localStorageItem ? JSON.parse(localStorageItem) : {};
+  const userData = useAppSelector((state) => state.login.userData);
+  const data = JSON.parse(userData);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -123,7 +125,7 @@ const EditProfile: React.FC = () => {
     const fetchUserData = async () => {
       try {
         if (!data.id) {
-          console.error("User ID not found in local storage.");
+          console.error("User ID not found in redux.");
           return;
         }
         const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
@@ -154,8 +156,7 @@ const EditProfile: React.FC = () => {
       try {
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
-        data.photoURL = downloadURL;
-        localStorage.setItem("userData", JSON.stringify(data));
+        dispatch(add({ ...data, photoURL: downloadURL }));
         setImageUri(downloadURL);
       } catch (error) {
         console.error("Error uploading file:", error);

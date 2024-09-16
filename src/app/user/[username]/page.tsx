@@ -18,6 +18,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { BaseUrl } from "@/common/utils";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/lib/hooks";
 
 interface User {
   emailVerified: boolean;
@@ -60,8 +61,7 @@ export default function Username({ params }: any) {
   const router = useRouter();
   const [user, setUser] = useState<User>();
   const [error, setError] = useState<string | null>(null);
-  const userData: any = localStorage.getItem("userData");
-  const data = JSON.parse(userData);
+  const data = useAppSelector((state) => JSON.parse(state.login.userData));
 
   useEffect(() => {
     const fetchUser = async () => {

@@ -24,17 +24,20 @@ import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../app/firebase";
 import { ProfileCheckRegex } from "@/common/utils";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { add } from "@/lib/features/login/loginSlice";
 
 const Header = () => {
   const router = useRouter();
   const theme = useTheme();
+  const dispatch = useAppDispatch();
   const path = usePathname();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<any>(null);
-  const localStorageItem = localStorage.getItem("userData");
-  const data = localStorageItem ? JSON.parse(localStorageItem) : {};
+  const userData = useAppSelector((state) => state.login.userData);
+  const data = JSON.parse(userData);
 
   const useProfilePathCheck = () => {
     const profilePathRegex = ProfileCheckRegex;
@@ -62,7 +65,7 @@ const Header = () => {
     try {
       await signOut(auth);
       setAnchorEl(null);
-      localStorage.removeItem("userData");
+      dispatch(add(null));
       router.push("/login");
     } catch (error) {
       console.error("Error signing out:", error);
@@ -169,11 +172,7 @@ const Header = () => {
                 onClick={handleClick}
               >
                 <Avatar
-                  src={
-                    data?.photoURL ||
-                    user?.photoURL ||
-                    "https://randomuser.me/api/portraits/men/41.jpg"
-                  }
+                  src={user?.photoURL}
                   sx={{ bgcolor: "#FFF3E0", color: "#000" }}
                 >
                   {!user?.photoURL && user?.displayName?.[0]}

@@ -17,6 +17,8 @@ import {
 import { Visibility, VisibilityOff, Email } from "@mui/icons-material";
 import { registerUser } from "@/api/registerUser";
 import { useRouter } from "next/navigation";
+import { add } from "@/lib/features/login/loginSlice";
+import { useAppDispatch } from "@/lib/hooks";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
@@ -36,6 +38,7 @@ const IconWrapper = styled(IconButton)({
 
 export default function SignUpPage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [name, setName] = useState("");
@@ -52,7 +55,7 @@ export default function SignUpPage() {
     try {
       const res = await registerUser(name, email, password);
       alert(res.message);
-      localStorage.setItem("userData", JSON.stringify(res.user));
+      dispatch(add(JSON.stringify(res.user)));
       router.push("/");
     } catch (error) {
       console.log("first21", error);

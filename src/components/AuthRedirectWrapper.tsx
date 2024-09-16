@@ -2,21 +2,22 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "./LoadingSpinner";
 import { ProfileCheckRegex } from "@/common/utils";
 import Header from "./header";
 import Footer from "./footer";
+import { useAppSelector } from "@/lib/hooks";
 
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const userData = useAppSelector((state) => state.login.userData);
+  const data = JSON.parse(userData);
   const { user, loading } = useAuth();
   const router = useRouter();
   const path = usePathname();
-  const localStorageItem = localStorage.getItem("userData");
-  const data = JSON.parse(localStorageItem);
 
   const useProfilePathCheck = () => {
     const profilePathRegex = ProfileCheckRegex;

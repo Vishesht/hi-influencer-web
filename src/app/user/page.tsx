@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { BaseUrl } from "@/common/utils";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
+import { useAppSelector } from "@/lib/hooks";
 
 interface User {
   emailVerified: boolean;
@@ -70,7 +71,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState<User>();
   const [firebaseData, setFirebaseData] = useState<any>(null);
   const router = useRouter();
-  const userData: any = localStorage.getItem("userData");
+  const userData = useAppSelector((state) => state.login.userData);
   const data = JSON.parse(userData);
 
   useEffect(() => {

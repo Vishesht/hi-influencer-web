@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import { loginUser } from "@/api/loginUser";
+import { useAppDispatch } from "@/lib/hooks";
+import { add } from "@/lib/features/login/loginSlice";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
@@ -39,6 +41,7 @@ const IconWrapper = styled(IconButton)({
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,9 +53,8 @@ export default function LoginPage() {
 
     try {
       const res = await loginUser(email, password);
-      console.log("first User logged in:", res);
       alert(res.message);
-      localStorage.setItem("userData", JSON.stringify(res.user));
+      dispatch(add(JSON.stringify(res.user)));
       router.push("/");
     } catch (error) {
       console.log("first", error);
@@ -78,10 +80,7 @@ export default function LoginPage() {
             },
           })
           .then((response) => {
-            localStorage.setItem(
-              "userData",
-              JSON.stringify(response.data.user)
-            );
+            dispatch(add(JSON.stringify(response.data.user)));
           })
           .catch((err) =>
             console.log("Something wrong. Please try again.", err)

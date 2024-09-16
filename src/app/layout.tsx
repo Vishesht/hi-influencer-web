@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { AuthProvider } from "@/context/AuthContext";
 import AuthRedirectWrapper from "@/components/AuthRedirectWrapper";
+import StoreProvider from "./StoreProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,9 +31,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AppRouterCacheProvider options={{ key: "css" }}>
-          <AuthProvider>
-            <AuthRedirectWrapper>{children}</AuthRedirectWrapper>
-          </AuthProvider>
+          <StoreProvider>
+            <AuthProvider>
+              <AuthRedirectWrapper>{children}</AuthRedirectWrapper>
+            </AuthProvider>
+          </StoreProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
