@@ -186,7 +186,6 @@ export default function Username({ params }) {
             ))}
           </Box>
         </Box>
-        {console.log("first22", data?.email === user.email)}
         {/* Buttons */}
         {data && data?.email === user.email && (
           <Box mt={4} display="flex" justifyContent="center" gap={2}>

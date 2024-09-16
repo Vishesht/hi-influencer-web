@@ -38,24 +38,22 @@ export default function LoginPage() {
       const user = result.user;
 
       if (user.email) {
-        // Extract user details from the Firebase user object
         const userData = {
           name: user.displayName || "Unknown User",
           email: user.email,
-          isInfluencer: false,
-          emailVerified: user.emailVerified || false,
-          photoURL: user.photoURL || "http://example.com/default-photo.jpg",
         };
 
         await axios
-          .put(`${BaseUrl}/api/users`, userData, {
+          .post(`${BaseUrl}/api/login`, userData, {
             headers: {
               "Content-Type": "application/json",
             },
           })
           .then((response) => {
-            console.log("first", response.data);
-            localStorage.setItem("userData", JSON.stringify(response.data));
+            localStorage.setItem(
+              "userData",
+              JSON.stringify(response.data.user)
+            );
           })
           .catch((err) =>
             console.log("Something wrong. Please try again.", err)

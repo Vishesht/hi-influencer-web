@@ -18,6 +18,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { BaseUrl } from "@/common/utils";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 interface User {
   emailVerified: boolean;
@@ -28,6 +30,11 @@ interface User {
   name: string;
   bio: string;
   images: Array<string>;
+}
+
+interface FirebaseUser {
+  name: string;
+  email: string;
 }
 
 // Styled components with custom shadow values
@@ -58,22 +65,31 @@ const GalleryImage = styled(CardMedia)(({ theme }) => ({
 
 const ProfilePage = () => {
   const [user, setUser] = useState<User>(null);
+  const [firebaseData, setFirebaseData] = useState<FirebaseUser>(null);
   const router = useRouter();
+  const userData: any = localStorage.getItem("userData");
+  const data = JSON.parse(userData);
 
   useEffect(() => {
-    const userData: any = localStorage.getItem("userData");
-    const data = JSON.parse(userData);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setFirebaseData(user?.providerData[0]);
+      } else {
+        setFirebaseData(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Retrieve the user ID from local storage
-
-        if (!data._id) {
+        if (!data.id) {
           console.error("User ID not found in local storage.");
           return;
         }
-
-        // Fetch user data from the API
-        const response = await axios.get(`${BaseUrl}/api/users/${data._id}`);
+        const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -83,10 +99,7 @@ const ProfilePage = () => {
     fetchUserData();
   }, []);
 
-  if (!user) {
-    return <Typography>Loading...</Typography>;
-  }
-  const filteredArr = user.platform.filter(
+  const filteredArr = user?.platform?.filter(
     (item) => item.platformLink.trim() !== ""
   );
 
@@ -112,7 +125,8 @@ const ProfilePage = () => {
           <CardMedia
             component="img"
             image={
-              user.photoURL ||
+              user?.photoURL ||
+              firebaseData?.photoURL ||
               "https://randomuser.me/api/portraits/women/44.jpg"
             }
             alt="User Image"
@@ -122,21 +136,23 @@ const ProfilePage = () => {
 
         {/* User Name */}
         <Box display="flex" justifyContent="center" gap={0} alignItems="center">
-          <Typography variant="h4">{user.name}</Typography>
-          {user.emailVerified && (
+          <Typography variant="h4">
+            {user?.name || firebaseData?.displayName}
+          </Typography>
+          {user?.emailVerified && (
             <CheckCircleIcon sx={{ color: "green", ml: 1 }} />
           )}
         </Box>
 
-        {user.category && (
+        {user?.category && (
           <Typography variant="h6" color="textSecondary">
-            {user.username + " - " + user.category}
+            {user?.username + " - " + user?.category}
           </Typography>
         )}
 
-        {user.bio && (
+        {user?.bio && (
           <Typography variant="body1" mt={2}>
-            {user.bio}
+            {user?.bio}
           </Typography>
         )}
 
@@ -197,13 +213,13 @@ const ProfilePage = () => {
 
         {/* Profile Images */}
         <Box mt={4}>
-          {user.images.length > 0 && (
+          {user?.images.length > 0 && (
             <Typography fontWeight="bold" variant="h5">
               Gallery
             </Typography>
           )}
           <Grid container justifyContent={"center"} spacing={2} mt={2}>
-            {user.images?.map((image, index) => (
+            {user?.images?.map((image, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card>
                   <GalleryImage

@@ -17,6 +17,8 @@ import { styled } from "@mui/material/styles";
 import UploadIcon from "@mui/icons-material/Upload";
 import { BaseUrl } from "@/common/utils";
 import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -55,38 +57,41 @@ const EditProfile: React.FC = () => {
   const [imageUri, setImageUri] = useState<string | ArrayBuffer | null>(null);
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedState, setSelectedState] = useState("");
-  const [, setDob] = useState<Date | null>(null);
-  const [, setShowDatePicker] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-  const [userData, setUserData] = useState<any>(null);
   const [bio, setBio] = useState("");
   const [address, setAddress] = useState("");
   const [platform, setPlatform] = useState<any[]>([]);
+  const localStorageItem = localStorage.getItem("userData");
+  const data = JSON.parse(localStorageItem);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const item = user?.providerData[0];
+        setName(item.displayName);
+        setImageUri(item.photoURL);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Retrieve the user ID from local storage
-        const userData = localStorage.getItem("userData");
-        const data = JSON.parse(userData);
-
-        if (!data._id) {
+        if (!data.id) {
           console.error("User ID not found in local storage.");
           return;
         }
-
-        // Fetch user data from the API
-        const response = await axios.get(`${BaseUrl}/api/users/${data._id}`);
-        setUserData(response.data);
+        const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
         setBio(response.data.bio);
         setAddress(response.data.address);
         setImageUri(response.data.photoURL);
         setSelectedGender(response.data.gender);
         setSelectedState(response.data.state);
-        // setDob(new Date(response.data.dob));
         setPhoneNumber(response.data.phoneNumber);
         setPlatform(response.data.platform);
         setSelectedCategory(response.data.category);
@@ -126,10 +131,10 @@ const EditProfile: React.FC = () => {
       }
 
       const updatedData = {
-        _id: data._id,
+        id: data.id,
         name: name,
-        username: username,
         email: data.email,
+        username: username,
         isInfluencer: false,
         phoneNumber: phoneNumber,
         gender: selectedGender,
@@ -169,9 +174,8 @@ const EditProfile: React.FC = () => {
         ],
         category: selectedCategory,
       };
-
       await axios
-        .put(`${BaseUrl}/api/users`, updatedData, {
+        .post(`${BaseUrl}/api/users`, updatedData, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -184,10 +188,6 @@ const EditProfile: React.FC = () => {
       console.error("Error updating profile:", error);
     }
   };
-
-  if (!userData) {
-    return <Typography>Loading...</Typography>;
-  }
 
   return (
     <StyledContainer>
@@ -231,7 +231,7 @@ const EditProfile: React.FC = () => {
                 label="Name"
                 variant="outlined"
                 margin="normal"
-                defaultValue={name || userData.name}
+                defaultValue={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </Grid>
@@ -241,7 +241,7 @@ const EditProfile: React.FC = () => {
                 label="Username"
                 variant="outlined"
                 margin="normal"
-                defaultValue={userData.username}
+                value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </Grid>
