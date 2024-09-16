@@ -34,7 +34,7 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<any>(null);
   const localStorageItem = localStorage.getItem("userData");
-  const data = JSON.parse(localStorageItem);
+  const data = localStorageItem ? JSON.parse(localStorageItem) : {};
 
   const useProfilePathCheck = () => {
     const profilePathRegex = ProfileCheckRegex;
@@ -210,16 +210,25 @@ const Header = () => {
           </Box>
           <Divider />
           <List>
-            <ListItem button onClick={() => handleListItemClick("/user")}>
+            <ListItem
+              component="button"
+              onClick={() => handleListItemClick("/user")}
+            >
               <ListItemText primary="Profile" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem button onClick={() => handleListItemClick("/orders")}>
+            <ListItem
+              component="button"
+              onClick={() => handleListItemClick("/orders")}
+            >
               <ListItemText primary="Your Orders" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem button onClick={() => handleListItemClick("/payments")}>
+            <ListItem
+              component="button"
+              onClick={() => handleListItemClick("/payments")}
+            >
               <ListItemText primary="Payments" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem button onClick={handleSignOut}>
+            <ListItem component="button" onClick={handleSignOut}>
               <ListItemText primary="Logout" sx={{ color: "black" }} />
             </ListItem>
           </List>

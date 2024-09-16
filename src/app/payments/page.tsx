@@ -75,7 +75,7 @@ const TransactionCard = styled(Card)(({ theme }) => ({
 const PaymentHistory: React.FC = () => {
   const [filter, setFilter] = useState<string>("All");
 
-  const handleFilterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleFilterChange = (event: any) => {
     setFilter(event.target.value as string);
   };
 

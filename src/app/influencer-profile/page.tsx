@@ -12,12 +12,10 @@ import {
   Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import Header from "@/components/header";
-import ImageGallery from "@/components/imageGallery";
 import Image from "next/image";
-import ReviewsList from "@/components/reviewsList";
-import Footer from "@/components/footer";
-import HireModal from "@/components/HireModal";
+import ImageGallery from "../../components/imageGallery";
+import ReviewsList from "../../components/reviewsList";
+import HireModal from "../../components/HireModal";
 
 // Styled components
 const ProfileContainer = styled(Container)(({ theme }) => ({
@@ -59,13 +57,13 @@ const PackageCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const InfluencerProfile = ({ searchParams }) => {
+const InfluencerProfile = ({ searchParams }: any) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
-  const influencer = JSON.parse(searchParams.influencer);
+  const influencer = JSON?.parse(searchParams.influencer);
 
   // const SocialMediaIcon = (platformData, src) => (
   //   <Image
@@ -77,7 +75,7 @@ const InfluencerProfile = ({ searchParams }) => {
   //   />
   // );
 
-  const SocialMediaIcon = (platformData, link) => {
+  const SocialMediaIcon = (platformData: any, link: any) => {
     return (
       <IconButton
         href={platformData.platformLink}
@@ -166,7 +164,7 @@ const InfluencerProfile = ({ searchParams }) => {
             </Typography>
           </Container>
           <PlatformList>
-            {influencer.platform.map((platformData, index) => (
+            {influencer.platform.map((platformData: any, index: any) => (
               <Box key={index} display="flex" alignItems="center">
                 <IconButton href={platformData.platformLink} target="_blank">
                   {platformData.platform === "Instagram"
@@ -227,7 +225,7 @@ const InfluencerProfile = ({ searchParams }) => {
             Packages
           </Typography>
           <PackageGrid container spacing={3}>
-            {influencer?.packages.map((pkg, index) => (
+            {influencer?.packages.map((pkg: any, index: any) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <PackageCard>
                   <CardContent>

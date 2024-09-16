@@ -147,7 +147,6 @@ const HireModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             <UploadButton
               variant="contained"
               color="primary"
-              component="span"
               startIcon={<Upload />}
             >
               Upload Images/Videos

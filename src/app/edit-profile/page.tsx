@@ -85,7 +85,7 @@ const socialMediaPlatforms = [
 
 const EditProfile: React.FC = () => {
   const router = useRouter();
-  const [imageUri, setImageUri] = useState<string | ArrayBuffer | null>(null);
+  const [imageUri, setImageUri] = useState<string | null>(null);
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -103,14 +103,14 @@ const EditProfile: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const localStorageItem = localStorage.getItem("userData");
-  const data = JSON.parse(localStorageItem);
+  const data = localStorageItem ? JSON.parse(localStorageItem) : {};
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const item = user?.providerData[0];
-        setName(item.displayName);
-        setImageUri(item.photoURL);
+        item?.displayName && setName(item?.displayName);
+        setImageUri(item?.photoURL);
       } else {
         setName(data?.name);
       }
@@ -218,7 +218,7 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  const handlePlatformChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePlatformChange = (e: any) => {
     const { name, value } = e.target;
     setNewPlatform((prev) => ({ ...prev, [name]: value }));
   };
@@ -248,7 +248,7 @@ const EditProfile: React.FC = () => {
                 alt="Profile Image"
               />
               <EditIconStyled
-                component="span"
+                // component="span"
                 color="primary"
                 // onClick={() =>
                 //   document.getElementById("profile-image-upload")?.click()

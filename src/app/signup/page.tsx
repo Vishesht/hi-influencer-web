@@ -11,11 +11,28 @@ import {
   Link,
   Divider,
   Toolbar,
+  styled,
+  AppBar,
 } from "@mui/material";
 import { Visibility, VisibilityOff, Email } from "@mui/icons-material";
-import { HeaderWrapper, IconWrapper } from "../login/page";
 import { registerUser } from "@/api/registerUser";
 import { useRouter } from "next/navigation";
+
+const HeaderWrapper = styled(AppBar)({
+  top: 0,
+  left: 0,
+  right: 0,
+  position: "absolute",
+  backgroundColor: "transparent", // or any color you want
+  boxShadow: "none", // Remove shadow if desired
+});
+
+// Styled component for the icon button
+const IconWrapper = styled(IconButton)({
+  position: "absolute",
+  top: 16,
+  left: 16,
+});
 
 export default function SignUpPage() {
   const router = useRouter();

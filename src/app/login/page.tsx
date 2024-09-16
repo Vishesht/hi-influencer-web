@@ -21,7 +21,7 @@ import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import { loginUser } from "@/api/loginUser";
 
-export const HeaderWrapper = styled(AppBar)({
+const HeaderWrapper = styled(AppBar)({
   top: 0,
   left: 0,
   right: 0,
@@ -31,7 +31,7 @@ export const HeaderWrapper = styled(AppBar)({
 });
 
 // Styled component for the icon button
-export const IconWrapper = styled(IconButton)({
+const IconWrapper = styled(IconButton)({
   position: "absolute",
   top: 16,
   left: 16,
@@ -45,7 +45,7 @@ export default function LoginPage() {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: any) => {
     event.preventDefault();
 
     try {

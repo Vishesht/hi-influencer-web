@@ -67,14 +67,14 @@ const GalleryImage = styled(CardMedia)(({ theme }) => ({
 }));
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<User>(null);
-  const [firebaseData, setFirebaseData] = useState<FirebaseUser>(null);
+  const [user, setUser] = useState<User>();
+  const [firebaseData, setFirebaseData] = useState<any>(null);
   const router = useRouter();
   const userData: any = localStorage.getItem("userData");
   const data = JSON.parse(userData);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       if (user) {
         setFirebaseData(user?.providerData[0]);
       } else {
@@ -229,9 +229,9 @@ const ProfilePage = () => {
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card>
                   <GalleryImage
-                    component="img"
+                    // component="img"
                     image={image}
-                    alt={`Image ${index + 1}`}
+                    // alt={`Image ${index + 1}`}
                   />
                 </Card>
               </Grid>

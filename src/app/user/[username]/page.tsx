@@ -56,9 +56,9 @@ const GalleryImage = styled(CardMedia)(({ theme }) => ({
   },
 }));
 
-export default function Username({ params }) {
+export default function Username({ params }: any) {
   const router = useRouter();
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState<User>();
   const [error, setError] = useState<string | null>(null);
   const userData: any = localStorage.getItem("userData");
   const data = JSON.parse(userData);
@@ -196,7 +196,7 @@ export default function Username({ params }) {
         )}
         {/* Profile Images */}
         <Box mt={4}>
-          {user?.images.length > 0 && (
+          {user?.images && user?.images?.length > 0 && (
             <Typography fontWeight="bold" variant="h5">
               Gallery
             </Typography>
@@ -206,9 +206,9 @@ export default function Username({ params }) {
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card>
                   <GalleryImage
-                    component="img"
+                    // component="img"
                     image={image}
-                    alt={`Image ${index + 1}`}
+                    // alt={`Image ${index + 1}`}
                   />
                 </Card>
               </Grid>
