@@ -15,6 +15,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  InputLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { BaseUrl } from "@/common/utils";
@@ -72,6 +73,15 @@ const indianStates = [
   "Karnataka",
 ];
 const genderList = ["Male", "Female", "Others"];
+
+const socialMediaPlatforms = [
+  "Instagram",
+  "Facebook",
+  "Youtube",
+  "Twitter",
+  "Telegram",
+  "LinkedIn",
+];
 
 const EditProfile: React.FC = () => {
   const router = useRouter();
@@ -406,16 +416,21 @@ const EditProfile: React.FC = () => {
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Add New Social Media</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Platform Name"
-            fullWidth
-            variant="outlined"
-            name="name"
-            value={newPlatform.name}
-            onChange={handlePlatformChange}
-          />
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Platform Name</InputLabel>
+            <Select
+              name="name"
+              value={newPlatform.name}
+              onChange={handlePlatformChange}
+              label="Platform Name"
+            >
+              {socialMediaPlatforms.map((platform) => (
+                <MenuItem key={platform} value={platform}>
+                  {platform}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
             margin="dense"
             label="Platform Link"

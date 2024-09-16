@@ -14,6 +14,9 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import TelegramIcon from "@mui/icons-material/Telegram";
+
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
@@ -174,6 +177,9 @@ const ProfilePage = () => {
                 {platform.platform === "Facebook" && <FacebookIcon />}
                 {platform.platform === "Youtube" && <YouTubeIcon />}
                 {platform.platform === "Twitter" && <TwitterIcon />}
+                {platform.platform === "LinkedIn" && <LinkedInIcon />}
+                {platform.platform === "Telegram" && <TelegramIcon />}
+
                 <Box ml={1}>
                   <Typography variant="body1">
                     <a
