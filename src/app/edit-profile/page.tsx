@@ -20,8 +20,9 @@ import { styled } from "@mui/material/styles";
 import { BaseUrl } from "@/common/utils";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, storage } from "../firebase";
 import { Edit as EditIcon } from "@mui/icons-material";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -134,14 +135,21 @@ const EditProfile: React.FC = () => {
     fetchUserData();
   }, []);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUri(reader.result);
-      };
-      reader.readAsDataURL(file);
+      const storageRef = ref(storage, `images/${file.name + "-" + username}`);
+      try {
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+        data.photoURL = downloadURL;
+        localStorage.setItem("userData", JSON.stringify(data));
+        setImageUri(downloadURL);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
     }
   };
 
@@ -215,13 +223,13 @@ const EditProfile: React.FC = () => {
         {/* Profile Image Section */}
         <Grid item xs={12} md={4} textAlign="center">
           <label htmlFor="profile-image-upload">
-            {/* <input
+            <input
               id="profile-image-upload"
               type="file"
               accept="image/*"
               style={{ display: "none" }}
               onChange={handleImageUpload}
-            /> */}
+            />
             <EditIconWrapper>
               <ProfileImage
                 src={
@@ -229,15 +237,15 @@ const EditProfile: React.FC = () => {
                 }
                 alt="Profile Image"
               />
-              {/* <EditIconStyled
+              <EditIconStyled
                 component="span"
                 color="primary"
-                onClick={() =>
-                  document.getElementById("profile-image-upload").click()
-                }
+                // onClick={() =>
+                //   document.getElementById("profile-image-upload")?.click()
+                // }
               >
                 <EditIcon />
-              </EditIconStyled> */}
+              </EditIconStyled>
             </EditIconWrapper>
           </label>
         </Grid>

@@ -171,6 +171,7 @@ const Header = () => {
                 <Avatar
                   src={
                     user?.photoURL ||
+                    data?.photoURL ||
                     "https://randomuser.me/api/portraits/men/41.jpg"
                   }
                   sx={{ bgcolor: "#FFF3E0", color: "#000" }}
