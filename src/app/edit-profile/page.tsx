@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-  Box,
   Button,
   Container,
   Grid,
@@ -12,13 +11,17 @@ import {
   TextField,
   Typography,
   FormControl,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import UploadIcon from "@mui/icons-material/Upload";
 import { BaseUrl } from "@/common/utils";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
+import { Edit as EditIcon } from "@mui/icons-material";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -34,6 +37,23 @@ const ProfileImage = styled("img")(({ theme }) => ({
   marginBottom: theme.spacing(2),
   border: `4px solid ${theme.palette.primary.main}`,
 }));
+
+const EditIconWrapper = styled("div")({
+  position: "relative",
+  display: "inline-block",
+});
+
+const EditIconStyled = styled(IconButton)({
+  position: "absolute",
+  bottom: 8,
+  right: 8,
+  backgroundColor: "white",
+  boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.3)", // Adding shadow here
+  "&:hover": {
+    backgroundColor: "lightgrey",
+    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.4)", // Darker shadow on hover
+  },
+});
 
 const categories = ["Influencer", "Blogger", "Content Creator", "Photographer"];
 const indianStates = [
@@ -64,6 +84,13 @@ const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [address, setAddress] = useState("");
   const [platform, setPlatform] = useState<any[]>([]);
+  const [newPlatform, setNewPlatform] = useState({
+    name: "",
+    link: "",
+    description: "",
+  });
+  const [openDialog, setOpenDialog] = useState(false);
+
   const localStorageItem = localStorage.getItem("userData");
   const data = JSON.parse(localStorageItem);
 
@@ -73,6 +100,8 @@ const EditProfile: React.FC = () => {
         const item = user?.providerData[0];
         setName(item.displayName);
         setImageUri(item.photoURL);
+      } else {
+        setName(data?.name);
       }
     });
 
@@ -89,7 +118,7 @@ const EditProfile: React.FC = () => {
         const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
         setBio(response.data.bio);
         setAddress(response.data.address);
-        setImageUri(response.data.photoURL);
+        response.data.photoURL && setImageUri(response.data.photoURL);
         setSelectedGender(response.data.gender);
         setSelectedState(response.data.state);
         setPhoneNumber(response.data.phoneNumber);
@@ -116,62 +145,26 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  // const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDob(new Date(event.target.value));
-  //   setShowDatePicker(false);
-  // };
-
   const handleSave = async () => {
     try {
-      const userData = localStorage.getItem("userData");
-      const data = JSON.parse(userData);
-      if (!data._id) {
-        console.error("User ID not found in local storage.");
+      if (!name || !username || !validateUsername(username)) {
+        alert("Please fill all required fields correctly.");
         return;
       }
 
       const updatedData = {
         id: data.id,
-        name: name,
+        name,
         email: data.email,
-        username: username,
+        username,
         isInfluencer: false,
-        phoneNumber: phoneNumber,
+        phoneNumber,
         gender: selectedGender,
-        // dob: dob?.toISOString().split("T")[0],
-        bio: bio,
+        photoURL: imageUri,
+        bio,
         state: selectedState,
-        address: address,
-        platform: [
-          {
-            platform: "Instagram",
-            followers: "",
-            platformLink:
-              platform.find((p) => p.platform === "Instagram")?.platformLink ||
-              "",
-          },
-          {
-            platform: "Facebook",
-            followers: "",
-            platformLink:
-              platform.find((p) => p.platform === "Facebook")?.platformLink ||
-              "",
-          },
-          {
-            platform: "Youtube",
-            followers: "",
-            platformLink:
-              platform.find((p) => p.platform === "Youtube")?.platformLink ||
-              "",
-          },
-          {
-            platform: "Twitter",
-            followers: "",
-            platformLink:
-              platform.find((p) => p.platform === "Twitter")?.platformLink ||
-              "",
-          },
-        ],
+        address,
+        platform,
         category: selectedCategory,
       };
       await axios
@@ -189,6 +182,29 @@ const EditProfile: React.FC = () => {
     }
   };
 
+  const validateUsername = (username: string) =>
+    /^[a-z0-9_]+$/.test(username.trim());
+
+  const handleAddPlatform = () => {
+    if (newPlatform.name && newPlatform.link) {
+      setPlatform([
+        ...platform,
+        {
+          platform: newPlatform.name,
+          platformLink: newPlatform.link,
+          description: newPlatform.description,
+        },
+      ]);
+      setNewPlatform({ name: "", link: "", description: "" });
+      setOpenDialog(false);
+    }
+  };
+
+  const handlePlatformChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewPlatform((prev) => ({ ...prev, [name]: value }));
+  };
+
   return (
     <StyledContainer>
       <Typography variant="h5" sx={{ mb: 4 }} gutterBottom>
@@ -199,26 +215,30 @@ const EditProfile: React.FC = () => {
         {/* Profile Image Section */}
         <Grid item xs={12} md={4} textAlign="center">
           <label htmlFor="profile-image-upload">
-            <input
+            {/* <input
               id="profile-image-upload"
               type="file"
               accept="image/*"
               style={{ display: "none" }}
               onChange={handleImageUpload}
-            />
-            <ProfileImage
-              src={imageUri || "https://randomuser.me/api/portraits/men/41.jpg"}
-              alt="Profile Image"
-            />
-            <Button
-              variant="contained"
-              component="span"
-              startIcon={<UploadIcon />}
-              color="primary"
-              style={{ marginTop: 16 }}
-            >
-              Change Photo
-            </Button>
+            /> */}
+            <EditIconWrapper>
+              <ProfileImage
+                src={
+                  imageUri || "https://randomuser.me/api/portraits/men/41.jpg"
+                }
+                alt="Profile Image"
+              />
+              {/* <EditIconStyled
+                component="span"
+                color="primary"
+                onClick={() =>
+                  document.getElementById("profile-image-upload").click()
+                }
+              >
+                <EditIcon />
+              </EditIconStyled> */}
+            </EditIconWrapper>
           </label>
         </Grid>
 
@@ -231,8 +251,9 @@ const EditProfile: React.FC = () => {
                 label="Name"
                 variant="outlined"
                 margin="normal"
-                defaultValue={name}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
               />
             </Grid>
             <Grid item xs={12}>
@@ -243,6 +264,9 @@ const EditProfile: React.FC = () => {
                 margin="normal"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                required
+                inputProps={{ pattern: "[a-z0-9]*" }}
+                helperText="Username must be lowercase and contain no spaces."
               />
             </Grid>
             <Grid item xs={12}>
@@ -257,113 +281,47 @@ const EditProfile: React.FC = () => {
                 onChange={(e) => setBio(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Instagram"
-                variant="outlined"
-                margin="normal"
-                value={
-                  platform.find((p) => p.platform === "Instagram")
-                    ?.platformLink || ""
-                }
-                onChange={(e) => {
-                  const updatedPlatform = [...platform];
-                  const index = updatedPlatform.findIndex(
-                    (p) => p.platform === "Instagram"
-                  );
-                  if (index !== -1) {
+            {platform.map((p, index) => (
+              <Grid item xs={12} sm={6} key={index}>
+                <TextField
+                  fullWidth
+                  label={p.platform}
+                  variant="outlined"
+                  margin="normal"
+                  value={p.platformLink}
+                  onChange={(e) => {
+                    const updatedPlatform = [...platform];
                     updatedPlatform[index].platformLink = e.target.value;
-                  } else {
-                    updatedPlatform.push({
-                      platform: "Instagram",
-                      platformLink: e.target.value,
-                    });
-                  }
-                  setPlatform(updatedPlatform);
-                }}
-              />
+                    setPlatform(updatedPlatform);
+                  }}
+                />
+              </Grid>
+            ))}
+            <Grid item xs={12}>
+              <Button variant="outlined" onClick={() => setOpenDialog(true)}>
+                Add New Social Media
+              </Button>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Facebook"
+                label="Phone Number"
                 variant="outlined"
                 margin="normal"
-                value={
-                  platform.find((p) => p.platform === "Facebook")
-                    ?.platformLink || ""
-                }
-                onChange={(e) => {
-                  const updatedPlatform = [...platform];
-                  const index = updatedPlatform.findIndex(
-                    (p) => p.platform === "Facebook"
-                  );
-                  if (index !== -1) {
-                    updatedPlatform[index].platformLink = e.target.value;
-                  } else {
-                    updatedPlatform.push({
-                      platform: "Facebook",
-                      platformLink: e.target.value,
-                    });
-                  }
-                  setPlatform(updatedPlatform);
-                }}
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                type="tel"
+                inputProps={{ pattern: "[0-9]{10}" }}
+                helperText="Phone number must be 10 digits."
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Youtube"
-                variant="outlined"
-                margin="normal"
-                value={
-                  platform.find((p) => p.platform === "Youtube")
-                    ?.platformLink || ""
-                }
-                onChange={(e) => {
-                  const updatedPlatform = [...platform];
-                  const index = updatedPlatform.findIndex(
-                    (p) => p.platform === "Youtube"
-                  );
-                  if (index !== -1) {
-                    updatedPlatform[index].platformLink = e.target.value;
-                  } else {
-                    updatedPlatform.push({
-                      platform: "Youtube",
-                      platformLink: e.target.value,
-                    });
-                  }
-                  setPlatform(updatedPlatform);
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Twitter"
-                variant="outlined"
-                margin="normal"
-                value={
-                  platform.find((p) => p.platform === "Twitter")
-                    ?.platformLink || ""
-                }
-                onChange={(e) => {
-                  const updatedPlatform = [...platform];
-                  const index = updatedPlatform.findIndex(
-                    (p) => p.platform === "Twitter"
-                  );
-                  if (index !== -1) {
-                    updatedPlatform[index].platformLink = e.target.value;
-                  } else {
-                    updatedPlatform.push({
-                      platform: "Twitter",
-                      platformLink: e.target.value,
-                    });
-                  }
-                  setPlatform(updatedPlatform);
-                }}
-              />
+              <Typography
+                variant="inherit"
+                sx={{ color: "GrayText", fontFamily: "initial" }}
+                gutterBottom
+              >
+                We respect your privacy. Your phone number will be kept
+                confidential and will not be disclosed to any third parties.
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth margin="normal">
@@ -407,49 +365,6 @@ const EditProfile: React.FC = () => {
                 onChange={(e) => setAddress(e.target.value)}
               />
             </Grid>
-            {/* <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Date of Birth"
-                variant="outlined"
-                margin="normal"
-                value={dob ? dob?.toISOString().split("T")[0] : ""}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={() => setShowDatePicker(true)}>
-                        <CalendarTodayIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                onClick={() => setShowDatePicker(true)}
-                readOnly
-              />
-              <Modal
-                open={showDatePicker}
-                onClose={() => setShowDatePicker(false)}
-                aria-labelledby="date-picker-modal-title"
-                aria-describedby="date-picker-modal-description"
-              >
-                <ModalContent>
-                  <ModalHeader>
-                    <Typography variant="h6">Select Date</Typography>
-                    <ModalCloseButton onClick={() => setShowDatePicker(false)}>
-                      <CloseIcon />
-                    </ModalCloseButton>
-                  </ModalHeader>
-                  <Divider />
-                   <Input
-                    type="date"
-                    value={dob ? dob?.toISOString().substr(0, 10) : ""}
-                    onChange={handleDateChange}
-                    fullWidth
-                    margin="normal"
-                  /> 
-                </ModalContent>
-              </Modal>
-            </Grid> */}
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth margin="normal">
                 <Select
@@ -466,25 +381,6 @@ const EditProfile: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                variant="outlined"
-                margin="normal"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                type="tel"
-              />
-              <Typography
-                variant="inherit"
-                sx={{ color: "GrayText", fontFamily: "initial" }}
-                gutterBottom
-              >
-                We respect your privacy. Your phone number will be kept
-                confidential and will not be disclosed to any third parties.
-              </Typography>
-            </Grid>
             <Button
               variant="contained"
               color="primary"
@@ -497,6 +393,45 @@ const EditProfile: React.FC = () => {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Dialog for Adding New Social Media */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Add New Social Media</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Platform Name"
+            fullWidth
+            variant="outlined"
+            name="name"
+            value={newPlatform.name}
+            onChange={handlePlatformChange}
+          />
+          <TextField
+            margin="dense"
+            label="Platform Link"
+            fullWidth
+            variant="outlined"
+            name="link"
+            value={newPlatform.link}
+            onChange={handlePlatformChange}
+          />
+          <TextField
+            margin="dense"
+            label="Description"
+            fullWidth
+            variant="outlined"
+            name="description"
+            value={newPlatform.description}
+            onChange={handlePlatformChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button onClick={handleAddPlatform}>Add</Button>
+        </DialogActions>
+      </Dialog>
     </StyledContainer>
   );
 };

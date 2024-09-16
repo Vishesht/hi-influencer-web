@@ -10,12 +10,32 @@ import {
   InputAdornment,
   Link,
   Divider,
+  styled,
+  AppBar,
+  Toolbar,
 } from "@mui/material";
 import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
 import { auth, provider, signInWithPopup } from "../firebase";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
+import { loginUser } from "@/api/loginUser";
+
+export const HeaderWrapper = styled(AppBar)({
+  top: 0,
+  left: 0,
+  right: 0,
+  position: "absolute",
+  backgroundColor: "transparent", // or any color you want
+  boxShadow: "none", // Remove shadow if desired
+});
+
+// Styled component for the icon button
+export const IconWrapper = styled(IconButton)({
+  position: "absolute",
+  top: 16,
+  left: 16,
+});
 
 export default function LoginPage() {
   const router = useRouter();
@@ -25,11 +45,18 @@ export default function LoginPage() {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    // Handle email/password login here
-    // For simplicity, this is just a placeholder
-    console.log("Logging in with email:", email, "and password:", password);
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+      const res = await loginUser(email, password);
+      console.log("first User logged in:", res);
+      alert(res.message);
+      localStorage.setItem("userData", JSON.stringify(res.user));
+      router.push("/");
+    } catch (error) {
+      console.log("first", error);
+    }
   };
 
   const handleGmailLogin = async () => {
@@ -41,6 +68,7 @@ export default function LoginPage() {
         const userData = {
           name: user.displayName || "Unknown User",
           email: user.email,
+          gmailLogin: true,
         };
 
         await axios
@@ -68,111 +96,125 @@ export default function LoginPage() {
   };
 
   return (
-    <Container
-      component="main"
-      maxWidth="xs"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        paddingTop: 8,
-      }}
-    >
-      <Box sx={{ mb: 4, textAlign: "center" }}>
-        <Typography variant="h4" component="div" gutterBottom>
-          Welcome Back!
-        </Typography>
-        <Typography variant="body1" color="textSecondary">
-          Login to access your influencer dashboard.
-        </Typography>
-      </Box>
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleLogin}
-        sx={{ width: "100%", mt: 1 }}
+    <>
+      <HeaderWrapper>
+        <Toolbar>
+          <IconWrapper>
+            <img
+              src="/assets/images/logo.png"
+              alt="Icon"
+              style={{ height: "30px" }}
+            />
+          </IconWrapper>
+        </Toolbar>
+      </HeaderWrapper>
+      <Container
+        component="main"
+        maxWidth="xs"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          paddingTop: 24,
+        }}
       >
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
-          autoFocus
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Mail />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          id="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Visibility />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleClickShowPassword} edge="end">
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{
-            mt: 3,
-            mb: 2,
-            backgroundColor: "#1D4ED8",
-            "&:hover": { backgroundColor: "#1A3A8E" },
-          }}
+        <Box sx={{ mb: 4, textAlign: "center" }}>
+          <Typography variant="h4" component="div" gutterBottom>
+            Welcome to Hi-Infuencer
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            Connect with top Instagram, YouTube, and Facebook influencers to
+            create engaging content and promote your brand effectively.
+          </Typography>
+        </Box>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleLogin}
+          sx={{ width: "100%", mt: 1 }}
         >
-          Log In
-        </Button>
-        <Divider sx={{ my: 2 }}>Or log in with</Divider>
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<Mail />}
-          onClick={handleGmailLogin}
-          sx={{ mb: 2 }}
-        >
-          Log in with Gmail
-        </Button>
-        <Typography variant="body2" color="textSecondary" align="center">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/signup"
-            variant="body2"
-            sx={{ fontWeight: "bold", color: "#1D4ED8" }}
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Mail />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Visibility />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleClickShowPassword} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{
+              mt: 3,
+              mb: 2,
+              backgroundColor: "#1D4ED8",
+              "&:hover": { backgroundColor: "#1A3A8E" },
+            }}
           >
-            Sign Up
-          </Link>
-        </Typography>
-      </Box>
-    </Container>
+            Log In
+          </Button>
+          <Divider sx={{ my: 2 }}>Or log in with</Divider>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<Mail />}
+            onClick={handleGmailLogin}
+            sx={{ mb: 2 }}
+          >
+            Log in with Gmail
+          </Button>
+          <Typography variant="body2" color="textSecondary" align="center">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/signup"
+              variant="body2"
+              sx={{ fontWeight: "bold", color: "#1D4ED8" }}
+            >
+              Sign Up
+            </Link>
+          </Typography>
+        </Box>
+      </Container>
+    </>
   );
 }

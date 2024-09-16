@@ -93,11 +93,7 @@ export default function Username({ params }) {
     );
   }
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
-  const filteredArr = user.platform.filter(
+  const filteredArr = user?.platform.filter(
     (item) => item.platformLink.trim() !== ""
   );
 
@@ -122,7 +118,7 @@ export default function Username({ params }) {
           <CardMedia
             component="img"
             image={
-              user.photoURL ||
+              user?.photoURL ||
               "https://randomuser.me/api/portraits/women/44.jpg"
             }
             alt="User Image"
@@ -132,21 +128,21 @@ export default function Username({ params }) {
 
         {/* User Name */}
         <Box display="flex" justifyContent="center" gap={0} alignItems="center">
-          <Typography variant="h4">{user.name}</Typography>
-          {user.emailVerified && (
+          <Typography variant="h4">{user?.name}</Typography>
+          {user?.emailVerified && (
             <CheckCircleIcon sx={{ color: "green", ml: 1 }} />
           )}
         </Box>
 
-        {user.category && (
+        {user?.category && (
           <Typography variant="h6" color="textSecondary">
-            {user.username + " - " + user.category}
+            {user?.username + "  (" + user?.category + ")"}
           </Typography>
         )}
 
-        {user.bio && (
+        {user?.bio && (
           <Typography variant="body1" mt={2}>
-            {user.bio}
+            {user?.bio}
           </Typography>
         )}
 
@@ -187,7 +183,7 @@ export default function Username({ params }) {
           </Box>
         </Box>
         {/* Buttons */}
-        {data && data?.email === user.email && (
+        {data && data?.email === user?.email && (
           <Box mt={4} display="flex" justifyContent="center" gap={2}>
             <Button
               variant="outlined"
@@ -200,13 +196,13 @@ export default function Username({ params }) {
         )}
         {/* Profile Images */}
         <Box mt={4}>
-          {user.images.length > 0 && (
+          {user?.images.length > 0 && (
             <Typography fontWeight="bold" variant="h5">
               Gallery
             </Typography>
           )}
           <Grid container justifyContent={"center"} spacing={2} mt={2}>
-            {user.images?.map((image, index) => (
+            {user?.images?.map((image, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card>
                   <GalleryImage

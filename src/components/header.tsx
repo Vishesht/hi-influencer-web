@@ -33,6 +33,8 @@ const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<any>(null);
+  const localStorageItem = localStorage.getItem("userData");
+  const data = JSON.parse(localStorageItem);
 
   const useProfilePathCheck = () => {
     const profilePathRegex = ProfileCheckRegex;
@@ -158,7 +160,7 @@ const Header = () => {
           )}
 
           {/* Avatar for Mobile */}
-          {!isMobile && user && !isuserProfile && (
+          {(user || data) && !isMobile && !isuserProfile && (
             <Tooltip title="Click to view options" arrow>
               <IconButton
                 edge="end"
@@ -167,10 +169,13 @@ const Header = () => {
                 onClick={handleClick}
               >
                 <Avatar
-                  src={user.photoURL}
+                  src={
+                    user?.photoURL ||
+                    "https://randomuser.me/api/portraits/men/41.jpg"
+                  }
                   sx={{ bgcolor: "#FFF3E0", color: "#000" }}
                 >
-                  {!user.photoURL && user.displayName?.[0]}
+                  {!user?.photoURL && user?.displayName?.[0]}
                 </Avatar>
               </IconButton>
             </Tooltip>

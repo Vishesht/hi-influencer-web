@@ -137,7 +137,7 @@ const ProfilePage = () => {
         {/* User Name */}
         <Box display="flex" justifyContent="center" gap={0} alignItems="center">
           <Typography variant="h4">
-            {user?.name || firebaseData?.displayName}
+            {user?.name || firebaseData?.displayName || data?.name}
           </Typography>
           {user?.emailVerified && (
             <CheckCircleIcon sx={{ color: "green", ml: 1 }} />
