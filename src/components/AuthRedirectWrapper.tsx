@@ -13,8 +13,7 @@ import { useAppSelector } from "@/lib/hooks";
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const userData = useAppSelector((state) => state.login.userData);
-  const data = JSON.parse(userData);
+  const data = useAppSelector((state) => state.login.userData);
   const { user, loading } = useAuth();
   const router = useRouter();
   const path = usePathname();

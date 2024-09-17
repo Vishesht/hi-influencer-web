@@ -36,8 +36,7 @@ const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<any>(null);
-  const userData = useAppSelector((state) => state.login.userData);
-  const data = JSON.parse(userData);
+  const data = useAppSelector((state) => state.login.userData);
 
   const useProfilePathCheck = () => {
     const profilePathRegex = ProfileCheckRegex;
