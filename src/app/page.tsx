@@ -1,95 +1,124 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import * as React from "react";
+import Header from "@/components/header";
+import InfluencerList from "@/components/influencerList";
+import CategoryList from "@/components/categoryList";
+import Footer from "@/components/footer";
+import {
+  Box,
+  Container,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import ListModal from "@/components/ListModal";
+
+const socialMediaPlatforms = ["Instagram", "Facebook", "YouTube", "Others"];
+const categories = ["Fashion", "Tech", "Lifestyle", "Travel", "Others"];
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const theme = useTheme();
+  const [platformModalOpen, setPlatformModalOpen] = React.useState(false);
+  const [categoryModalOpen, setCategoryModalOpen] = React.useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  return (
+    <Box>
+      <Container sx={{ textAlign: "center", mt: 4 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            fontWeight: "bold",
+            background: "linear-gradient(90deg, #FF76C6, #B64DFF)",
+            WebkitBackgroundClip: "text",
+            color: "transparent",
+            fontFamily: "Helvetica",
+          }}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          Connect brands with influencers.
+        </Typography>
+        <Typography color="grey" variant="body1" sx={{ mt: 2 }}>
+          Connect with top Instagram, YouTube, and Facebook influencers to
+          create engaging content and promote your brand effectively.
+        </Typography>
+
+        {/* Input fields */}
+        <Container
+          sx={{
+            mt: 4,
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: isMobile ? "column" : "row",
+          }}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <input
+            placeholder="Choose a platform"
+            style={{
+              padding: "12px 20px",
+              borderRadius: "50px",
+              marginRight: isMobile ? "0" : "10px",
+              marginBottom: isMobile ? "10px" : "0",
+              width: "340px",
+              border: "1px solid #ddd",
+              backgroundColor: "#fff",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+              fontSize: "16px",
+              outline: "none",
+            }}
+            onClick={() => setPlatformModalOpen(true)}
+            onFocus={(e) =>
+              (e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)")
+            }
+            onBlur={(e) =>
+              (e.target.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)")
+            }
           />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+
+          <input
+            placeholder="Enter keywords, niches or categories"
+            style={{
+              padding: "12px 20px",
+              borderRadius: "50px",
+              marginRight: isMobile ? "0" : "10px",
+              width: "340px",
+              border: "1px solid #ddd",
+              backgroundColor: "#fff",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+              fontSize: "16px",
+              outline: "none",
+            }}
+            onClick={() => setCategoryModalOpen(true)}
+            onFocus={(e) =>
+              (e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)")
+            }
+            onBlur={(e) =>
+              (e.target.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)")
+            }
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </Container>
+      </Container>
+      <InfluencerList header="Featured" />
+      <InfluencerList header="Instagram" />
+      <InfluencerList header="Youtube" />
+      <CategoryList header="Categories" />
+
+      <ListModal
+        title={"Select Platform"}
+        platformModalOpen={platformModalOpen}
+        setPlatformModalOpen={() => setPlatformModalOpen(false)}
+        socialMediaPlatforms={socialMediaPlatforms}
+      />
+
+      <ListModal
+        title={"Select Category"}
+        platformModalOpen={categoryModalOpen}
+        setPlatformModalOpen={() => setCategoryModalOpen(false)}
+        socialMediaPlatforms={categories}
+      />
+    </Box>
   );
 }
