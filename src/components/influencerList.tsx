@@ -11,9 +11,9 @@ import {
   Box,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { influencersData } from "./dummyData";
 import StarIcon from "@mui/icons-material/Star";
 import Link from "next/link";
+import { menPlaceholderImg } from "@/common/utils";
 
 // "Roboto", "Helvetica", "Arial", sans-serif';
 const customFontFamily = "Roboto";
@@ -26,7 +26,13 @@ const HorizontalList = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const InfluencerList = ({ header }: { header: string }) => {
+const InfluencerList = ({
+  data,
+  header,
+}: {
+  data: Array<any>;
+  header: string;
+}) => {
   return (
     <Container>
       <Box
@@ -82,100 +88,102 @@ const InfluencerList = ({ header }: { header: string }) => {
       </Box>
 
       <HorizontalList>
-        {influencersData.map((influencer, index) => (
-          <Link
-            key={index}
-            href={{
-              pathname: "/influencer-profile",
-              query: {
-                influencer: JSON.stringify(influencer),
-              },
-            }}
-            passHref
-          >
-            <Card
+        {data.map((influencer, index) => {
+          return (
+            <Link
               key={index}
-              sx={{
-                width: 260,
-                borderRadius: 2,
-                boxShadow: 3,
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                "&:hover": {
-                  transform: "scale(1.03)",
-                  boxShadow: 6,
+              href={{
+                pathname: "/influencer-profile",
+                query: {
+                  influencer: JSON.stringify(influencer),
                 },
-                cursor: "pointer",
               }}
+              passHref
             >
-              <CardMedia
-                component="img"
-                image={influencer.image}
-                alt={influencer.name}
-                sx={{ borderTopLeftRadius: 2, borderTopRightRadius: 2 }}
-              />
-              <CardContent
+              <Card
+                key={index}
                 sx={{
-                  height: 140,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  p: 2,
+                  width: 260,
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  "&:hover": {
+                    transform: "scale(1.03)",
+                    boxShadow: 6,
+                  },
+                  cursor: "pointer",
                 }}
               >
-                <Typography
-                  variant="h6"
+                <CardMedia
+                  component="img"
+                  image={influencer.photoURL || menPlaceholderImg}
+                  alt={influencer.name}
+                  sx={{ borderTopLeftRadius: 2, borderTopRightRadius: 2 }}
+                />
+                <CardContent
                   sx={{
-                    fontFamily: customFontFamily,
-                    fontWeight: "bold",
-                    mb: 1,
+                    height: 140,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    p: 2,
                   }}
                 >
-                  {influencer.name}
-                </Typography>
-                <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
                   <Typography
-                    variant="body2"
+                    variant="h6"
                     sx={{
                       fontFamily: customFontFamily,
-                      mr: 0.5,
+                      fontWeight: "bold",
+                      mb: 1,
                     }}
                   >
-                    {influencer.star}
+                    {influencer.name}
                   </Typography>
-                  <StarIcon sx={{ height: 16, color: "primary.main" }} />
+                  <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: customFontFamily,
+                        mr: 0.5,
+                      }}
+                    >
+                      {influencer.star || "0.0"}
+                    </Typography>
+                    <StarIcon sx={{ height: 16, color: "primary.main" }} />
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: customFontFamily,
+                        ml: 0.5,
+                      }}
+                    >
+                      ({influencer.ratings || "0"})
+                    </Typography>
+                  </Box>
                   <Typography
                     variant="body2"
+                    color="text.secondary"
                     sx={{
                       fontFamily: customFontFamily,
-                      ml: 0.5,
+                      mb: 0.5,
                     }}
                   >
-                    ({influencer.ratings})
+                    {influencer.location}
                   </Typography>
-                </Box>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    fontFamily: customFontFamily,
-                    mb: 0.5,
-                  }}
-                >
-                  {influencer.location}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    fontFamily: customFontFamily,
-                  }}
-                >
-                  {influencer.category}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      fontFamily: customFontFamily,
+                    }}
+                  >
+                    {influencer.category}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </HorizontalList>
     </Container>
   );

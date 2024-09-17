@@ -18,7 +18,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { BaseUrl } from "@/common/utils";
+import { BaseUrl, menPlaceholderImg } from "@/common/utils";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, storage } from "../firebase";
@@ -104,8 +104,7 @@ const EditProfile: React.FC = () => {
     description: "",
   });
   const [openDialog, setOpenDialog] = useState(false);
-  const userData = useAppSelector((state) => state.login.userData);
-  const data = JSON.parse(userData);
+  const data = useAppSelector((state) => state.login.userData);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -243,17 +242,15 @@ const EditProfile: React.FC = () => {
             />
             <EditIconWrapper>
               <ProfileImage
-                src={
-                  imageUri || "https://randomuser.me/api/portraits/men/41.jpg"
-                }
+                src={imageUri || menPlaceholderImg}
                 alt="Profile Image"
               />
               <EditIconStyled
                 // component="span"
                 color="primary"
-                // onClick={() =>
-                //   document.getElementById("profile-image-upload")?.click()
-                // }
+                onClick={() =>
+                  document.getElementById("profile-image-upload")?.click()
+                }
               >
                 <EditIcon />
               </EditIconStyled>
@@ -441,7 +438,7 @@ const EditProfile: React.FC = () => {
             value={newPlatform.link}
             onChange={handlePlatformChange}
           />
-          <TextField
+          {/* <TextField
             margin="dense"
             label="Description"
             fullWidth
@@ -449,7 +446,7 @@ const EditProfile: React.FC = () => {
             name="description"
             value={newPlatform.description}
             onChange={handlePlatformChange}
-          />
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>

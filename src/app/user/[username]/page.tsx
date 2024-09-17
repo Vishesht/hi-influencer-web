@@ -15,7 +15,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { BaseUrl } from "@/common/utils";
+import { BaseUrl, menPlaceholderImg } from "@/common/utils";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
@@ -61,7 +61,8 @@ export default function Username({ params }: any) {
   const router = useRouter();
   const [user, setUser] = useState<User>();
   const [error, setError] = useState<string | null>(null);
-  const data = useAppSelector((state) => JSON.parse(state.login.userData));
+  const userData = useAppSelector((state) => state.login.userData);
+  const data = JSON.parse(userData);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -117,10 +118,7 @@ export default function Username({ params }: any) {
         >
           <CardMedia
             component="img"
-            image={
-              user?.photoURL ||
-              "https://randomuser.me/api/portraits/women/44.jpg"
-            }
+            image={user?.photoURL || menPlaceholderImg}
             alt="User Image"
             sx={{ width: "100%", height: "100%", objectFit: "cover" }}
           />

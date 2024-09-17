@@ -54,7 +54,7 @@ export default function LoginPage() {
     try {
       const res = await loginUser(email, password);
       alert(res.message);
-      dispatch(add(JSON.stringify(res.user)));
+      dispatch(add(res.user));
       router.push("/");
     } catch (error) {
       console.log("first", error);
@@ -80,7 +80,7 @@ export default function LoginPage() {
             },
           })
           .then((response) => {
-            dispatch(add(JSON.stringify(response.data.user)));
+            dispatch(add(response.data.user));
           })
           .catch((err) =>
             console.log("Something wrong. Please try again.", err)

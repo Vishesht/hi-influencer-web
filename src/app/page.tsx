@@ -1,10 +1,8 @@
 "use client";
 
 import * as React from "react";
-import Header from "@/components/header";
 import InfluencerList from "@/components/influencerList";
 import CategoryList from "@/components/categoryList";
-import Footer from "@/components/footer";
 import {
   Box,
   Container,
@@ -13,6 +11,10 @@ import {
   useTheme,
 } from "@mui/material";
 import ListModal from "@/components/ListModal";
+import axios from "axios";
+import { BaseUrl } from "@/common/utils";
+import { useAppSelector } from "@/lib/hooks";
+import GridComponent from "@/components/GridComponents";
 
 const socialMediaPlatforms = ["Instagram", "Facebook", "YouTube", "Others"];
 const categories = ["Fashion", "Tech", "Lifestyle", "Travel", "Others"];
@@ -22,6 +24,29 @@ export default function Home() {
   const [platformModalOpen, setPlatformModalOpen] = React.useState(false);
   const [categoryModalOpen, setCategoryModalOpen] = React.useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [userList, setUserList] = React.useState([]);
+  const data = useAppSelector((state) => state.login.userData);
+
+  React.useEffect(() => {
+    const fetchUsers = async () => {
+      axios
+        .get(`${BaseUrl}/api/userlist/${data?.id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          setUserList(response.data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    };
+
+    if (data?.id) {
+      fetchUsers();
+    }
+  }, [data]);
 
   return (
     <Box>
@@ -100,11 +125,12 @@ export default function Home() {
             }
           />
         </Container>
+        <GridComponent data={userList} />
       </Container>
-      <InfluencerList header="Featured" />
-      <InfluencerList header="Instagram" />
-      <InfluencerList header="Youtube" />
-      <CategoryList header="Categories" />
+      {/* <InfluencerList data={userList} header="Featured" /> */}
+      {/* <InfluencerList data={userList} header="Instagram" />
+      <InfluencerList data={userList} header="Youtube" /> */}
+      {/* <CategoryList header="Categories" /> */}
 
       <ListModal
         title={"Select Platform"}
