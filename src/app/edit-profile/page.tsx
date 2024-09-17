@@ -26,6 +26,8 @@ import { Edit as EditIcon } from "@mui/icons-material";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
+import AlertDialog from "@/components/Alert";
+import { showAlert } from "@/lib/features/alert/alertSlice";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -151,11 +153,10 @@ const EditProfile: React.FC = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      const storageRef = ref(storage, `images/${file.name + "-" + username}`);
+      const storageRef = ref(storage, `images/${username + "-" + file.name}`);
       try {
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
-        dispatch(add({ ...data, photoURL: downloadURL }));
         setImageUri(downloadURL);
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -163,10 +164,33 @@ const EditProfile: React.FC = () => {
     }
   };
 
+  const handleAlert = (msg) => {
+    dispatch(
+      showAlert({
+        message: msg,
+        confirmText: "Ok",
+        // cancelText: "No",
+        onConfirm: () => console.log("Confirmed"),
+        // onCancel: () => console.log("Cancelled"),
+      })
+    );
+  };
+
   const handleSave = async () => {
     try {
-      if (!name || !username || !validateUsername(username)) {
-        alert("Please fill all required fields correctly.");
+      if (!name) {
+        handleAlert("Name cannot be empty. Please provide a valid name.");
+        return;
+      } else if (!username) {
+        handleAlert(
+          "Username cannot be empty. Please provide a valid username."
+        );
+        return;
+      } else if (!validateUsername(username)) {
+        handleAlert(
+          "Username is not valid. It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
+        );
+
         return;
       }
 
@@ -193,7 +217,7 @@ const EditProfile: React.FC = () => {
         })
         .then(() => {
           router.push("/user");
-          alert("Profile updated successfully");
+          dispatch(add({ ...data, name: name, photoURL: imageUri }));
         });
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -315,7 +339,7 @@ const EditProfile: React.FC = () => {
             ))}
             <Grid item xs={12}>
               <Button variant="outlined" onClick={() => setOpenDialog(true)}>
-                Add New Social Media
+                Add Your Social Media
               </Button>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -397,16 +421,20 @@ const EditProfile: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              style={{ marginTop: 36 }}
-              onClick={handleSave}
-            >
-              Save
-            </Button>
           </Grid>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            style={{
+              width: "100%",
+              marginTop: 36,
+              marginBottom: 22,
+            }}
+            onClick={handleSave}
+          >
+            Save
+          </Button>
         </Grid>
       </Grid>
 
@@ -453,6 +481,7 @@ const EditProfile: React.FC = () => {
           <Button onClick={handleAddPlatform}>Add</Button>
         </DialogActions>
       </Dialog>
+      <AlertDialog />
     </StyledContainer>
   );
 };

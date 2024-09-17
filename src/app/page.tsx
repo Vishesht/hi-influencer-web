@@ -74,6 +74,7 @@ export default function Home() {
           sx={{
             mt: 4,
             display: "flex",
+            alignItems: "center",
             justifyContent: "center",
             flexDirection: isMobile ? "column" : "row",
           }}

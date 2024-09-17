@@ -8,9 +8,14 @@ const GridComponent = ({ data }) => {
   return (
     <Box
       sx={{
+        alignSelf: "center",
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-        gap: 2, // Adjust gap between grid items
+        gridTemplateColumns: {
+          xs: "repeat(2, 1fr)", // 2 items per row on mobile
+          sm: "repeat(3, 1fr)", // 3 items per row on tablets
+          md: "repeat(4, 1fr)", // 4 items per row on web
+        },
+        gap: 2,
         justifyContent: "center",
         padding: 2,
         mt: 4,
@@ -21,7 +26,7 @@ const GridComponent = ({ data }) => {
           key={index}
           sx={{
             width: "100%",
-            maxWidth: 260,
+            maxWidth: 230,
             borderRadius: 2,
             boxShadow: 3,
             transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -39,20 +44,20 @@ const GridComponent = ({ data }) => {
             sx={{
               borderTopLeftRadius: 2,
               borderTopRightRadius: 2,
-              height: 300,
+              height: 180,
             }}
           />
           <CardContent
             sx={{
-              height: 140,
+              height: 120,
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              p: 2,
+              p: 1,
             }}
           >
             <Typography
-              variant="h6"
+              variant="subtitle1"
               sx={{
                 fontFamily: "Arial, sans-serif", // Replace with your custom font family
                 fontWeight: "bold",
@@ -61,7 +66,8 @@ const GridComponent = ({ data }) => {
               {item.name}
             </Typography>
             <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
-              {/* <Typography
+              {/* Uncomment and use if needed
+              <Typography
                 variant="body2"
                 sx={{
                   fontFamily: "Arial, sans-serif", // Replace with your custom font family

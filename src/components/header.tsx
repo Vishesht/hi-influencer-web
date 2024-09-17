@@ -171,7 +171,7 @@ const Header = () => {
                 onClick={handleClick}
               >
                 <Avatar
-                  src={user?.photoURL}
+                  src={data?.photoURL || user?.photoURL}
                   sx={{ bgcolor: "#FFF3E0", color: "#000" }}
                 >
                   {!user?.photoURL && user?.displayName?.[0]}
@@ -196,37 +196,43 @@ const Header = () => {
           onKeyDown={() => setDrawerOpen(false)}
         >
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-            <Avatar src={user?.photoURL} sx={{ width: 50, height: 50 }}>
-              {!user?.photoURL && user?.displayName?.[0]}
+            <Avatar
+              src={data?.photoURL || user?.photoURL}
+              sx={{ width: 50, height: 50 }}
+            >
+              {data?.photoURL || user?.displayName?.[0]}
             </Avatar>
             <Box sx={{ ml: 2 }}>
-              <Typography variant="body1">{user?.displayName}</Typography>
+              <Typography variant="body1">
+                {data?.name || user?.displayName}
+              </Typography>
               <Typography variant="body2" color="textSecondary">
-                {user?.email}
+                {data?.email || user?.email}
               </Typography>
             </Box>
           </Box>
           <Divider />
           <List>
             <ListItem
-              component="button"
+              component="div"
+              sx={{ backgroundColor: "#fff" }}
               onClick={() => handleListItemClick("/user")}
             >
               <ListItemText primary="Profile" sx={{ color: "black" }} />
             </ListItem>
             <ListItem
-              component="button"
+              component="div"
               onClick={() => handleListItemClick("/orders")}
             >
               <ListItemText primary="Your Orders" sx={{ color: "black" }} />
             </ListItem>
             <ListItem
-              component="button"
+              component="div"
               onClick={() => handleListItemClick("/payments")}
             >
               <ListItemText primary="Payments" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem component="button" onClick={handleSignOut}>
+            <ListItem component="div" onClick={handleSignOut}>
               <ListItemText primary="Logout" sx={{ color: "black" }} />
             </ListItem>
           </List>
