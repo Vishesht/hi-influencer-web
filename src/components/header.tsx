@@ -232,6 +232,13 @@ const Header = () => {
             </ListItem>
             <ListItem
               component="div"
+              sx={{ backgroundColor: "#fff" }}
+              onClick={() => handleListItemClick("/ads")}
+            >
+              <ListItemText primary="Ads" sx={{ color: "black" }} />
+            </ListItem>
+            <ListItem
+              component="div"
               onClick={() => handleListItemClick("/orders")}
             >
               <ListItemText primary="Your Orders" sx={{ color: "black" }} />

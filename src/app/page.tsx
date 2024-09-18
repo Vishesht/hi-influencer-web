@@ -13,6 +13,7 @@ import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import { useAppSelector } from "@/lib/hooks";
 import GridComponent from "@/components/GridComponents";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const socialMediaPlatforms = ["Instagram", "Facebook", "YouTube", "Others"];
 const categories = ["Fashion", "Tech", "Lifestyle", "Travel", "Others"];
@@ -124,7 +125,11 @@ export default function Home() {
             }
           />
         </Container>
-        <GridComponent data={userList} />
+        {userList?.length > 0 ? (
+          <GridComponent data={userList} />
+        ) : (
+          <LoadingSpinner />
+        )}
       </Container>
       {/* <InfluencerList data={userList} header="Featured" /> */}
       {/* <InfluencerList data={userList} header="Instagram" />
