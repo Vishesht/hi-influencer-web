@@ -97,7 +97,7 @@ export default function SignUpPage() {
           component="form"
           noValidate
           onSubmit={handleSignUp}
-          sx={{ width: "100%", mt: 1 }}
+          sx={{ width: "100%", pt: 1, pb: 4 }}
         >
           <TextField
             variant="outlined"
