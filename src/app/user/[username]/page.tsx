@@ -15,7 +15,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { BaseUrl, menPlaceholderImg } from "@/common/utils";
+import { BaseUrl, cleanImageUrl, imgPlaceholderImg } from "@/common/utils";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
@@ -101,6 +101,9 @@ export default function Username({ params }: any) {
     const url = link.startsWith("http") ? link : `http://${link}`;
     window.open(url, "_blank", "noopener noreferrer");
   };
+
+  const imgUrl = cleanImageUrl(user?.photoURL);
+
   return (
     <Container>
       <Box textAlign="center" my={4}>
@@ -117,7 +120,7 @@ export default function Username({ params }: any) {
         >
           <CardMedia
             component="img"
-            image={user?.photoURL || menPlaceholderImg}
+            image={imgUrl || imgPlaceholderImg}
             alt="User Image"
             sx={{ width: "100%", height: "100%", objectFit: "cover" }}
           />

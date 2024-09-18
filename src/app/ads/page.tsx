@@ -6,22 +6,35 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  Box,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import AdCard from "@/components/AdsCard";
+import { useAppSelector } from "@/lib/hooks";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
 }));
 
+const FilterContainer = styled(Box)(({ theme }) => ({
+  backgroundColor: "#fff",
+  padding: theme.spacing(1.5),
+  borderRadius: "8px",
+  marginBottom: theme.spacing(2),
+}));
+
 const Ads: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [adsData, setAdsData] = useState([]);
   const [currentImageIndices, setCurrentImageIndices] = useState({});
+  const [filter, setFilter] = useState("all");
+  const data = useAppSelector((state) => state.login.userData);
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -40,14 +53,29 @@ const Ads: React.FC = () => {
     fetchAds();
   }, []);
 
-  const filteredAds = adsData.filter(
-    (ad) =>
+  const filteredAds = adsData.filter((ad) => {
+    const matchesSearchTerm =
       ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ad.state.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      ad.state.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Check if the filter is "myAds"
+    const matchesFilter =
+      filter === "all" || (filter === "myAds" && ad.id === data?.id);
+
+    return matchesSearchTerm && matchesFilter;
+  });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handleFilterChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newFilter: string
+  ) => {
+    if (newFilter !== null) {
+      setFilter(newFilter);
+    }
   };
 
   const handleNextImage = (adId) => {
@@ -81,21 +109,36 @@ const Ads: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         All Ads
       </Typography>
-      <TextField
-        fullWidth
-        placeholder="Search ads by title or location"
-        variant="outlined"
-        value={searchTerm}
-        onChange={handleSearchChange}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-        style={{ marginBottom: "20px" }}
-      />
+
+      <FilterContainer>
+        <TextField
+          fullWidth
+          placeholder="Search ads by title or location"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          style={{ marginBottom: "10px" }}
+        />
+
+        <ToggleButtonGroup
+          value={filter}
+          exclusive
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{ marginBottom: 1 }}
+        >
+          <ToggleButton value="all">All Ads</ToggleButton>
+          <ToggleButton value="myAds">My Ads</ToggleButton>
+        </ToggleButtonGroup>
+      </FilterContainer>
+
       <Grid container spacing={2}>
         {filteredAds.map((ad) => {
           const currentIndex = currentImageIndices[ad._id] ?? 0;

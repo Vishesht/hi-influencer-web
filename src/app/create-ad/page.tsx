@@ -65,7 +65,14 @@ const CreateAds: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const data = useAppSelector((state) => state.login.userData);
 
-  const categories = ["Promotion", "Skill", "Invitation", "Meetup", "Job"];
+  const categories = [
+    "Promotion",
+    "Skill",
+    "Invitation",
+    "Events",
+    "Meetup",
+    "Job",
+  ];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

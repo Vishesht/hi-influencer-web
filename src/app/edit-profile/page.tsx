@@ -20,8 +20,9 @@ import {
 import { styled } from "@mui/material/styles";
 import {
   BaseUrl,
+  cleanImageUrl,
   indianStates,
-  menPlaceholderImg,
+  imgPlaceholderImg,
   socialMediaPlatforms,
 } from "@/common/utils";
 import { useRouter } from "next/navigation";
@@ -100,7 +101,7 @@ const EditProfile: React.FC = () => {
         setImageUri(item?.photoURL);
       } else {
         setName(data?.name);
-        setImageUri(data?.photoURL || menPlaceholderImg);
+        setImageUri(data?.photoURL);
       }
     });
 
@@ -239,6 +240,8 @@ const EditProfile: React.FC = () => {
     setNewPlatform((prev) => ({ ...prev, [name]: value }));
   };
 
+  const imgUrl = cleanImageUrl(imageUri);
+
   return (
     <StyledContainer>
       <Typography variant="h5" sx={{ mb: 4 }} gutterBottom>
@@ -257,7 +260,7 @@ const EditProfile: React.FC = () => {
               onChange={handleImageUpload}
             />
             <EditIconWrapper>
-              <ProfileImage src={imageUri} alt="Profile Image" />
+              <ProfileImage src={imgUrl} alt="Profile Image" />
               <EditIconStyled
                 // component="span"
                 color="primary"

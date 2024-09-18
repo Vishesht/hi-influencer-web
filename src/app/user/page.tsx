@@ -20,7 +20,7 @@ import TelegramIcon from "@mui/icons-material/Telegram";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
-import { BaseUrl, menPlaceholderImg } from "@/common/utils";
+import { BaseUrl, cleanImageUrl, imgPlaceholderImg } from "@/common/utils";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { useAppSelector } from "@/lib/hooks";
@@ -111,6 +111,8 @@ const ProfilePage = () => {
     window.open(url, "_blank", "noopener noreferrer");
   };
 
+  const imgUrl = cleanImageUrl(user?.photoURL);
+
   return (
     <Container>
       <Box textAlign="center" my={4}>
@@ -127,9 +129,7 @@ const ProfilePage = () => {
         >
           <CardMedia
             component="img"
-            image={
-              user?.photoURL || firebaseData?.photoURL || menPlaceholderImg
-            }
+            image={imgUrl}
             // alt="User Image"
             sx={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
