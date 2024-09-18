@@ -18,11 +18,16 @@ import {
   InputLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { BaseUrl, menPlaceholderImg } from "@/common/utils";
+import {
+  BaseUrl,
+  indianStates,
+  menPlaceholderImg,
+  socialMediaPlatforms,
+} from "@/common/utils";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, storage } from "../firebase";
-import { Edit as EditIcon } from "@mui/icons-material";
+import { Clear, Edit as EditIcon } from "@mui/icons-material";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
@@ -62,35 +67,13 @@ const EditIconStyled = styled(IconButton)({
 });
 
 const categories = ["Influencer", "Blogger", "Content Creator", "Photographer"];
-const indianStates = [
-  "Andhra Pradesh",
-  "Bihar",
-  "Delhi",
-  "Goa",
-  "Gujarat",
-  "Jammu and Kashmir",
-  "Maharashtra",
-  "Punjab",
-  "Rajasthan",
-  "Tamil Nadu",
-  "Uttar Pradesh",
-  "Karnataka",
-];
-const genderList = ["Male", "Female", "Others"];
 
-const socialMediaPlatforms = [
-  "Instagram",
-  "Facebook",
-  "Youtube",
-  "Twitter",
-  "Telegram",
-  "LinkedIn",
-];
+const genderList = ["Male", "Female", "Others"];
 
 const EditProfile: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageUri, setImageUri] = useState<string | null>();
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -100,6 +83,7 @@ const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [address, setAddress] = useState("");
   const [platform, setPlatform] = useState<any[]>([]);
+
   const [newPlatform, setNewPlatform] = useState({
     name: "",
     link: "",
@@ -116,6 +100,7 @@ const EditProfile: React.FC = () => {
         setImageUri(item?.photoURL);
       } else {
         setName(data?.name);
+        setImageUri(data?.photoURL || menPlaceholderImg);
       }
     });
 
@@ -176,6 +161,11 @@ const EditProfile: React.FC = () => {
     );
   };
 
+  const validateIndianPhoneNumber = (number) => {
+    const phoneNumberPattern = /^[789]\d{9}$/;
+    return phoneNumberPattern.test(number);
+  };
+
   const handleSave = async () => {
     try {
       if (!name) {
@@ -190,7 +180,9 @@ const EditProfile: React.FC = () => {
         handleAlert(
           "Username is not valid. It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
         );
-
+        return;
+      } else if (phoneNumber && !validateIndianPhoneNumber(phoneNumber)) {
+        handleAlert("Please enter a valid phone number");
         return;
       }
 
@@ -265,10 +257,7 @@ const EditProfile: React.FC = () => {
               onChange={handleImageUpload}
             />
             <EditIconWrapper>
-              <ProfileImage
-                src={imageUri || menPlaceholderImg}
-                alt="Profile Image"
-              />
+              <ProfileImage src={imageUri} alt="Profile Image" />
               <EditIconStyled
                 // component="span"
                 color="primary"
@@ -322,7 +311,13 @@ const EditProfile: React.FC = () => {
               />
             </Grid>
             {platform.map((p, index) => (
-              <Grid item xs={12} sm={6} key={index}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                key={index}
+                style={{ position: "relative" }}
+              >
                 <TextField
                   fullWidth
                   label={p.platform}
@@ -335,6 +330,20 @@ const EditProfile: React.FC = () => {
                     setPlatform(updatedPlatform);
                   }}
                 />
+                <IconButton
+                  onClick={(p) => {
+                    const newItems = platform.filter((_, i) => i !== index);
+                    setPlatform(newItems);
+                  }}
+                  style={{
+                    position: "absolute",
+                    top: 32,
+                    right: -6,
+                    color: "red", // Optional: Customize the icon color
+                  }}
+                >
+                  <Clear />
+                </IconButton>
               </Grid>
             ))}
             <Grid item xs={12}>

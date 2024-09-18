@@ -61,8 +61,7 @@ export default function Username({ params }: any) {
   const router = useRouter();
   const [user, setUser] = useState<User>();
   const [error, setError] = useState<string | null>(null);
-  const userData = useAppSelector((state) => state.login.userData);
-  const data = JSON.parse(userData);
+  const data = useAppSelector((state) => state.login.userData);
 
   useEffect(() => {
     const fetchUser = async () => {

@@ -7,18 +7,23 @@ import {
   CardContent,
   Container,
   FormControl,
-  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
   TextField,
   Typography,
   IconButton,
-  Chip,
-  Checkbox,
+  Grid,
+  InputAdornment,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import axios from "axios";
+import { useAppSelector } from "@/lib/hooks";
+import { BaseUrl, indianStates } from "@/common/utils";
+import { useRouter } from "next/navigation";
+import { storage } from "../firebase";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -39,6 +44,7 @@ const UploadPreview = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   overflow: "hidden",
   boxShadow: theme.shadows[2],
+  cursor: "pointer",
 }));
 
 const RemoveButton = styled(IconButton)(({ theme }) => ({
@@ -48,14 +54,18 @@ const RemoveButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const CreateAds: React.FC = () => {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState<File[]>([]);
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState("");
   const [budget, setBudget] = useState("");
-  const [platforms] = useState(["Instagram", "YouTube", "Facebook", "Twitter"]);
-  const [categories] = useState(["Travel", "Lifestyle", "Tech", "Food"]);
+  const [selectedState, setSelectedState] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const data = useAppSelector((state) => state.login.userData);
+
+  const categories = ["Promotion", "Skill", "Invitation", "Meetup", "Job"];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -64,19 +74,53 @@ const CreateAds: React.FC = () => {
   };
 
   const handleRemoveFile = (index: number) => {
-    setFiles(files.filter((_, i) => i !== index));
+    const newFiles = [...files];
+    newFiles.splice(index, 1);
+    setFiles(newFiles);
   };
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log({
-      title,
-      description,
-      files,
-      platforms: selectedPlatforms,
-      categories: selectedCategories,
-      budget,
-    });
+  const handleImageClick = (url: string) => {
+    const imgWindow = window.open(url, "_blank");
+    imgWindow?.focus();
+  };
+
+  const uploadImages = async () => {
+    const imageUrls: string[] = [];
+    for (const file of files) {
+      const storageRef = ref(storage, `ads/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      imageUrls.push(downloadURL);
+    }
+    return imageUrls;
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const uploadedImageUrls = await uploadImages(); // Upload images and get URLs
+      const creds = {
+        id: data?.id,
+        name: data?.name,
+        email: data?.email,
+        isInfluencer: false,
+        photoURL: data?.photoURL,
+        state: selectedState,
+        title,
+        desc: description,
+        category: selectedCategories,
+        budget,
+        adsImages: uploadedImageUrls, // Add adsImages array
+      };
+
+      const response = await axios.post(`${BaseUrl}/api/postads`, creds);
+      setSuccessMessage("Ad created successfully!");
+      setErrorMessage("");
+      router.push("/ads");
+    } catch (error) {
+      setErrorMessage("Failed to create ad. Please try again.");
+      setSuccessMessage("");
+      console.error(error);
+    }
   };
 
   return (
@@ -116,7 +160,10 @@ const CreateAds: React.FC = () => {
             />
             <ImageGrid>
               {files.map((file, index) => (
-                <UploadPreview key={index}>
+                <UploadPreview
+                  key={index}
+                  onClick={() => handleImageClick(URL.createObjectURL(file))}
+                >
                   <img
                     src={URL.createObjectURL(file)}
                     alt="Preview"
@@ -127,7 +174,10 @@ const CreateAds: React.FC = () => {
                     }}
                   />
                   <RemoveButton
-                    onClick={() => handleRemoveFile(index)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent the click event from bubbling up
+                      handleRemoveFile(index);
+                    }}
                     size="small"
                   >
                     <RemoveCircleIcon color="error" />
@@ -138,46 +188,30 @@ const CreateAds: React.FC = () => {
           </Box>
 
           <FormControl fullWidth margin="normal">
-            <InputLabel>Platforms</InputLabel>
             <Select
-              multiple
-              value={selectedPlatforms}
-              onChange={(e) => setSelectedPlatforms(e.target.value as string[])}
-              renderValue={(selected) => (
-                <Box display="flex" flexWrap="wrap" gap={1}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} />
-                  ))}
-                </Box>
-              )}
+              value={selectedCategories}
+              onChange={(e) => setSelectedCategories(e.target.value)}
+              renderValue={(value) => value || "Select Category"}
+              displayEmpty
             >
-              {platforms.map((platform) => (
-                <MenuItem key={platform} value={platform}>
-                  <FormControlLabel control={<Checkbox />} label={platform} />
+              {categories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  {category}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
 
           <FormControl fullWidth margin="normal">
-            <InputLabel>Categories</InputLabel>
             <Select
-              multiple
-              value={selectedCategories}
-              onChange={(e) =>
-                setSelectedCategories(e.target.value as string[])
-              }
-              renderValue={(selected) => (
-                <Box display="flex" flexWrap="wrap" gap={1}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} />
-                  ))}
-                </Box>
-              )}
+              value={selectedState}
+              onChange={(e) => setSelectedState(e.target.value)}
+              renderValue={(value) => value || "Select State"}
+              displayEmpty
             >
-              {categories.map((category) => (
-                <MenuItem key={category} value={category}>
-                  <FormControlLabel control={<Checkbox />} label={category} />
+              {indianStates.map((state) => (
+                <MenuItem key={state} value={state}>
+                  {state}
                 </MenuItem>
               ))}
             </Select>
@@ -188,8 +222,24 @@ const CreateAds: React.FC = () => {
             label="Budget"
             variant="outlined"
             value={budget}
-            onChange={(e) => setBudget(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d*$/.test(value)) {
+                setBudget(value);
+              }
+            }}
             margin="normal"
+            placeholder="Add your amount"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">Rs</InputAdornment>
+              ),
+              sx: {
+                "& input::placeholder": {
+                  fontSize: "0.8rem", // Adjust the font size as needed
+                },
+              },
+            }}
           />
 
           <Button
@@ -200,6 +250,17 @@ const CreateAds: React.FC = () => {
           >
             Submit
           </Button>
+
+          {successMessage && (
+            <Typography color="green" style={{ marginTop: 16 }}>
+              {successMessage}
+            </Typography>
+          )}
+          {errorMessage && (
+            <Typography color="red" style={{ marginTop: 16 }}>
+              {errorMessage}
+            </Typography>
+          )}
         </CardContent>
       </Card>
     </StyledContainer>

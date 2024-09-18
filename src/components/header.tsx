@@ -82,8 +82,18 @@ const Header = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const isuserProfile: boolean = useProfilePathCheck();
+
   return (
-    <AppBar sx={{ mt: 5 }} position="static" color="transparent" elevation={0}>
+    <AppBar
+      sx={{
+        mt: 0,
+        backgroundColor: "#fff",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      }}
+      position="fixed"
+      color="transparent"
+      elevation={0}
+    >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           {/* Logo */}
@@ -91,12 +101,12 @@ const Header = () => {
             onClick={() => (!isuserProfile ? router.push("/") : null)}
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1 }}
+            sx={{ flexGrow: 1, marginTop: 1 }}
           >
             <img
               src="/assets/images/logo.png"
               alt="Collabstr Logo"
-              style={{ height: "30px" }}
+              style={{ height: "30px", alignSelf: "center" }}
             />
           </Typography>
 
@@ -264,9 +274,6 @@ const Header = () => {
             alignItems: "center",
           }}
         >
-          {/* <Avatar src={user?.photoURL} sx={{ width: 80, height: 80, mb: 2 }}>
-            {!user?.photoURL && user?.displayName?.[0]}
-          </Avatar> */}
           <Typography variant="h6" gutterBottom>
             {user?.displayName}
           </Typography>
