@@ -30,11 +30,11 @@ export const socialMediaPlatforms = [
   "Telegram",
 ];
 
-export const cleanImageUrl = (url) => {
+export const cleanImageUrl = (url, fix) => {
   if (url?.includes("googleusercontent.com")) {
     return url.split("=")[0];
   }
 
-  const uniqueId = Math.floor(Math.random() * 100000);
+  const uniqueId = fix ? fix : Math.floor(Math.random() * 100000);
   return url ? url : `https://i.pravatar.cc/150?u=${uniqueId}`;
 };

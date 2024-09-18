@@ -22,7 +22,7 @@ const GridComponent = ({ data }) => {
       }}
     >
       {data.map((item, index) => {
-        const imgUrl = cleanImageUrl(item.photoURL);
+        const imgUrl = cleanImageUrl(item.photoURL, index);
         return (
           <Card
             key={index}

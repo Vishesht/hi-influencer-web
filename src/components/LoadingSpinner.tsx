@@ -8,7 +8,7 @@ const LoadingSpinner = () => (
         justify-content: center;
         align-items: center;
         height: 100vh;
-        background-color: #f0f0f0;
+        background-color: #fff;
       }
       .spinner {
         border: 4px solid rgba(0, 0, 0, 0.1);
