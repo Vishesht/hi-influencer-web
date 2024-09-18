@@ -13,7 +13,7 @@ import {
 import { styled } from "@mui/system";
 import StarIcon from "@mui/icons-material/Star";
 import Link from "next/link";
-import { menPlaceholderImg } from "@/common/utils";
+import { imgPlaceholderImg } from "@/common/utils";
 
 // "Roboto", "Helvetica", "Arial", sans-serif';
 const customFontFamily = "Roboto";
@@ -116,7 +116,7 @@ const InfluencerList = ({
               >
                 <CardMedia
                   component="img"
-                  image={influencer.photoURL || menPlaceholderImg}
+                  image={influencer.photoURL || imgPlaceholderImg}
                   alt={influencer.name}
                   sx={{ borderTopLeftRadius: 2, borderTopRightRadius: 2 }}
                 />

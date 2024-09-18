@@ -82,8 +82,18 @@ const Header = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const isuserProfile: boolean = useProfilePathCheck();
+
   return (
-    <AppBar sx={{ mt: 5 }} position="static" color="transparent" elevation={0}>
+    <AppBar
+      sx={{
+        mt: 0,
+        backgroundColor: "#fff",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      }}
+      position="fixed"
+      color="transparent"
+      elevation={0}
+    >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           {/* Logo */}
@@ -91,12 +101,12 @@ const Header = () => {
             onClick={() => (!isuserProfile ? router.push("/") : null)}
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1 }}
+            sx={{ flexGrow: 1, marginTop: 1 }}
           >
             <img
               src="/assets/images/logo.png"
               alt="Collabstr Logo"
-              style={{ height: "30px" }}
+              style={{ height: "30px", alignSelf: "center" }}
             />
           </Typography>
 
@@ -171,7 +181,7 @@ const Header = () => {
                 onClick={handleClick}
               >
                 <Avatar
-                  src={user?.photoURL}
+                  src={data?.photoURL || user?.photoURL}
                   sx={{ bgcolor: "#FFF3E0", color: "#000" }}
                 >
                   {!user?.photoURL && user?.displayName?.[0]}
@@ -196,37 +206,43 @@ const Header = () => {
           onKeyDown={() => setDrawerOpen(false)}
         >
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-            <Avatar src={user?.photoURL} sx={{ width: 50, height: 50 }}>
-              {!user?.photoURL && user?.displayName?.[0]}
+            <Avatar
+              src={data?.photoURL || user?.photoURL}
+              sx={{ width: 50, height: 50 }}
+            >
+              {data?.photoURL || user?.displayName?.[0]}
             </Avatar>
             <Box sx={{ ml: 2 }}>
-              <Typography variant="body1">{user?.displayName}</Typography>
+              <Typography variant="body1">
+                {data?.name || user?.displayName}
+              </Typography>
               <Typography variant="body2" color="textSecondary">
-                {user?.email}
+                {data?.email || user?.email}
               </Typography>
             </Box>
           </Box>
           <Divider />
           <List>
             <ListItem
-              component="button"
+              component="div"
+              sx={{ backgroundColor: "#fff" }}
               onClick={() => handleListItemClick("/user")}
             >
               <ListItemText primary="Profile" sx={{ color: "black" }} />
             </ListItem>
             <ListItem
-              component="button"
+              component="div"
               onClick={() => handleListItemClick("/orders")}
             >
               <ListItemText primary="Your Orders" sx={{ color: "black" }} />
             </ListItem>
             <ListItem
-              component="button"
+              component="div"
               onClick={() => handleListItemClick("/payments")}
             >
               <ListItemText primary="Payments" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem component="button" onClick={handleSignOut}>
+            <ListItem component="div" onClick={handleSignOut}>
               <ListItemText primary="Logout" sx={{ color: "black" }} />
             </ListItem>
           </List>
@@ -258,9 +274,6 @@ const Header = () => {
             alignItems: "center",
           }}
         >
-          {/* <Avatar src={user?.photoURL} sx={{ width: 80, height: 80, mb: 2 }}>
-            {!user?.photoURL && user?.displayName?.[0]}
-          </Avatar> */}
           <Typography variant="h6" gutterBottom>
             {user?.displayName}
           </Typography>

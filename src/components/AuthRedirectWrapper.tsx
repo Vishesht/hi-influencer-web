@@ -9,6 +9,7 @@ import { ProfileCheckRegex } from "@/common/utils";
 import Header from "./header";
 import Footer from "./footer";
 import { useAppSelector } from "@/lib/hooks";
+import { Box } from "@mui/material";
 
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -51,7 +52,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   return (
     <>
       <Header />
-      {children}
+      <Box sx={{ pt: 10 }}>{children}</Box>
       <Footer />
     </>
   );

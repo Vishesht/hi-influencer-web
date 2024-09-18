@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-import InfluencerList from "@/components/influencerList";
-import CategoryList from "@/components/categoryList";
 import {
   Box,
   Container,
@@ -74,6 +72,7 @@ export default function Home() {
           sx={{
             mt: 4,
             display: "flex",
+            alignItems: "center",
             justifyContent: "center",
             flexDirection: isMobile ? "column" : "row",
           }}

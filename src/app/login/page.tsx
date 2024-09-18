@@ -130,7 +130,7 @@ export default function LoginPage() {
           component="form"
           noValidate
           onSubmit={handleLogin}
-          sx={{ width: "100%", mt: 1 }}
+          sx={{ width: "100%", pt: 1, pb: 4 }}
         >
           <TextField
             variant="outlined"

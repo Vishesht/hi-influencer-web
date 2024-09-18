@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import loginReducer from "@/lib/features/login/loginSlice";
+import alertReducer from "@/lib/features/alert/alertSlice";
 
 const persistConfig = {
   key: "root",
@@ -14,6 +15,7 @@ const persistedReducer = persistReducer(persistConfig, loginReducer);
 export const store: any = configureStore({
   reducer: {
     login: persistedReducer,
+    alert: alertReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

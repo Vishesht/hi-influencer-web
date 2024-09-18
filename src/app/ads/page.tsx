@@ -1,53 +1,107 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Box,
-  Card,
   Container,
   Grid,
   InputAdornment,
   TextField,
   Typography,
+  Box,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
+import axios from "axios";
+import { BaseUrl } from "@/common/utils";
+import AdCard from "@/components/AdsCard";
+import { useAppSelector } from "@/lib/hooks";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
 }));
 
-const AdCard = styled(Card)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-start",
+const FilterContainer = styled(Box)(({ theme }) => ({
+  backgroundColor: "#fff",
+  padding: theme.spacing(1.5),
+  borderRadius: "8px",
   marginBottom: theme.spacing(2),
-}));
-
-const AdImage = styled("img")(({ theme }) => ({
-  width: "100%",
-  height: "auto",
-  borderRadius: theme.shape.borderRadius,
-}));
-
-const AdDetails = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
 }));
 
 const Ads: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredAds, setFilteredAds] = useState(ads);
+  const [adsData, setAdsData] = useState([]);
+  const [currentImageIndices, setCurrentImageIndices] = useState({});
+  const [filter, setFilter] = useState("all");
+  const data = useAppSelector((state) => state.login.userData);
+
+  useEffect(() => {
+    const fetchAds = async () => {
+      try {
+        const response = await axios.get(`${BaseUrl}/api/getallads`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        setAdsData(response.data); // Set the fetched ads data
+      } catch (error) {
+        console.error("Error fetching ads:", error);
+      }
+    };
+
+    fetchAds();
+  }, []);
+
+  const filteredAds = adsData.filter((ad) => {
+    const matchesSearchTerm =
+      ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.state.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Check if the filter is "myAds"
+    const matchesFilter =
+      filter === "all" || (filter === "myAds" && ad.id === data?.id);
+
+    return matchesSearchTerm && matchesFilter;
+  });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchValue = event.target.value.toLowerCase();
-    setSearchTerm(searchValue);
-    setFilteredAds(
-      ads.filter(
-        (ad) =>
-          ad.title.toLowerCase().includes(searchValue) ||
-          ad.location.toLowerCase().includes(searchValue)
-      )
-    );
+    setSearchTerm(event.target.value);
+  };
+
+  const handleFilterChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newFilter: string
+  ) => {
+    if (newFilter !== null) {
+      setFilter(newFilter);
+    }
+  };
+
+  const handleNextImage = (adId) => {
+    setCurrentImageIndices((prev) => {
+      const currentIndex = prev[adId] ?? 0;
+      const ad = adsData.find((ad) => ad._id === adId);
+      const totalImages = ad?.adsImages.length || 0;
+
+      return {
+        ...prev,
+        [adId]: (currentIndex + 1) % totalImages, // Loop back to the start
+      };
+    });
+  };
+
+  const handlePrevImage = (adId) => {
+    setCurrentImageIndices((prev) => {
+      const currentIndex = prev[adId] ?? 0;
+      const ad = adsData.find((ad) => ad._id === adId);
+      const totalImages = ad?.adsImages.length || 0;
+
+      return {
+        ...prev,
+        [adId]: (currentIndex - 1 + totalImages) % totalImages, // Loop to the end
+      };
+    });
   };
 
   return (
@@ -55,109 +109,53 @@ const Ads: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         All Ads
       </Typography>
-      <TextField
-        fullWidth
-        placeholder="Search ads by title or location"
-        variant="outlined"
-        value={searchTerm}
-        onChange={handleSearchChange}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-        style={{ marginBottom: "20px" }}
-      />
+
+      <FilterContainer>
+        <TextField
+          fullWidth
+          placeholder="Search ads by title or location"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          style={{ marginBottom: "10px" }}
+        />
+
+        <ToggleButtonGroup
+          value={filter}
+          exclusive
+          onChange={handleFilterChange}
+          fullWidth
+          sx={{ marginBottom: 1 }}
+        >
+          <ToggleButton value="all">All Ads</ToggleButton>
+          <ToggleButton value="myAds">My Ads</ToggleButton>
+        </ToggleButtonGroup>
+      </FilterContainer>
+
       <Grid container spacing={2}>
-        {filteredAds.map((ad) => (
-          <Grid item xs={12} sm={6} md={4} key={ad.id}>
-            <AdCard>
-              <AdImage src={ad.image} alt={ad.title} />
-              <AdDetails>
-                <Typography variant="h6">{ad.title}</Typography>
-                <Typography variant="subtitle2" color="textSecondary">
-                  {ad.location}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {ad.datePosted}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  color="textPrimary"
-                  sx={{ marginTop: 1 }}
-                >
-                  <strong>Requests:</strong> {ad.requests}
-                </Typography>
-                <Typography variant="body1" color="textPrimary">
-                  <strong>Price:</strong> {ad.price}
-                </Typography>
-              </AdDetails>
-            </AdCard>
-          </Grid>
-        ))}
+        {filteredAds.map((ad) => {
+          const currentIndex = currentImageIndices[ad._id] ?? 0;
+          return (
+            <Grid item xs={12} sm={6} md={4} key={ad._id}>
+              <AdCard
+                ad={ad}
+                currentIndex={currentIndex}
+                onNext={() => handleNextImage(ad._id)}
+                onPrev={() => handlePrevImage(ad._id)}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
     </StyledContainer>
   );
 };
 
 export default Ads;
-
-// Dummy data for ads
-const ads = [
-  {
-    id: "1",
-    image: "https://via.placeholder.com/400x200.png",
-    title: "Promote New Restaurant",
-    location: "Downtown, NY",
-    datePosted: "2024-09-01",
-    requests: "122",
-    price: "$500",
-  },
-  {
-    id: "2",
-    image: "https://via.placeholder.com/400x200.png",
-    title: "YouTube Channel Promotion",
-    location: "San Francisco, CA",
-    datePosted: "2024-08-29",
-    requests: "12",
-    price: "$800",
-  },
-  {
-    id: "3",
-    image: "https://via.placeholder.com/400x200.png",
-    title: "Instagram Shoutout",
-    location: "Los Angeles, CA",
-    datePosted: "2024-08-22",
-    requests: "1322",
-    price: "$300",
-  },
-  {
-    id: "4",
-    image: "https://via.placeholder.com/400x200.png",
-    title: "Business Promotion",
-    location: "New York, NY",
-    datePosted: "2024-08-30",
-    requests: "322",
-    price: "$1000",
-  },
-  {
-    id: "5",
-    image: "https://via.placeholder.com/400x200.png",
-    title: "New Product Launch",
-    location: "Chicago, IL",
-    datePosted: "2024-09-02",
-    requests: "412",
-    price: "$600",
-  },
-  {
-    id: "6",
-    image: "https://via.placeholder.com/400x200.png",
-    title: "Event Promotion",
-    location: "Miami, FL",
-    datePosted: "2024-08-28",
-    requests: "995",
-    price: "$400",
-  },
-];
