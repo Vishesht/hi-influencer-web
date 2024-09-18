@@ -9,6 +9,7 @@ import {
   Box,
   ToggleButton,
   ToggleButtonGroup,
+  Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
@@ -16,6 +17,7 @@ import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import AdCard from "@/components/AdsCard";
 import { useAppSelector } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -30,6 +32,7 @@ const FilterContainer = styled(Box)(({ theme }) => ({
 }));
 
 const Ads: React.FC = () => {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [adsData, setAdsData] = useState([]);
   const [currentImageIndices, setCurrentImageIndices] = useState({});
@@ -106,10 +109,44 @@ const Ads: React.FC = () => {
 
   return (
     <StyledContainer>
-      <Typography variant="h4" gutterBottom>
-        All Ads
-      </Typography>
-
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <Typography variant="h4" gutterBottom>
+          All Ads
+        </Typography>
+        <Button
+          onClick={() => router.push("/create-ad")}
+          variant="contained"
+          color="secondary"
+          sx={{
+            backgroundColor: "#F653E1",
+            marginLeft: "20px",
+            padding: "4px 10px",
+            borderRadius: "50px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            fontWeight: "bold",
+            fontSize: "16px",
+            textTransform: "none",
+            transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+            "&:hover": {
+              backgroundColor: "#e44bcf",
+              boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
+            },
+            "&:active": {
+              backgroundColor: "#d43bbf",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+            },
+          }}
+        >
+          Post Ads
+        </Button>
+      </Box>
       <FilterContainer>
         <TextField
           fullWidth

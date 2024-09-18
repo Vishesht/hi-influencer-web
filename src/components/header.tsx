@@ -79,6 +79,37 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const postBtn = () => {
+    return (
+      <Button
+        onClick={() => router.push("/create-ad")}
+        variant="contained"
+        color="secondary"
+        sx={{
+          backgroundColor: "#F653E1",
+          marginLeft: "20px",
+          padding: "4px 10px",
+          borderRadius: "50px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+          fontWeight: "bold",
+          fontSize: "16px",
+          textTransform: "none",
+          transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+          "&:hover": {
+            backgroundColor: "#e44bcf",
+            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
+          },
+          "&:active": {
+            backgroundColor: "#d43bbf",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+          },
+        }}
+      >
+        Post Ads
+      </Button>
+    );
+  };
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const isuserProfile: boolean = useProfilePathCheck();
@@ -141,33 +172,7 @@ const Header = () => {
                 Download
               </Button>
               {/* Post a Campaign Button */}
-              <Button
-                onClick={() => router.push("/create-ad")}
-                variant="contained"
-                color="secondary"
-                sx={{
-                  backgroundColor: "#F653E1",
-                  marginLeft: "20px",
-                  padding: "4px 10px",
-                  borderRadius: "50px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  textTransform: "none",
-                  transition:
-                    "background-color 0.3s ease, box-shadow 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: "#e44bcf",
-                    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-                  },
-                  "&:active": {
-                    backgroundColor: "#d43bbf",
-                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                  },
-                }}
-              >
-                Post Ads
-              </Button>
+              {postBtn()}
             </>
           )}
 
