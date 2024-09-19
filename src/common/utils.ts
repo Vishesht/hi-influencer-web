@@ -30,7 +30,7 @@ export const socialMediaPlatforms = [
   "Telegram",
 ];
 
-export const cleanImageUrl = (url, fix) => {
+export const cleanImageUrl = (url, fix?) => {
   if (url?.includes("googleusercontent.com")) {
     return url.split("=")[0];
   }

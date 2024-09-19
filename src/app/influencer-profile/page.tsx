@@ -10,12 +10,14 @@ import {
   Grid,
   Card,
   Button,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import Image from "next/image";
 import ImageGallery from "../../components/imageGallery";
 import ReviewsList from "../../components/reviewsList";
 import HireModal from "../../components/HireModal";
+import SavedPackage from "@/components/SavedPackage";
 
 // Styled components
 const ProfileContainer = styled(Container)(({ theme }) => ({
@@ -64,7 +66,6 @@ const InfluencerProfile = ({ searchParams }: any) => {
   const handleClose = () => setModalOpen(false);
 
   const influencer = JSON?.parse(searchParams.influencer);
-
   // const SocialMediaIcon = (platformData, src) => (
   //   <Image
   //     src={src}
@@ -126,31 +127,97 @@ const InfluencerProfile = ({ searchParams }: any) => {
         >
           <Container
             sx={{
-              flex: 1, // Allow the container to grow and fill available space
-              display: "flex",
-              flexDirection: "column", // Align items vertically in the container
+              flex: 1,
+              flexDirection: "column",
             }}
           >
-            <Typography
+            <Container
               sx={{
-                fontWeight: "bold",
-                fontFamily: "Roboto, sans-serif",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
               }}
-              variant="h4"
             >
-              {influencer.name}
-            </Typography>
-            <Typography
-              sx={{
-                color: "text.secondary",
-                fontFamily: "Roboto, sans-serif",
-                mt: 1,
-                mb: 2,
-              }}
-              variant="body1"
-            >
-              {influencer.category} - {influencer.location}
-            </Typography>
+              <IconButton
+                edge="end"
+                color="inherit"
+                // onClick={handleClick}
+              >
+                <Avatar
+                  src={influencer?.photoURL}
+                  sx={{
+                    bgcolor: "#FFF3E0",
+                    color: "#000",
+                    width: 80,
+                    height: 80,
+                  }}
+                ></Avatar>
+              </IconButton>
+              <Container>
+                <Typography
+                  sx={{
+                    fontWeight: "bold",
+                    fontFamily: "Roboto, sans-serif",
+                    mt: 4,
+                  }}
+                  variant="h5"
+                >
+                  {influencer.name}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    fontFamily: "Roboto, sans-serif",
+                    mt: 1,
+                    mb: 2,
+                  }}
+                  variant="body1"
+                >
+                  {influencer.category} - {influencer.state}
+                </Typography>
+              </Container>
+            </Container>
+            <PlatformList>
+              {influencer.platform.map((platformData: any, index: any) => (
+                <Box
+                  key={index}
+                  display="flex"
+                  alignItems="center"
+                  flexDirection={{ xs: "column", sm: "row" }}
+                >
+                  <IconButton href={platformData.platformLink} target="_blank">
+                    {platformData.platform === "Instagram"
+                      ? SocialMediaIcon(
+                          platformData,
+                          "/assets/images/instagram.png"
+                        )
+                      : platformData.platform === "Youtube"
+                      ? SocialMediaIcon(
+                          platformData,
+                          "/assets/images/youtube.png"
+                        )
+                      : platformData.platform === "Twitter"
+                      ? SocialMediaIcon(
+                          platformData,
+                          "/assets/images/twitter.png"
+                        )
+                      : platformData.platform === "Facebook" &&
+                        SocialMediaIcon(
+                          platformData,
+                          "/assets/images/facebook.png"
+                        )}
+                  </IconButton>
+                  <Typography
+                    sx={{
+                      fontFamily: "sans-serif",
+                    }}
+                  >
+                    {platformData.platform}
+                  </Typography>
+                </Box>
+              ))}
+            </PlatformList>
+
             <Typography
               sx={{
                 color: "text.secondary",
@@ -160,42 +227,13 @@ const InfluencerProfile = ({ searchParams }: any) => {
               }}
               variant="body2"
             >
-              {influencer.description}
+              {influencer.bio}
             </Typography>
           </Container>
-          <PlatformList>
-            {influencer.platform.map((platformData: any, index: any) => (
-              <Box key={index} display="flex" alignItems="center">
-                <IconButton href={platformData.platformLink} target="_blank">
-                  {platformData.platform === "Instagram"
-                    ? SocialMediaIcon(
-                        platformData,
-                        "/assets/images/instagram.png"
-                      )
-                    : platformData.platform === "YouTube"
-                    ? SocialMediaIcon(
-                        platformData,
-                        "/assets/images/youtube.png"
-                      )
-                    : SocialMediaIcon(
-                        platformData,
-                        "/assets/images/facebook.png"
-                      )}
-                </IconButton>
-                <Typography
-                  sx={{
-                    fontFamily: "sans-serif",
-                  }}
-                >
-                  {platformData.followers}
-                </Typography>
-              </Box>
-            ))}
-          </PlatformList>
         </Box>
 
         {/* Gender, Age, Price */}
-        <InfoBox>
+        {/* <InfoBox>
           <Typography
             variant="h6"
             sx={{
@@ -211,19 +249,43 @@ const InfluencerProfile = ({ searchParams }: any) => {
           <InfoDetail>
             <strong>Gender:</strong> {influencer.gender}
           </InfoDetail>
-          <InfoDetail>
-            <strong>Age:</strong> {influencer.age}
-          </InfoDetail>
-          <InfoDetail>
-            <strong>Price:</strong> {influencer.price}
-          </InfoDetail>
-        </InfoBox>
+          {influencer.age && (
+            <InfoDetail>
+              <strong>Age:</strong> {influencer.age}
+            </InfoDetail>
+          )}
+          {influencer.price && (
+            <InfoDetail>
+              <strong>Price:</strong> {influencer.price}
+            </InfoDetail>
+          )}
+        </InfoBox> */}
 
         {/* Packages */}
         <Box>
-          <Typography variant="h6" sx={{ marginBottom: 2, fontWeight: "bold" }}>
-            Packages
-          </Typography>
+          {influencer?.packages?.length > 0 && (
+            <Typography
+              variant="h6"
+              sx={{ marginBottom: 2, fontWeight: "bold" }}
+            >
+              Packages
+            </Typography>
+          )}
+          <Grid container spacing={3} direction={{ xs: "column", sm: "row" }}>
+            {influencer?.packages.map((pkg) => (
+              <SavedPackage key={pkg.name} pkg={pkg} isEdit={true} />
+            ))}
+          </Grid>
+        </Box>
+        {/* <Box>
+          {influencer?.packages?.length > 0 && (
+            <Typography
+              variant="h6"
+              sx={{ marginBottom: 2, fontWeight: "bold" }}
+            >
+              Packages
+            </Typography>
+          )}
           <PackageGrid container spacing={3}>
             {influencer?.packages.map((pkg: any, index: any) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
@@ -259,10 +321,12 @@ const InfluencerProfile = ({ searchParams }: any) => {
               </Grid>
             ))}
           </PackageGrid>
-        </Box>
+        </Box> */}
 
         {/* Reviews */}
-        <ReviewsList reviewsData={influencer?.reviewsData} />
+        {influencer?.reviewsData?.length > 0 && (
+          <ReviewsList reviewsData={influencer?.reviewsData} />
+        )}
       </ProfileContainer>
       <HireModal open={modalOpen} onClose={handleClose} />
     </>
