@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import axios from "axios";
 import { useAppSelector } from "@/lib/hooks";
@@ -53,17 +54,32 @@ const RemoveButton = styled(IconButton)(({ theme }) => ({
   right: theme.spacing(1),
 }));
 
-const CreateAds: React.FC = () => {
+const CreateAds: React.FC = ({ searchParams }) => {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const data = useAppSelector((state) => state.login.userData);
+  const editAds = useAppSelector((state) => state.ads);
+  const [title, setTitle] = useState(
+    searchParams?.edit ? editAds?.ads?.title : ""
+  );
+  const [description, setDescription] = useState(
+    searchParams?.edit ? editAds?.ads?.desc : ""
+  );
   const [files, setFiles] = useState<File[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState("");
-  const [budget, setBudget] = useState("");
-  const [selectedState, setSelectedState] = useState("");
+  const [existingImages, setExistingImages] = useState<string[]>(
+    searchParams?.edit ? editAds?.ads?.adsImages : []
+  );
+  const [selectedCategories, setSelectedCategories] = useState(
+    searchParams?.edit ? editAds?.ads?.category : ""
+  );
+  const [budget, setBudget] = useState(
+    searchParams?.edit ? editAds?.ads?.budget : ""
+  );
+  const [selectedState, setSelectedState] = useState(
+    searchParams?.edit ? editAds?.ads?.state : ""
+  );
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const data = useAppSelector((state) => state.login.userData);
+  const [loading, setLoading] = useState(false); // Loader state
 
   const categories = [
     "Promotion",
@@ -86,6 +102,12 @@ const CreateAds: React.FC = () => {
     setFiles(newFiles);
   };
 
+  const handleRemoveExistingImage = (index: number) => {
+    const newExistingImages = [...existingImages];
+    newExistingImages.splice(index, 1);
+    setExistingImages(newExistingImages);
+  };
+
   const handleImageClick = (url: string) => {
     const imgWindow = window.open(url, "_blank");
     imgWindow?.focus();
@@ -103,8 +125,9 @@ const CreateAds: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true); // Start loader
     try {
-      const uploadedImageUrls = await uploadImages(); // Upload images and get URLs
+      const uploadedImageUrls = await uploadImages();
       const creds = {
         id: data?.id,
         name: data?.name,
@@ -116,25 +139,71 @@ const CreateAds: React.FC = () => {
         desc: description,
         category: selectedCategories,
         budget,
-        adsImages: uploadedImageUrls, // Add adsImages array
+        adsImages: [...existingImages, ...uploadedImageUrls], // Combine existing and new images
       };
 
-      const response = await axios.post(`${BaseUrl}/api/postads`, creds);
-      setSuccessMessage("Ad created successfully!");
+      if (!searchParams?.edit) {
+        await axios.post(`${BaseUrl}/api/postads`, creds);
+      } else {
+        await axios.put(
+          `${BaseUrl}/api/edituserads/${editAds?.ads?._id}`,
+          creds
+        );
+      }
+      setSuccessMessage(
+        searchParams?.edit
+          ? "Ad edited successfully!"
+          : "Ad created successfully!"
+      );
       setErrorMessage("");
       router.push("/ads");
     } catch (error) {
-      setErrorMessage("Failed to create ad. Please try again.");
+      setErrorMessage(
+        `Failed to ${
+          searchParams?.edit ? "edit" : "create"
+        } ad. Please try again.`
+      );
       setSuccessMessage("");
       console.error(error);
+    } finally {
+      setLoading(false); // Stop loader
+    }
+  };
+
+  const handleDeleteAd = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this ad?"
+    );
+    if (confirmDelete) {
+      try {
+        await axios.delete(`${BaseUrl}/api/deleteuserads/${editAds?.ads?._id}`);
+        setSuccessMessage("Ad deleted successfully!");
+        setErrorMessage("");
+        router.push("/ads");
+      } catch (error) {
+        setErrorMessage("Failed to delete ad. Please try again.");
+        console.error(error);
+      }
     }
   };
 
   return (
     <StyledContainer>
-      <Typography variant="h4" gutterBottom>
-        Create a New Ad
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4" gutterBottom>
+          {searchParams?.edit ? "Edit Ad" : "Create a New Ad"}
+        </Typography>
+        {searchParams?.edit && (
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteAd}
+          >
+            Delete
+          </Button>
+        )}
+      </Box>
       <Card>
         <CardContent>
           <TextField
@@ -166,6 +235,33 @@ const CreateAds: React.FC = () => {
               style={{ marginTop: 8 }}
             />
             <ImageGrid>
+              {/* Display existing images */}
+              {existingImages.map((url, index) => (
+                <UploadPreview
+                  key={index}
+                  onClick={() => handleImageClick(url)}
+                >
+                  <img
+                    src={url}
+                    alt="Existing"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <RemoveButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveExistingImage(index);
+                    }}
+                    size="small"
+                  >
+                    <RemoveCircleIcon color="error" />
+                  </RemoveButton>
+                </UploadPreview>
+              ))}
+              {/* Display new image uploads */}
               {files.map((file, index) => (
                 <UploadPreview
                   key={index}
@@ -182,7 +278,7 @@ const CreateAds: React.FC = () => {
                   />
                   <RemoveButton
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent the click event from bubbling up
+                      e.stopPropagation();
                       handleRemoveFile(index);
                     }}
                     size="small"
@@ -243,7 +339,7 @@ const CreateAds: React.FC = () => {
               ),
               sx: {
                 "& input::placeholder": {
-                  fontSize: "0.8rem", // Adjust the font size as needed
+                  fontSize: "0.8rem",
                 },
               },
             }}
@@ -254,8 +350,9 @@ const CreateAds: React.FC = () => {
             color="primary"
             onClick={handleSubmit}
             style={{ marginTop: 16 }}
+            disabled={loading} // Disable button when loading
           >
-            Submit
+            {loading ? "Submitting..." : "Submit"}
           </Button>
 
           {successMessage && (
