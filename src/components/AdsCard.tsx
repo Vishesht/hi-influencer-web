@@ -1,6 +1,12 @@
-// components/AdCard.tsx
 import React from "react";
-import { Box, Card, IconButton, Typography, styled } from "@mui/material";
+import {
+  Box,
+  Card,
+  IconButton,
+  Typography,
+  Button,
+  styled,
+} from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CategoryIcon from "@mui/icons-material/Category";
@@ -35,6 +41,7 @@ const AdImage = styled("img")(({ theme }) => ({
 
 const DetailsContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
+  height: "280px",
 }));
 
 const DetailItem = styled(Box)(({ theme }) => ({
@@ -60,16 +67,20 @@ interface AdCardProps {
     budget: string;
     adsImages: string[];
   };
+  myAds: boolean;
   currentIndex: number;
   onNext: () => void;
   onPrev: () => void;
+  onEditClick: () => void;
 }
 
 const AdCard: React.FC<AdCardProps> = ({
+  myAds,
   ad,
   currentIndex,
   onNext,
   onPrev,
+  onEditClick,
 }) => {
   return (
     <StyledCard>
@@ -129,13 +140,33 @@ const AdCard: React.FC<AdCardProps> = ({
             {new Date(ad.createdAt).toLocaleDateString()}
           </Typography>
         </DetailItem>
-        <DetailItem>
-          <AttachMoneyIcon fontSize="small" />
-          <DetailLabel variant="body2">Budget:</DetailLabel>
-          <Typography variant="body2" color="textPrimary">
-            {ad.budget}
-          </Typography>
-        </DetailItem>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <DetailItem>
+            <AttachMoneyIcon fontSize="small" />
+            <DetailLabel variant="body2">Budget:</DetailLabel>
+            <Typography variant="body2" color="textPrimary">
+              {ad.budget}
+            </Typography>
+          </DetailItem>
+          {myAds && (
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                marginTop: "auto",
+                borderRadius: "20px",
+                textTransform: "none",
+                fontWeight: 600,
+                "&:hover": {
+                  backgroundColor: "#0b5ed7",
+                },
+              }}
+              onClick={onEditClick}
+            >
+              Edit
+            </Button>
+          )}
+        </Box>
       </DetailsContainer>
     </StyledCard>
   );

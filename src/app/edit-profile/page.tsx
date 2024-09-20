@@ -34,6 +34,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
 import AlertDialog from "@/components/Alert";
 import { showAlert } from "@/lib/features/alert/alertSlice";
+import PackagesSetup from "@/components/packagesSetup";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -84,6 +85,7 @@ const EditProfile: React.FC = () => {
   const [bio, setBio] = useState("");
   const [address, setAddress] = useState("");
   const [platform, setPlatform] = useState<any[]>([]);
+  const [packages, setPackages] = useState<any[]>([]);
 
   const [newPlatform, setNewPlatform] = useState({
     name: "",
@@ -126,6 +128,7 @@ const EditProfile: React.FC = () => {
         setSelectedCategory(response.data.category);
         setUsername(response.data.username);
         setName(response.data.name);
+        setPackages(response?.data?.packages);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -201,6 +204,7 @@ const EditProfile: React.FC = () => {
         address,
         platform,
         category: selectedCategory,
+        packages: packages,
       };
       await axios
         .post(`${BaseUrl}/api/users`, updatedData, {
@@ -238,6 +242,10 @@ const EditProfile: React.FC = () => {
   const handlePlatformChange = (e: any) => {
     const { name, value } = e.target;
     setNewPlatform((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSavedPackages = (savedPackages) => {
+    setPackages(savedPackages);
   };
 
   const imgUrl = cleanImageUrl(imageUri);
@@ -434,6 +442,11 @@ const EditProfile: React.FC = () => {
               </FormControl>
             </Grid>
           </Grid>
+          <PackagesSetup
+            packages={packages}
+            onSavePackages={handleSavedPackages}
+          />
+
           <Button
             variant="contained"
             color="primary"

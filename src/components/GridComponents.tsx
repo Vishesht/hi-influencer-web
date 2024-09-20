@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { cleanImageUrl, imgPlaceholderImg } from "@/common/utils";
+import Link from "next/link";
 
 const GridComponent = ({ data }) => {
   return (
@@ -24,51 +25,61 @@ const GridComponent = ({ data }) => {
       {data.map((item, index) => {
         const imgUrl = cleanImageUrl(item.photoURL, index);
         return (
-          <Card
+          <Link
             key={index}
-            sx={{
-              width: "100%",
-              maxWidth: 230,
-              borderRadius: 2,
-              boxShadow: 3,
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.03)",
-                boxShadow: 6,
+            href={{
+              pathname: "/influencer-profile",
+              query: {
+                influencer: JSON.stringify(item),
               },
-              cursor: "pointer",
             }}
+            passHref
           >
-            <CardMedia
-              component="img"
-              image={imgUrl}
-              alt={item.name}
+            <Card
+              key={index}
               sx={{
-                borderTopLeftRadius: 2,
-                borderTopRightRadius: 2,
-                height: 180,
-              }}
-            />
-            <CardContent
-              sx={{
-                height: 120,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                p: 1,
+                width: "100%",
+                maxWidth: 230,
+                borderRadius: 2,
+                boxShadow: 3,
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                "&:hover": {
+                  transform: "scale(1.03)",
+                  boxShadow: 6,
+                },
+                cursor: "pointer",
               }}
             >
-              <Typography
-                variant="subtitle1"
+              <CardMedia
+                component="img"
+                image={imgUrl}
+                alt={item.name}
                 sx={{
-                  fontFamily: "Arial, sans-serif", // Replace with your custom font family
-                  fontWeight: "bold",
+                  borderTopLeftRadius: 2,
+                  borderTopRightRadius: 2,
+                  height: 180,
+                }}
+              />
+              <CardContent
+                sx={{
+                  height: 120,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  p: 1,
                 }}
               >
-                {item.name}
-              </Typography>
-              <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
-                {/* Uncomment and use if needed
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontFamily: "Arial, sans-serif", // Replace with your custom font family
+                    fontWeight: "bold",
+                  }}
+                >
+                  {item.name}
+                </Typography>
+                <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
+                  {/* Uncomment and use if needed
               <Typography
                 variant="body2"
                 sx={{
@@ -88,28 +99,29 @@ const GridComponent = ({ data }) => {
               >
                 ({item.ratings || "0"})
               </Typography> */}
-              </Box>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  fontFamily: "sans-serif",
-                }}
-              >
-                {item.category}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  fontFamily: "sans-serif",
-                  mb: 0.5,
-                }}
-              >
-                {item.state}
-              </Typography>
-            </CardContent>
-          </Card>
+                </Box>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  {item.category}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    fontFamily: "sans-serif",
+                    mb: 0.5,
+                  }}
+                >
+                  {item.state}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Link>
         );
       })}
     </Box>

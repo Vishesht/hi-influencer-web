@@ -16,8 +16,9 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import AdCard from "@/components/AdsCard";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
+import { editAds } from "@/lib/features/Ads/AdsSlice";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -33,8 +34,10 @@ const FilterContainer = styled(Box)(({ theme }) => ({
 
 const Ads: React.FC = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [adsData, setAdsData] = useState([]);
+  const [myAdsData, setMyAdsData] = useState([]);
   const [currentImageIndices, setCurrentImageIndices] = useState({});
   const [filter, setFilter] = useState("all");
   const data = useAppSelector((state) => state.login.userData);
@@ -47,14 +50,23 @@ const Ads: React.FC = () => {
             "Content-Type": "application/json",
           },
         });
-        setAdsData(response.data); // Set the fetched ads data
+        setAdsData(response.data);
+
+        if (data?.id) {
+          const res = await axios.get(`${BaseUrl}/api/getuserads/${data.id}`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          setMyAdsData(res.data);
+        }
       } catch (error) {
         console.error("Error fetching ads:", error);
       }
     };
 
     fetchAds();
-  }, []);
+  }, [data?.id]);
 
   const filteredAds = adsData.filter((ad) => {
     const matchesSearchTerm =
@@ -63,7 +75,8 @@ const Ads: React.FC = () => {
 
     // Check if the filter is "myAds"
     const matchesFilter =
-      filter === "all" || (filter === "myAds" && ad.id === data?.id);
+      filter === "all" ||
+      (filter === "myAds" && myAdsData.some((userAd) => userAd.id === ad.id));
 
     return matchesSearchTerm && matchesFilter;
   });
@@ -105,6 +118,11 @@ const Ads: React.FC = () => {
         [adId]: (currentIndex - 1 + totalImages) % totalImages, // Loop to the end
       };
     });
+  };
+
+  const handleEditClick = (ad) => {
+    dispatch(editAds(ad));
+    router.push(`/create-ad?edit=true`);
   };
 
   return (
@@ -182,10 +200,12 @@ const Ads: React.FC = () => {
           return (
             <Grid item xs={12} sm={6} md={4} key={ad._id}>
               <AdCard
+                myAds={filter === "all" ? false : true}
                 ad={ad}
                 currentIndex={currentIndex}
                 onNext={() => handleNextImage(ad._id)}
                 onPrev={() => handlePrevImage(ad._id)}
+                onEditClick={() => handleEditClick(ad)}
               />
             </Grid>
           );

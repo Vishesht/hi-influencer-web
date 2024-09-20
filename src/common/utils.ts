@@ -1,5 +1,5 @@
-// export const BaseUrl = "http://localhost:5001";
-export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
+export const BaseUrl = "http://localhost:5001";
+// export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
 export const ProfileCheckRegex = /^\/user\/[^\/]+$/;
 
 export const imgPlaceholderImg = "https://i.pravatar.cc/300";
@@ -30,7 +30,7 @@ export const socialMediaPlatforms = [
   "Telegram",
 ];
 
-export const cleanImageUrl = (url, fix) => {
+export const cleanImageUrl = (url, fix?) => {
   if (url?.includes("googleusercontent.com")) {
     return url.split("=")[0];
   }
