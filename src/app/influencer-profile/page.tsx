@@ -18,6 +18,7 @@ import ImageGallery from "../../components/imageGallery";
 import ReviewsList from "../../components/reviewsList";
 import HireModal from "../../components/HireModal";
 import SavedPackage from "@/components/SavedPackage";
+import { useAppSelector } from "@/lib/hooks";
 
 // Styled components
 const ProfileContainer = styled(Container)(({ theme }) => ({
@@ -61,11 +62,12 @@ const PackageCard = styled(Card)(({ theme }) => ({
 
 const InfluencerProfile = ({ searchParams }: any) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const data = useAppSelector((state) => state.influencer);
+  const influencer = data?.influencer;
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
-  const influencer = JSON?.parse(searchParams.influencer);
   // const SocialMediaIcon = (platformData, src) => (
   //   <Image
   //     src={src}
