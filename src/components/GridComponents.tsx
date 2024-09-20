@@ -1,11 +1,26 @@
 "use client";
 import React from "react";
-import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
-import { cleanImageUrl, imgPlaceholderImg } from "@/common/utils";
-import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Box,
+  Button,
+} from "@mui/material";
+import { cleanImageUrl } from "@/common/utils";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { influencerData } from "@/lib/features/influencer/influencerSlice";
+import { useRouter } from "next/navigation";
 
 const GridComponent = ({ data }) => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const handleSubmit = (item) => {
+    dispatch(influencerData(item));
+    router.push("/influencer-profile");
+  };
   return (
     <Box
       sx={{
@@ -25,15 +40,9 @@ const GridComponent = ({ data }) => {
       {data.map((item, index) => {
         const imgUrl = cleanImageUrl(item.photoURL, index);
         return (
-          <Link
-            key={index}
-            href={{
-              pathname: "/influencer-profile",
-              query: {
-                influencer: JSON.stringify(item),
-              },
-            }}
-            passHref
+          <Button
+            onClick={() => handleSubmit(item)}
+            style={{ padding: 0, textTransform: "none" }}
           >
             <Card
               key={index}
@@ -121,7 +130,7 @@ const GridComponent = ({ data }) => {
                 </Typography>
               </CardContent>
             </Card>
-          </Link>
+          </Button>
         );
       })}
     </Box>
