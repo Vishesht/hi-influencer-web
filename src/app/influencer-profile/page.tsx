@@ -77,9 +77,12 @@ const InfluencerProfile = ({ searchParams }: any) => {
   // );
 
   const SocialMediaIcon = (platformData: any, link: any) => {
+    const formattedLink = platformData.platformLink.startsWith("http")
+      ? platformData.platformLink
+      : `https://${platformData.platformLink}`;
     return (
       <IconButton
-        href={platformData.platformLink}
+        href={formattedLink}
         target="_blank"
         sx={{
           p: 0, // Remove default padding

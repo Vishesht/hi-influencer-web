@@ -9,6 +9,7 @@ import {
   FormControl,
   Grid,
   Card,
+  Box,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import SavedPackage from "./SavedPackage";
@@ -315,9 +316,23 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
   };
 
   const renderSavedPackages = () => {
-    return savedPackages.map((pkg) => (
-      <SavedPackage key={pkg.name} pkg={pkg} isEdit={false} />
-    ));
+    return (
+      <Box>
+      {savedPackages?.length > 0 && (
+        <Typography
+          variant="h6"
+          sx={{ marginBottom: 2, fontWeight: "bold", mt:4 }}
+        >
+          Packages
+        </Typography>
+      )}
+      <Grid container spacing={3} direction={{ xs: "column", sm: "row" }}>
+        {savedPackages?.map((pkg) => (
+          <SavedPackage key={pkg.name} pkg={pkg} isEdit={false} />
+        ))}
+      </Grid>
+    </Box>
+    )
   };
 
   return (
@@ -359,11 +374,6 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
       >
         Save Package
       </Button>
-
-      <Typography variant="h6" gutterBottom style={{ marginTop: 30 }}>
-        Saved Packages
-      </Typography>
-
       {savedPackages?.length > 0 && renderSavedPackages()}
     </div>
   );

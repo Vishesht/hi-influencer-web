@@ -13,7 +13,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[3],
-  height: 300,
+  height: 260,
 }));
 
 const packagesData = [
@@ -64,14 +64,14 @@ const SavedPackage = ({ pkg, isEdit }) => {
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               {pkg.name}
             </Typography>
-            <Typography
+            {/* <Typography
               variant="subtitle1"
               sx={{ color: "text.secondary", marginBottom: 1 }}
             >
               {pkg.price || "Price not specified"}
-            </Typography>
+            </Typography> */}
             <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-              <strong>Description:</strong> {packageDescription}
+              <strong></strong> {packageDescription}
             </Typography>
             {pkg.name === "Promotions" && (
               <>
