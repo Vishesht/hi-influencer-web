@@ -11,11 +11,14 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -33,21 +36,50 @@ const OrderCard = styled(Card)(({ theme, bgColor }) => ({
 }));
 
 const Orders: React.FC = () => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [filter, setFilter] = useState<string>("All");
+  const [tabIndex, setTabIndex] = useState<number>(0); // To manage tabs
   const data = useAppSelector((state) => state.login.userData);
   const [orderData, setOrders] = useState<any>([]);
+  const [requestData, setRequests] = useState<any>([]); // State for requests
+  const paymentStatus = useAppSelector((state) => state.payment.paymentStatus);
 
   useEffect(() => {
-    getOrders();
-  }, [data?.id]);
+    if (paymentStatus && tabIndex === 0) {
+      getOrders();
+    }
+  }, [paymentStatus]);
+
+  useEffect(() => {
+    if (tabIndex === 0) {
+      getOrders();
+    } else {
+      getRequests(); // Fetch requests when the Requests tab is active
+    }
+  }, [data?.id, tabIndex]);
 
   const getOrders = async () => {
     try {
       const response = await axios.get(`${BaseUrl}/api/getorders/${data?.id}`);
-      const orders = response.data.userOrders || [];
-      setOrders(orders); // Set all orders
+      setOrders(response.data);
+      dispatch(paymentStatus(false));
     } catch (err) {
       console.error("Error fetching orders", err);
+    }
+  };
+
+  const getRequests = async () => {
+    try {
+      const response = await axios.get(
+        `${BaseUrl}/api/getOrderByInfluencerId/${data?.id}`
+      );
+      setRequests(response.data);
+    } catch (err) {
+      console.error("Error fetching orders", err);
+      if (err.status === 404) {
+        setRequests([]);
+      }
     }
   };
 
@@ -59,17 +91,21 @@ const Orders: React.FC = () => {
     (order) => filter === "All" || order.status === filter
   );
 
+  const filteredRequests = requestData.filter(
+    (request) => filter === "All" || request.status === filter
+  );
+
   const getStatusBackgroundColor = (status: string) => {
     switch (status) {
       case "In Review":
         return "#ffeb3b80"; // Yellow
       case "Pending for approval":
         return "#2196f380"; // Blue
-      case "Approved":
+      case "Payment Completed":
         return "#4caf5080"; // Green
-      case "Completed":
+      case "Task Completed":
         return "#9e9e9e80"; // Grey
-      case "Cancelled":
+      case "Rejected":
         return "#ff000080"; // Red
       case "Requested":
         return "#ff9800"; // Orange for requested orders
@@ -80,145 +116,207 @@ const Orders: React.FC = () => {
     }
   };
 
-  const handleAcceptOrder = async (orderId: string) => {};
+  const handleAcceptOrder = async (_id: string) => {
+    try {
+      const newStatus = "Waiting for payment";
+      await axios
+        .put(`${BaseUrl}/api/changeStatus`, { _id, newStatus })
+        .then((res) => console.log("res", res))
+        .catch((err) => console.log("Err", err));
+      getRequests();
+    } catch (error) {
+      console.error("Error approving order:", error);
+    }
+  };
 
-  const handleRejectOrder = async (orderId: string) => {};
+  const handleRejectOrder = async (_id: string) => {
+    try {
+      const newStatus = "Rejected";
+      await axios
+        .put(`${BaseUrl}/api/changeStatus`, { _id, newStatus })
+        .then((res) => console.log("res", res))
+        .catch((err) => console.log("Err", err));
+      getRequests();
+    } catch (error) {
+      console.error("Error approving order:", error);
+    }
+  };
+
   return (
     <StyledBox>
+      <Tabs
+        value={tabIndex}
+        onChange={(event, newValue) => setTabIndex(newValue)}
+      >
+        <Tab label="Orders" />
+        <Tab label="Requests" />
+      </Tabs>
+
       <FilterBox>
         <FormControl fullWidth>
           <InputLabel>Status</InputLabel>
           <Select value={filter} onChange={handleFilterChange} label="Status">
             <MenuItem value="All">All</MenuItem>
-            <MenuItem value="New">New</MenuItem>
             <MenuItem value="In Review">In Review</MenuItem>
             <MenuItem value="Pending for approval">
               Pending for approval
             </MenuItem>
-            <MenuItem value="Approved">Approved</MenuItem>
-            <MenuItem value="Completed">Completed</MenuItem>
-            <MenuItem value="Cancelled">Cancelled</MenuItem>
-            <MenuItem value="Requested">Requested</MenuItem>
+            <MenuItem value="Waiting for payment">Waiting for payment</MenuItem>
+            <MenuItem value="Payment Completed">Payment Completed</MenuItem>
+            <MenuItem value="Task Completed">Task Completed</MenuItem>
+            <MenuItem value="Rejected">Rejected</MenuItem>
           </Select>
         </FormControl>
       </FilterBox>
 
       <Grid container spacing={3}>
-        {filteredOrders.map((order: any) => (
-          <Grid item xs={12} sm={6} md={4} key={order._id}>
-            <OrderCard bgColor={getStatusBackgroundColor(order.status)}>
-              <CardContent>
-                <Typography variant="h5" gutterBottom>
-                  Package Name: {order.orderDetails.pkgName}
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                  Influencer: {order.influencerDetails.name}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  Status: <strong>{order.status}</strong>
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  Created At: {new Date(order.createdAt).toLocaleString()}
-                </Typography>
-
-                <Box mt={2}>
-                  <Typography variant="body2" fontWeight="bold">
-                    Order Details:
+        {(tabIndex === 0 ? filteredOrders : filteredRequests).map(
+          (item: any) => (
+            <Grid item xs={12} sm={6} md={4} key={item._id}>
+              <OrderCard bgColor={getStatusBackgroundColor(item.status)}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom>
+                    Package Name: {item.orderDetails[0].pkgName}
                   </Typography>
-                  <Typography variant="body2">Order ID: {order._id}</Typography>
-                  {order.orderDetails.socialMediaAccount && (
-                    <Typography variant="body2">
-                      Social Media Account:{" "}
-                      {order.orderDetails.socialMediaAccount}
+                  <Typography variant="body1" gutterBottom>
+                    Status: <strong>{item.status}</strong>
+                  </Typography>
+                  {item.status === "Payment Completed" && (
+                    <Typography variant="body1" gutterBottom>
+                      {tabIndex === 0
+                        ? "Note: Please allow some time for the influencer to complete your task. In the meantime, feel free to check the chat section for updates or to inquire about your task."
+                        : "Alert: Please begin working on the task assigned to you."}
                     </Typography>
                   )}
-                  {order.orderDetails.title && (
-                    <Typography variant="body2">
-                      Title: {order.orderDetails.title}
+                  <Typography variant="body2" gutterBottom>
+                    Created At: {new Date(item.createdAt).toLocaleString()}
+                  </Typography>
+
+                  <Box mt={2}>
+                    <Typography variant="body2" fontWeight="bold">
+                      Order Details:
                     </Typography>
-                  )}
-                  {order.orderDetails.description && (
                     <Typography variant="body2">
-                      Description: {order.orderDetails.description}
+                      Order ID: {item._id}
                     </Typography>
-                  )}
-                  {order.orderDetails.phone && (
-                    <Typography variant="body2">
-                      Phone: {order.orderDetails.phone}
-                    </Typography>
-                  )}
-                  {order.orderDetails.timing && (
-                    <Typography variant="body2">
-                      Timing: {order.orderDetails.timing}
-                    </Typography>
-                  )}
-                  {order.orderDetails.location && (
-                    <Typography variant="body2">
-                      Location: {order.orderDetails.location}
-                    </Typography>
-                  )}
-                  {order.orderDetails.negotiablePrice && (
-                    <Typography variant="body2">
-                      Price: {order.orderDetails.negotiablePrice}
-                    </Typography>
-                  )}
-                  {order.orderDetails.images?.length > 0 && (
-                    <Box mt={1}>
-                      <Typography variant="body2" fontWeight="bold">
-                        Images:
+                    {item.orderDetails[0].socialMediaAccount && (
+                      <Typography variant="body2">
+                        Social Media Account:{" "}
+                        {item.orderDetails[0].socialMediaAccount}
                       </Typography>
-                      {order.orderDetails.images.map(
-                        (img: string, index: number) => (
-                          <img
-                            key={index}
-                            src={img}
-                            alt={`Order Image ${index}`}
-                            style={{
-                              width: "100%",
-                              height: "auto",
-                              marginBottom: "5px",
-                            }}
-                          />
-                        )
-                      )}
+                    )}
+                    {item.orderDetails[0].title && (
+                      <Typography variant="body2">
+                        Title: {item.orderDetails[0].title}
+                      </Typography>
+                    )}
+                    {item.orderDetails[0].description && (
+                      <Typography variant="body2">
+                        Description: {item.orderDetails[0].description}
+                      </Typography>
+                    )}
+                    {item.orderDetails[0].phone && (
+                      <Typography variant="body2">
+                        Phone: {item.orderDetails[0].phone}
+                      </Typography>
+                    )}
+                    {item.orderDetails[0].timing && (
+                      <Typography variant="body2">
+                        Timing: {item.orderDetails[0].timing}
+                      </Typography>
+                    )}
+                    {item.orderDetails[0].location && (
+                      <Typography variant="body2">
+                        Location: {item.orderDetails[0].location}
+                      </Typography>
+                    )}
+                    {item.orderDetails[0].negotiablePrice && (
+                      <Typography variant="body2">
+                        Price: {item.orderDetails[0].negotiablePrice}
+                      </Typography>
+                    )}
+                    {item.orderDetails[0].images?.length > 0 && (
+                      <Box mt={1}>
+                        <Typography variant="body2" fontWeight="bold">
+                          Images:
+                        </Typography>
+                        {item.orderDetails[0].images.map(
+                          (img: string, index: number) => (
+                            <img
+                              key={index}
+                              src={img}
+                              alt={`Order Image ${index}`}
+                              style={{
+                                width: "100%",
+                                height: "auto",
+                                marginBottom: "5px",
+                              }}
+                            />
+                          )
+                        )}
+                      </Box>
+                    )}
+                  </Box>
+                  {item.status === "Payment Completed" && (
+                    <Box mt={2} sx={{ display: "flex" }}>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => null}
+                        sx={{ marginRight: 1 }}
+                      >
+                        Chat
+                      </Button>
+                      {tabIndex === 1 &&
+                        item.status === "Payment Completed" && (
+                          <Button
+                            variant="contained"
+                            color="success"
+                            onClick={() => null}
+                            sx={{ marginRight: 1 }}
+                          >
+                            View Details
+                          </Button>
+                        )}
                     </Box>
                   )}
-                </Box>
 
-                {order.status === "New" && (
-                  <Box mt={2}>
+                  {tabIndex === 1 && item.status === "Pending for approval" && (
+                    <Box mt={2}>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => handleAcceptOrder(item._id)}
+                        sx={{ marginRight: 1 }}
+                      >
+                        Accept
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleRejectOrder(item._id)}
+                      >
+                        Reject
+                      </Button>
+                    </Box>
+                  )}
+
+                  {tabIndex === 0 && item.status === "Waiting for payment" && (
                     <Button
                       variant="contained"
-                      color="success"
-                      onClick={() => handleAcceptOrder(order._id)}
-                      sx={{ marginRight: 1 }}
+                      color="primary"
+                      fullWidth
+                      sx={{ marginTop: 2 }}
+                      onClick={() => router?.push(`payment?_id=${item._id}`)}
                     >
-                      Accept
+                      Pay
                     </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleRejectOrder(order._id)}
-                    >
-                      Reject
-                    </Button>
-                  </Box>
-                )}
-
-                {order.status === "Approved" && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                  >
-                    Pay
-                  </Button>
-                )}
-              </CardContent>
-            </OrderCard>
-          </Grid>
-        ))}
+                  )}
+                </CardContent>
+              </OrderCard>
+            </Grid>
+          )
+        )}
       </Grid>
     </StyledBox>
   );

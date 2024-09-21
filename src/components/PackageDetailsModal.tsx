@@ -35,12 +35,18 @@ const PackageDetailsModal = ({ open, onClose, pkg, influencerId }) => {
   };
 
   const handleSubmit = async () => {
-    const item = { ...formData, images, pkgName: pkg.name };
+    const item = {
+      ...formData,
+      images,
+      pkgName: pkg.name,
+      loggedUserId: data?.id,
+      influencerId: influencerId,
+    };
     try {
       const cred = {
-        loggedUserId: data?.id,
         orderDetails: item,
         status: "In Review",
+        loggedUserId: data?.id,
         influencerId: influencerId,
       };
       await axios
@@ -51,13 +57,11 @@ const PackageDetailsModal = ({ open, onClose, pkg, influencerId }) => {
               showAlert({
                 message: "Your request is submitted for approval",
                 confirmText: "Ok",
-                // cancelText: "No",
-                onConfirm: () => {
-                  router.push("/orders");
-                },
-                // onCancel: () => console.log("Cancelled"),
               })
             );
+            setTimeout(() => {
+              router.push("/orders");
+            }, 0);
           } else {
             console.log("firsterr", res);
           }
