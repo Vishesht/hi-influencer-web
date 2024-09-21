@@ -7,11 +7,20 @@ import {
   Typography,
   Box,
   Button,
+  IconButton,
 } from "@mui/material";
 import { cleanImageUrl } from "@/common/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { influencerData } from "@/lib/features/influencer/influencerSlice";
 import { useRouter } from "next/navigation";
+import { styled } from "@mui/system";
+import Image from "next/image";
+
+const PlatformList = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+}));
 
 const GridComponent = ({ data }) => {
   const dispatch = useAppDispatch();
@@ -21,6 +30,19 @@ const GridComponent = ({ data }) => {
     dispatch(influencerData(item));
     router.push("/influencer-profile");
   };
+
+  const SocialMediaIcon = (platformData: any, link: any) => {
+    return (
+      <Image
+        src={link}
+        alt={platformData.platform}
+        width={20} // Adjust size as needed
+        height={20} // Adjust size as needed
+        style={{ borderRadius: "50%" }} // Round the image
+      />
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -71,11 +93,11 @@ const GridComponent = ({ data }) => {
               />
               <CardContent
                 sx={{
-                  height: 120,
+                  height: 140,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
-                  p: 1,
+                  alignItems: "center",
                 }}
               >
                 <Typography
@@ -123,11 +145,46 @@ const GridComponent = ({ data }) => {
                   color="text.secondary"
                   sx={{
                     fontFamily: "sans-serif",
-                    mb: 0.5,
                   }}
                 >
                   {item.state}
                 </Typography>
+                <PlatformList>
+                  {item.platform.map((platformData: any, index: any) => (
+                    <Box
+                      key={index}
+                      display="flex"
+                      alignItems="center"
+                      flexDirection={{ xs: "column", sm: "row" }}
+                    >
+                      <IconButton
+                        href={platformData.platformLink}
+                        target="_blank"
+                      >
+                        {platformData.platform === "Instagram"
+                          ? SocialMediaIcon(
+                              platformData,
+                              "/assets/images/instagram.png"
+                            )
+                          : platformData.platform === "Youtube"
+                          ? SocialMediaIcon(
+                              platformData,
+                              "/assets/images/youtube.png"
+                            )
+                          : platformData.platform === "Twitter"
+                          ? SocialMediaIcon(
+                              platformData,
+                              "/assets/images/twitter.png"
+                            )
+                          : platformData.platform === "Facebook" &&
+                            SocialMediaIcon(
+                              platformData,
+                              "/assets/images/facebook.png"
+                            )}
+                      </IconButton>
+                    </Box>
+                  ))}
+                </PlatformList>
               </CardContent>
             </Card>
           </Button>
