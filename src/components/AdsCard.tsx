@@ -14,6 +14,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PersonIcon from "@mui/icons-material/Person";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { truncateText } from "@/common/utils";
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -41,7 +42,7 @@ const AdImage = styled("img")(({ theme }) => ({
 
 const DetailsContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
-  height: "280px",
+  height: "300px",
 }));
 
 const DetailItem = styled(Box)(({ theme }) => ({
@@ -106,11 +107,11 @@ const AdCard: React.FC<AdCardProps> = ({
         </IconButton>
       </ImageContainer>
       <DetailsContainer>
-        <Typography variant="h6" sx={{ fontWeight: 600, marginBottom: 1 }}>
+        <Typography sx={{ fontSize: 19, fontWeight: 600, marginBottom: 1 }}>
           {ad.title}
         </Typography>
         <Typography variant="body2" sx={{ marginBottom: 2 }}>
-          {ad.desc}
+          {truncateText(ad?.desc, 100)}
         </Typography>
         <DetailItem>
           <CategoryIcon fontSize="small" />
@@ -153,10 +154,11 @@ const AdCard: React.FC<AdCardProps> = ({
               variant="contained"
               color="primary"
               sx={{
-                marginTop: "auto",
+                height: 30,
+                width: 60,
                 borderRadius: "20px",
                 textTransform: "none",
-                fontWeight: 600,
+                fontWeight: 500,
                 "&:hover": {
                   backgroundColor: "#0b5ed7",
                 },

@@ -4,7 +4,8 @@ import storage from "redux-persist/lib/storage";
 import loginReducer from "@/lib/features/login/loginSlice";
 import alertReducer from "@/lib/features/alert/alertSlice";
 import adsReducer from "@/lib/features/Ads/AdsSlice";
-import influencerReducer from  "@/lib/features/influencer/influencerSlice"
+import influencerReducer from "@/lib/features/influencer/influencerSlice";
+import paymentReducer from "@/lib/features/Payments/paymentSlice";
 
 const persistConfig = {
   key: "root",
@@ -19,7 +20,8 @@ export const store: any = configureStore({
     login: persistedReducer,
     alert: alertReducer,
     ads: adsReducer,
-    influencer:influencerReducer
+    influencer: influencerReducer,
+    payment: paymentReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

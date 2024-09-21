@@ -1,5 +1,5 @@
-// export const BaseUrl = "http://localhost:5001";
-export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
+export const BaseUrl = "http://localhost:5001";
+// export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
 export const ProfileCheckRegex = /^\/user\/[^\/]+$/;
 
 export const imgPlaceholderImg = "https://i.pravatar.cc/300";
@@ -37,4 +37,8 @@ export const cleanImageUrl = (url, fix?) => {
 
   const uniqueId = fix ? fix : Math.floor(Math.random() * 100000);
   return url ? url : `https://i.pravatar.cc/150?u=${uniqueId}`;
+};
+
+export const truncateText = (text, charLimit) => {
+  return text.length > charLimit ? text.slice(0, charLimit) + "..." : text;
 };

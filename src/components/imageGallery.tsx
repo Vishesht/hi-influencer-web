@@ -9,7 +9,7 @@ const ImageGallery = ({ images }) => (
       gap: "16px", // Adds consistent spacing between images
     }}
   >
-    {images.map((image, index) => (
+    {images?.map((image, index) => (
       <div
         key={index}
         style={{
