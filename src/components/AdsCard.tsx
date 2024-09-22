@@ -78,6 +78,7 @@ interface AdCardProps {
   onEditClick: () => void;
   onApply: () => void;
   isApplied: boolean;
+  isApproved: boolean;
   refreshData: () => void;
 }
 
@@ -90,6 +91,7 @@ const AdCard: React.FC<AdCardProps> = ({
   onEditClick,
   onApply,
   isApplied,
+  isApproved,
   refreshData,
 }) => {
   const [popupOpen, setPopupOpen] = useState(false);
@@ -181,22 +183,37 @@ const AdCard: React.FC<AdCardProps> = ({
           </DetailItem>
 
           <Button
-            disabled={isApplied}
+            // disabled={isApplied || isApproved}
             variant="contained"
             color="primary"
             sx={{
               height: 30,
-              width: 60,
+              width: 80,
               borderRadius: "20px",
               textTransform: "none",
               fontWeight: 500,
+              backgroundColor: isApplied
+                ? "#FFC400"
+                : isApproved
+                ? "#28a745"
+                : "#24A0ED", // Conditional background color
               "&:hover": {
-                backgroundColor: "#0b5ed7",
+                backgroundColor: isApplied
+                  ? "#FFB000"
+                  : isApproved
+                  ? "#218838"
+                  : "#007bff",
               },
             }}
             onClick={myAds ? onEditClick : onApply}
           >
-            {myAds ? "Edit" : isApplied ? "Applied" : "Apply"}
+            {myAds
+              ? "Edit"
+              : isApplied
+              ? "Applied"
+              : isApproved
+              ? "Approved"
+              : "Apply"}
           </Button>
         </Box>
         {myAds && (
@@ -206,7 +223,16 @@ const AdCard: React.FC<AdCardProps> = ({
               variant="body2"
               color="textPrimary"
               onClick={myAds ? () => handleOpenPopup("Requested") : null}
-              style={{ cursor: "pointer" }}
+              sx={{
+                cursor: "pointer",
+                padding: "5px 12px", // Add padding to mimic button size
+                borderRadius: "20px",
+                backgroundColor: "#e0e0e0", // Light background color
+                transition: "background-color 0.3s",
+                "&:hover": {
+                  backgroundColor: "#d3d3d3", // Darker shade on hover
+                },
+              }}
             >
               {ad.applicants.length}
             </Typography>
@@ -218,7 +244,16 @@ const AdCard: React.FC<AdCardProps> = ({
             variant="body2"
             color="textPrimary"
             onClick={myAds ? () => handleOpenPopup("Total") : null}
-            style={{ cursor: "pointer" }}
+            sx={{
+              cursor: "pointer",
+              padding: "5px 12px", // Add padding to mimic button size
+              borderRadius: "20px",
+              backgroundColor: "#e0e0e0", // Light background color
+              transition: "background-color 0.3s",
+              "&:hover": {
+                backgroundColor: "#d3d3d3", // Darker shade on hover
+              },
+            }}
           >
             {ad.accepted.length}
           </Typography>

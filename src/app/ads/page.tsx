@@ -68,7 +68,21 @@ const Ads: React.FC = () => {
     fetchAds();
   }, [data?.id]);
 
-  const filteredAds = filter === "all" ? adsData : myAdsData;
+  const filteredAds = () => {
+    const baseAds = filter === "all" ? adsData : myAdsData;
+
+    if (!searchTerm) return baseAds; // Return all ads if no search term
+
+    return baseAds.filter((ad) => {
+      const titleMatch = ad.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const locationMatch = ad.state
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()); // Adjust this based on your ad structure
+      return titleMatch || locationMatch; // Include ads that match title or location
+    });
+  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -195,11 +209,11 @@ const Ads: React.FC = () => {
       </FilterContainer>
 
       <Grid container spacing={2}>
-        {filteredAds.map((ad) => {
+        {filteredAds().map((ad) => {
           const currentIndex = currentImageIndices[ad._id] ?? 0;
-          const isApplied =
-            ad?.applicants.includes(data?.id) ||
-            ad?.accepted.includes(data?.id);
+          const isApplied = ad?.applicants.includes(data?.id);
+
+          const isApproved = ad?.accepted.includes(data?.id);
 
           return (
             <Grid item xs={12} sm={6} md={4} key={ad._id}>
@@ -212,6 +226,7 @@ const Ads: React.FC = () => {
                 onEditClick={() => handleEditClick(ad)}
                 onApply={() => handleApplyAd(ad)}
                 isApplied={isApplied}
+                isApproved={isApproved}
                 refreshData={() => fetchAds()}
               />
             </Grid>

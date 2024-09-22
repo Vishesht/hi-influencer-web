@@ -13,6 +13,7 @@ const ListModal = ({
   platformModalOpen,
   setPlatformModalOpen,
   socialMediaPlatforms,
+  onSelect, // Add the onSelect prop
 }) => (
   <Modal
     open={platformModalOpen}
@@ -48,7 +49,7 @@ const ListModal = ({
         {title}
       </Typography>
       <List>
-        {socialMediaPlatforms.map((platform, index) => (
+        {socialMediaPlatforms.map((platform) => (
           <ListItem
             key={platform}
             sx={{
@@ -59,9 +60,10 @@ const ListModal = ({
                 cursor: "pointer",
               },
             }}
-            component="div" // Ensures the correct HTML element is used
+            component="div"
             onClick={() => {
-              setPlatformModalOpen(false);
+              onSelect(platform); // Call onSelect with the selected platform
+              setPlatformModalOpen(false); // Close the modal
             }}
           >
             <ListItemText sx={{ color: "#333" }} primary={platform} />
