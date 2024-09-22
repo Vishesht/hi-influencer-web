@@ -42,44 +42,33 @@ const Ads: React.FC = () => {
   const [filter, setFilter] = useState("all");
   const data = useAppSelector((state) => state.login.userData);
 
-  useEffect(() => {
-    const fetchAds = async () => {
-      try {
-        const response = await axios.get(`${BaseUrl}/api/getallads`, {
+  const fetchAds = async () => {
+    try {
+      const response = await axios.get(`${BaseUrl}/api/getallads/${data?.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setAdsData(response.data);
+
+      if (data?.id) {
+        const res = await axios.get(`${BaseUrl}/api/getuserads/${data.id}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        setAdsData(response.data);
-
-        if (data?.id) {
-          const res = await axios.get(`${BaseUrl}/api/getuserads/${data.id}`, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          setMyAdsData(res.data);
-        }
-      } catch (error) {
-        console.error("Error fetching ads:", error);
+        setMyAdsData(res.data);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching ads:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchAds();
   }, [data?.id]);
 
-  const filteredAds = adsData.filter((ad) => {
-    const matchesSearchTerm =
-      ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ad.state.toLowerCase().includes(searchTerm.toLowerCase());
-
-    // Check if the filter is "myAds"
-    const matchesFilter =
-      filter === "all" ||
-      (filter === "myAds" && myAdsData.some((userAd) => userAd.id === ad.id));
-
-    return matchesSearchTerm && matchesFilter;
-  });
+  const filteredAds = filter === "all" ? adsData : myAdsData;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -123,6 +112,17 @@ const Ads: React.FC = () => {
   const handleEditClick = (ad) => {
     dispatch(editAds(ad));
     router.push(`/create-ad?edit=true`);
+  };
+
+  const handleApplyAd = async (ad) => {
+    try {
+      const response = await axios.post(`${BaseUrl}/api/ads/${ad._id}/apply`, {
+        userId: data.id,
+      });
+      fetchAds();
+    } catch (error) {
+      console.error("Error applying for ad:", error);
+    }
   };
 
   return (
@@ -197,6 +197,10 @@ const Ads: React.FC = () => {
       <Grid container spacing={2}>
         {filteredAds.map((ad) => {
           const currentIndex = currentImageIndices[ad._id] ?? 0;
+          const isApplied =
+            ad?.applicants.includes(data?.id) ||
+            ad?.accepted.includes(data?.id);
+
           return (
             <Grid item xs={12} sm={6} md={4} key={ad._id}>
               <AdCard
@@ -206,6 +210,9 @@ const Ads: React.FC = () => {
                 onNext={() => handleNextImage(ad._id)}
                 onPrev={() => handlePrevImage(ad._id)}
                 onEditClick={() => handleEditClick(ad)}
+                onApply={() => handleApplyAd(ad)}
+                isApplied={isApplied}
+                refreshData={() => fetchAds()}
               />
             </Grid>
           );
