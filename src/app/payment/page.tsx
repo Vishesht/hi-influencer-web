@@ -61,8 +61,8 @@ const PaymentPage: React.FC = ({ searchParams }) => {
       await axios
         .put(`${BaseUrl}/api/changeStatus`, { _id, newStatus })
         .then((res) => {
-          dispatch(paymentStatus(false));
-          router.back();
+          dispatch(paymentStatus(true));
+          router.push("orders");
         })
         .catch((err) => console.log("Err", err));
     } catch (error) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -15,6 +15,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { truncateText } from "@/common/utils";
+import ApplicantsPopup from "./ApplicantsPopup";
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -42,7 +43,7 @@ const AdImage = styled("img")(({ theme }) => ({
 
 const DetailsContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
-  height: "300px",
+  height: "340px",
 }));
 
 const DetailItem = styled(Box)(({ theme }) => ({
@@ -67,12 +68,17 @@ interface AdCardProps {
     createdAt: string;
     budget: string;
     adsImages: string[];
+    applicants: string[];
+    accepted: string[];
   };
   myAds: boolean;
   currentIndex: number;
   onNext: () => void;
   onPrev: () => void;
   onEditClick: () => void;
+  onApply: () => void;
+  isApplied: boolean;
+  refreshData: () => void;
 }
 
 const AdCard: React.FC<AdCardProps> = ({
@@ -82,7 +88,30 @@ const AdCard: React.FC<AdCardProps> = ({
   onNext,
   onPrev,
   onEditClick,
+  onApply,
+  isApplied,
+  refreshData,
 }) => {
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [applicantsData, setApplicantsData] = useState([]);
+  const [applicant, setApplicants] = useState("");
+
+  const handleOpenPopup = (applicant) => {
+    if (applicant === "Requested") {
+      setApplicantsData(ad.applicants);
+    } else {
+      setApplicantsData(ad.accepted);
+    }
+    setApplicants(applicant);
+    setPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    refreshData();
+    setApplicantsData([]);
+    setPopupOpen(false);
+  };
+
   return (
     <StyledCard>
       <ImageContainer>
@@ -141,6 +170,7 @@ const AdCard: React.FC<AdCardProps> = ({
             {new Date(ad.createdAt).toLocaleDateString()}
           </Typography>
         </DetailItem>
+
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <DetailItem>
             <AttachMoneyIcon fontSize="small" />
@@ -149,27 +179,58 @@ const AdCard: React.FC<AdCardProps> = ({
               {ad.budget}
             </Typography>
           </DetailItem>
-          {myAds && (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                height: 30,
-                width: 60,
-                borderRadius: "20px",
-                textTransform: "none",
-                fontWeight: 500,
-                "&:hover": {
-                  backgroundColor: "#0b5ed7",
-                },
-              }}
-              onClick={onEditClick}
-            >
-              Edit
-            </Button>
-          )}
+
+          <Button
+            disabled={isApplied}
+            variant="contained"
+            color="primary"
+            sx={{
+              height: 30,
+              width: 60,
+              borderRadius: "20px",
+              textTransform: "none",
+              fontWeight: 500,
+              "&:hover": {
+                backgroundColor: "#0b5ed7",
+              },
+            }}
+            onClick={myAds ? onEditClick : onApply}
+          >
+            {myAds ? "Edit" : isApplied ? "Applied" : "Apply"}
+          </Button>
         </Box>
+        {myAds && (
+          <DetailItem>
+            <DetailLabel variant="body2">Requested Applicants:</DetailLabel>
+            <Typography
+              variant="body2"
+              color="textPrimary"
+              onClick={myAds ? () => handleOpenPopup("Requested") : null}
+              style={{ cursor: "pointer" }}
+            >
+              {ad.applicants.length}
+            </Typography>
+          </DetailItem>
+        )}
+        <DetailItem>
+          <DetailLabel variant="body2">Joined Applicants:</DetailLabel>
+          <Typography
+            variant="body2"
+            color="textPrimary"
+            onClick={myAds ? () => handleOpenPopup("Total") : null}
+            style={{ cursor: "pointer" }}
+          >
+            {ad.accepted.length}
+          </Typography>
+        </DetailItem>
       </DetailsContainer>
+      <ApplicantsPopup
+        applicant={applicant}
+        ad={ad}
+        open={popupOpen}
+        onClose={handleClosePopup}
+        applicantIds={applicantsData}
+      />
     </StyledCard>
   );
 };
