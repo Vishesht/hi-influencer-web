@@ -45,6 +45,20 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setemailError] = useState(false);
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setEmail(value);
+
+    // Regular expression for email validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(value)) {
+      setemailError(true);
+    } else {
+      setemailError(false);
+    }
+  };
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -143,7 +157,8 @@ export default function LoginPage() {
             autoComplete="email"
             autoFocus
             value={email}
-            onChange={(e) => setEmail(e.target.value.toLowerCase())}
+            onChange={handleEmailChange}
+            error={emailError}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
