@@ -67,7 +67,6 @@ export default function LoginPage() {
 
     try {
       const res = await loginUser(email, password);
-      alert(res.message);
       dispatch(add(res.user));
       router.push("/");
     } catch (error) {

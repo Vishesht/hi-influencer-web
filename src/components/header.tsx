@@ -168,9 +168,9 @@ const Header = () => {
               <Button onClick={() => router.push("/payments")} color="inherit">
                 Payment
               </Button>
-              <Button onClick={() => router.push("/download")} color="inherit">
+              {/* <Button onClick={() => router.push("/download")} color="inherit">
                 Download
-              </Button>
+              </Button> */}
               {/* Post a Campaign Button */}
               {postBtn()}
             </>

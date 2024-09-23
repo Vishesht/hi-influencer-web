@@ -9,6 +9,8 @@ import {
   Grid,
   Card,
   CardMedia,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -20,12 +22,14 @@ import TelegramIcon from "@mui/icons-material/Telegram";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
-import { BaseUrl, cleanImageUrl, imgPlaceholderImg } from "@/common/utils";
+import { BaseUrl, checkUserDetails, cleanImageUrl } from "@/common/utils";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { useAppSelector } from "@/lib/hooks";
+import CustomButton from "@/components/CustomButton";
 
 interface User {
+  id: string;
   emailVerified: boolean;
   photoURL: string;
   platform: Array<any>;
@@ -34,6 +38,9 @@ interface User {
   name: string;
   bio: string;
   images: Array<string>;
+  isInfluencer: boolean;
+  verified: boolean;
+  isClient: boolean;
 }
 
 interface FirebaseUser {
@@ -67,11 +74,16 @@ const GalleryImage = styled(CardMedia)(({ theme }) => ({
   },
 }));
 
+const verificationText = "Your account has been submitted for verification.";
+
 const ProfilePage = () => {
   const [user, setUser] = useState<User>();
   const [firebaseData, setFirebaseData] = useState<any>(null);
   const router = useRouter();
   const data = useAppSelector((state) => state.login.userData);
+  const verifyData: any = user ? checkUserDetails(user) : {};
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: any) => {
@@ -85,20 +97,20 @@ const ProfilePage = () => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        if (!data.id) {
-          console.error("User ID not found in local storage.");
-          return;
-        }
-        const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
-        setUser(response.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+  const fetchUserData = async () => {
+    try {
+      if (!data.id) {
+        console.error("User ID not found in local storage.");
+        return;
       }
-    };
+      const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
+      setUser(response.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -111,7 +123,20 @@ const ProfilePage = () => {
     window.open(url, "_blank", "noopener noreferrer");
   };
 
-  const imgUrl = cleanImageUrl(user?.photoURL);
+  const imgUrl = cleanImageUrl(user?.photoURL || data?.photoURL);
+
+  const verifyAcc = async (id) => {
+    try {
+      const res = await axios.put(`${BaseUrl}/api/users/${id}/influencer`);
+      if (res.status == 200) {
+        setSnackbarOpen(true);
+        setSnackbarMessage(verificationText);
+        fetchUserData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <Container>
@@ -140,9 +165,7 @@ const ProfilePage = () => {
           <Typography variant="h4">
             {user?.name || firebaseData?.displayName || data?.name}
           </Typography>
-          {user?.emailVerified && (
-            <CheckCircleIcon sx={{ color: "green", ml: 1 }} />
-          )}
+          {user?.verified && <CheckCircleIcon sx={{ color: "blue", ml: 1 }} />}
         </Box>
 
         {user?.category && (
@@ -197,6 +220,18 @@ const ProfilePage = () => {
           </Box>
         </Box>
 
+        {user && !user?.verified && !user?.isClient && (
+          <CustomButton
+            isInfluencer={!user?.isInfluencer}
+            isEnabled={!verifyData?.userDetailsMissing}
+            onClick={() => verifyAcc(user?.id)}
+            description={
+              !user?.isInfluencer ? verifyData?.message : verificationText
+            }
+          >
+            Verify Account
+          </CustomButton>
+        )}
         {/* Buttons */}
         <Box mt={4} display="flex" justifyContent="center" gap={2}>
           <Button
@@ -237,6 +272,15 @@ const ProfilePage = () => {
           </Grid>
         </Box>
       </Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity="success">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
