@@ -13,23 +13,28 @@ import {
   Toolbar,
   styled,
   AppBar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import { Visibility, VisibilityOff, Email } from "@mui/icons-material";
 import { registerUser } from "@/api/registerUser";
 import { useRouter } from "next/navigation";
 import { add } from "@/lib/features/login/loginSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import SocialMediaLinks from "@/components/SocialMediaLinks";
+import { BaseUrl, imgPlaceholderImg } from "@/common/utils";
+import axios from "axios";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
   left: 0,
   right: 0,
   position: "absolute",
-  backgroundColor: "transparent", // or any color you want
-  boxShadow: "none", // Remove shadow if desired
+  backgroundColor: "transparent",
+  boxShadow: "none",
 });
 
-// Styled component for the icon button
 const IconWrapper = styled(IconButton)({
   position: "absolute",
   top: 16,
@@ -45,20 +50,56 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openSocialMediaDialog, setOpenSocialMediaDialog] = useState(false);
+  const [response, setResponse] = useState<any>();
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
   const handleSignUp = async (event) => {
+    if (password !== confirmPassword) {
+      alert("The password and confirmation do not match.");
+      return;
+    }
     event.preventDefault();
     try {
       const res = await registerUser(name, email, password);
-      alert(res.message);
-      dispatch(add(JSON.stringify(res.user)));
+      setResponse(res);
+      dispatch(add(res.user));
+      setOpenDialog(true);
+    } catch (error) {
+      console.log("Error during signup:", error);
+    }
+  };
+
+  const handleRoleSelection = (role) => {
+    if (role === "brand") {
+      handleSubmit();
+    } else {
+      setOpenSocialMediaDialog(true);
+    }
+    setOpenDialog(false);
+  };
+
+  const handleSubmit = async () => {
+    const updatedData = {
+      id: response.user.id,
+      name: response.user.name,
+      email: response.user.email,
+      isClient: true,
+      photoURL: imgPlaceholderImg,
+    };
+    try {
+      await axios.post(`${BaseUrl}/api/users`, updatedData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      dispatch(add(response.user));
       router.push("/");
     } catch (error) {
-      console.log("first21", error);
+      console.error("Error updating profile:", error);
     }
   };
 
@@ -121,7 +162,6 @@ export default function SignUpPage() {
             label="Email Address"
             name="email"
             autoComplete="email"
-            autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             InputProps={{
@@ -215,6 +255,31 @@ export default function SignUpPage() {
           </Typography>
         </Box>
       </Container>
+
+      {/* Role Selection Dialog */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Select Your Role</DialogTitle>
+        <DialogContent>
+          <Typography>Please choose your role:</Typography>
+          <Button onClick={() => handleRoleSelection("creator")}>
+            Join as Creator/Influencer
+          </Button>
+          <Button onClick={() => handleRoleSelection("brand")}>
+            Join as Brand/Client
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Social Media Input Dialog */}
+      <Dialog
+        open={openSocialMediaDialog}
+        onClose={() => setOpenSocialMediaDialog(false)}
+      >
+        <DialogTitle>Enter Your Social Media Details</DialogTitle>
+        <DialogContent>
+          <SocialMediaLinks />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
