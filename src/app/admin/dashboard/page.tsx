@@ -37,6 +37,9 @@ const AdminDashboard: React.FC = () => {
   const handleViewOrders = () => {
     router?.push("/admin/orders");
   };
+  const handleViewUsers = () => {
+    router?.push("/admin/users");
+  };
   return (
     <StyledContainer maxWidth="lg">
       <Typography variant="h4" gutterBottom>
@@ -49,7 +52,11 @@ const AdminDashboard: React.FC = () => {
               <Typography variant="h5">{dataCounts.users}</Typography>
               <Typography color="textSecondary">Users</Typography>
             </CardContent>
-            <Button variant="contained" color="primary">
+            <Button
+              onClick={handleViewUsers}
+              variant="contained"
+              color="primary"
+            >
               View Users
             </Button>
           </DashboardCard>

@@ -8,6 +8,10 @@ import {
   CardContent,
   Grid,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
@@ -23,7 +27,11 @@ const OrderCard = styled(Card)(({ theme, bgColor }) => ({
   backgroundColor: bgColor,
 }));
 
-const getStatusBackgroundColor = (status: string) => {
+const FilterBox = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+}));
+
+const getStatusBackgroundColor = (status) => {
   switch (status) {
     case "In Review":
       return "#ffeb3b80"; // Yellow
@@ -40,9 +48,10 @@ const getStatusBackgroundColor = (status: string) => {
   }
 };
 
-const AdminOrders: React.FC = () => {
-  const [orders, setOrders] = useState<any[]>([]);
+const AdminOrders = () => {
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("All");
 
   useEffect(() => {
     fetchOrders();
@@ -60,13 +69,23 @@ const AdminOrders: React.FC = () => {
     }
   };
 
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  const filteredOrders =
+    filter === "All"
+      ? orders
+      : orders.filter((order) => order.status === filter);
+
+  const sortedOrders = [...filteredOrders].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
   const approveOrder = async (_id) => {
     try {
       const newStatus = "Pending for approval";
-      await axios
-        .put(`${BaseUrl}/api/changeStatus`, { _id, newStatus })
-        .then((res) => console.log("res", res))
-        .catch((err) => console.log("Err", err));
+      await axios.put(`${BaseUrl}/api/changeStatus`, { _id, newStatus });
       fetchOrders();
     } catch (error) {
       console.error("Error approving order:", error);
@@ -80,21 +99,38 @@ const AdminOrders: React.FC = () => {
       </StyledBox>
     );
   }
+
   return (
     <StyledBox>
       <Typography variant="h4" gutterBottom>
         All Orders
       </Typography>
+      <FilterBox>
+        <FormControl fullWidth>
+          <InputLabel>Status</InputLabel>
+          <Select value={filter} onChange={handleFilterChange} label="Status">
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="In Review">In Review</MenuItem>
+            <MenuItem value="Pending for approval">
+              Pending for approval
+            </MenuItem>
+            <MenuItem value="Waiting for payment">Waiting for payment</MenuItem>
+            <MenuItem value="Payment Completed">Payment Completed</MenuItem>
+            <MenuItem value="Task Completed">Task Completed</MenuItem>
+            <MenuItem value="Rejected">Rejected</MenuItem>
+          </Select>
+        </FormControl>
+      </FilterBox>
       <Grid container spacing={3}>
-        {orders.map((order, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+        {sortedOrders.map((order) => (
+          <Grid item xs={12} sm={6} md={4} key={order._id}>
             <OrderCard bgColor={getStatusBackgroundColor(order.status)}>
               <CardContent>
                 <Typography variant="h5" gutterBottom>
                   Package Name: {order.orderDetails[0].pkgName}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                  InfluencerId: {order.influencerId || "N/A"}
+                  Influencer ID: {order.influencerId || "N/A"}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                   Status: <strong>{order.status}</strong>
@@ -129,16 +165,6 @@ const AdminOrders: React.FC = () => {
                       Phone: {order.orderDetails[0].phone}
                     </Typography>
                   )}
-                  {order.orderDetails[0].timing && (
-                    <Typography variant="body2">
-                      Timing: {order.orderDetails[0].timing}
-                    </Typography>
-                  )}
-                  {order.orderDetails[0].location && (
-                    <Typography variant="body2">
-                      Location: {order.orderDetails[0].location}
-                    </Typography>
-                  )}
                   {order.orderDetails[0].negotiablePrice && (
                     <Typography variant="body2">
                       Price: {order.orderDetails[0].negotiablePrice}
@@ -149,20 +175,18 @@ const AdminOrders: React.FC = () => {
                       <Typography variant="body2" fontWeight="bold">
                         Images:
                       </Typography>
-                      {order.orderDetails[0].images.map(
-                        (img: string, index: number) => (
-                          <img
-                            key={index}
-                            src={img}
-                            alt={`Order Image ${index}`}
-                            style={{
-                              width: "100%",
-                              height: "auto",
-                              marginBottom: "5px",
-                            }}
-                          />
-                        )
-                      )}
+                      {order.orderDetails[0].images.map((img, index) => (
+                        <img
+                          key={index}
+                          src={img}
+                          alt={`Order Image ${index}`}
+                          style={{
+                            width: "100%",
+                            height: "auto",
+                            marginBottom: "5px",
+                          }}
+                        />
+                      ))}
                     </Box>
                   )}
                 </Box>

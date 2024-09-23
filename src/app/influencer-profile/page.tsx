@@ -16,6 +16,7 @@ import ReviewsList from "../../components/reviewsList";
 import HireModal from "../../components/HireModal";
 import SavedPackage from "@/components/SavedPackage";
 import { useAppSelector } from "@/lib/hooks";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const ProfileContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -104,16 +105,27 @@ const InfluencerProfile = () => {
                 ></Avatar>
               </IconButton>
               <Container>
-                <Typography
+                <Box
+                  display="flex"
+                  gap={0}
+                  alignItems="center"
                   sx={{
-                    fontWeight: "bold",
-                    fontFamily: "Roboto, sans-serif",
                     mt: 4,
                   }}
-                  variant="h5"
                 >
-                  {influencer?.name}
-                </Typography>
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      fontFamily: "Roboto, sans-serif",
+                    }}
+                    variant="h5"
+                  >
+                    {influencer?.name}
+                  </Typography>
+                  {influencer?.verified && (
+                    <CheckCircleIcon sx={{ color: "blue", ml: 1 }} />
+                  )}
+                </Box>
                 <Typography
                   sx={{
                     color: "text.secondary",

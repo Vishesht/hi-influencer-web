@@ -156,9 +156,6 @@ const Header = () => {
           {/* Desktop Nav Links */}
           {!isMobile && !isuserProfile && (
             <>
-              <Button onClick={() => router.push("/")} color="inherit">
-                Home
-              </Button>
               <Button onClick={() => router.push("/ads")} color="inherit">
                 Ads
               </Button>
@@ -168,9 +165,9 @@ const Header = () => {
               <Button onClick={() => router.push("/payments")} color="inherit">
                 Payment
               </Button>
-              <Button onClick={() => router.push("/download")} color="inherit">
+              {/* <Button onClick={() => router.push("/download")} color="inherit">
                 Download
-              </Button>
+              </Button> */}
               {/* Post a Campaign Button */}
               {postBtn()}
             </>
@@ -246,7 +243,7 @@ const Header = () => {
               component="div"
               onClick={() => handleListItemClick("/orders")}
             >
-              <ListItemText primary="Your Orders" sx={{ color: "black" }} />
+              <ListItemText primary="Orders" sx={{ color: "black" }} />
             </ListItem>
             <ListItem
               component="div"
@@ -279,32 +276,50 @@ const Header = () => {
       >
         <Box
           sx={{
-            padding: 2,
-            width: 200,
+            p: 2,
+            width: 220,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            {user?.displayName}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" gutterBottom>
-            {user?.email}
-          </Typography>
           <Button
             onClick={() => handleListItemClick("/user")}
+            sx={{
+              width: "100%",
+              textAlign: "left",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Avatar
+              src={data?.photoURL || user?.photoURL}
+              sx={{ width: 40, height: 40, mr: 1 }}
+            >
+              {data?.photoURL || user?.displayName?.[0]}
+            </Avatar>
+            <Box>
+              <Typography sx={{ fontSize: 14, fontWeight: "700" }}>
+                {data?.name}
+              </Typography>
+              <Typography sx={{ fontSize: 14 }} color="textSecondary">
+                {data?.email}
+              </Typography>
+            </Box>
+          </Button>
+          <Button
+            onClick={() => handleListItemClick("/ads")}
             fullWidth
             sx={{ mb: 1 }}
           >
-            Profile
+            Ads
           </Button>
           <Button
             onClick={() => handleListItemClick("/orders")}
             fullWidth
             sx={{ mb: 1 }}
           >
-            Your Orders
+            Orders
           </Button>
           <Button
             onClick={() => handleListItemClick("/payments")}

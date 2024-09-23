@@ -24,6 +24,8 @@ import {
   indianStates,
   imgPlaceholderImg,
   socialMediaPlatforms,
+  genderList,
+  categories,
 } from "@/common/utils";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
@@ -68,10 +70,6 @@ const EditIconStyled = styled(IconButton)({
   },
 });
 
-const categories = ["Influencer", "Blogger", "Content Creator", "Photographer"];
-
-const genderList = ["Male", "Female", "Others"];
-
 const EditProfile: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -90,7 +88,7 @@ const EditProfile: React.FC = () => {
   const [newPlatform, setNewPlatform] = useState({
     name: "",
     link: "",
-    description: "",
+    followers: "",
   });
   const [openDialog, setOpenDialog] = useState(false);
   const data = useAppSelector((state) => state.login.userData);
@@ -231,10 +229,10 @@ const EditProfile: React.FC = () => {
         {
           platform: newPlatform.name,
           platformLink: newPlatform.link,
-          description: newPlatform.description,
+          followers: newPlatform.followers,
         },
       ]);
-      setNewPlatform({ name: "", link: "", description: "" });
+      setNewPlatform({ name: "", link: "", followers: "" });
       setOpenDialog(false);
     }
   };
@@ -491,15 +489,15 @@ const EditProfile: React.FC = () => {
             value={newPlatform.link}
             onChange={handlePlatformChange}
           />
-          {/* <TextField
+          <TextField
             margin="dense"
-            label="Description"
+            label="Followers"
             fullWidth
             variant="outlined"
-            name="description"
-            value={newPlatform.description}
+            name="followers"
+            value={newPlatform.followers}
             onChange={handlePlatformChange}
-          /> */}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
