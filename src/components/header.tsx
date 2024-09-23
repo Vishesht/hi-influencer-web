@@ -284,24 +284,27 @@ const Header = () => {
           }}
         >
           <Button
-            onClick={handleClick}
-            sx={{ width: "100%", textAlign: "left" }}
+            onClick={() => handleListItemClick("/user")}
+            sx={{
+              width: "100%",
+              textAlign: "left",
+              display: "flex",
+              alignItems: "center",
+            }}
           >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar
-                src={data?.photoURL || user?.photoURL}
-                sx={{ width: 40, height: 40, mr: 1 }}
-              >
-                {data?.photoURL || user?.displayName?.[0]}
-              </Avatar>
-              <Box>
-                <Typography sx={{ fontSize: 14, fontWeight: "700" }}>
-                  {data?.name}
-                </Typography>
-                <Typography sx={{ fontSize: 14 }} color="textSecondary">
-                  {data?.email}
-                </Typography>
-              </Box>
+            <Avatar
+              src={data?.photoURL || user?.photoURL}
+              sx={{ width: 40, height: 40, mr: 1 }}
+            >
+              {data?.photoURL || user?.displayName?.[0]}
+            </Avatar>
+            <Box>
+              <Typography sx={{ fontSize: 14, fontWeight: "700" }}>
+                {data?.name}
+              </Typography>
+              <Typography sx={{ fontSize: 14 }} color="textSecondary">
+                {data?.email}
+              </Typography>
             </Box>
           </Button>
           <Button
