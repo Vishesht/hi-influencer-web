@@ -12,3 +12,23 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+
+// Handle background notifications
+messaging.setBackgroundMessageHandler(function (payload) {
+  console.log("Received background message: ", payload);
+
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: payload.notification.icon || "/default-icon.png", // optional icon
+    data: {
+      click_action: payload.notification.click_action, // optional click action
+    },
+  };
+
+  // Show the notification
+  return self.registration.showNotification(
+    notificationTitle,
+    notificationOptions
+  );
+});

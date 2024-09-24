@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "./LoadingSpinner";
-import { ProfileCheckRegex } from "@/common/utils";
+import { BaseUrl, ProfileCheckRegex } from "@/common/utils";
 import Header from "./header";
 import Footer from "./footer";
 import { useAppSelector } from "@/lib/hooks";
@@ -12,6 +12,7 @@ import { Box } from "@mui/material";
 import { getToken } from "firebase/messaging";
 import { messaging } from "@/app/firebase";
 import ServiceWorkerToast from "./ServiceWorkerToast";
+import axios from "axios";
 
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -28,21 +29,34 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
 
   const isuserProfile: boolean = useProfilePathCheck();
 
-  useEffect(() => {
-    // Request permission and get token
-    const requestPermission = async () => {
-      const permission = await Notification.requestPermission();
-      if (permission === "granted") {
-        const token = await getToken(messaging, {
-          vapidKey: process.env.VAPID_KEY,
-        });
-        console.log("FCM Token:", token);
-      } else {
-        console.error("Permission not granted for Notification");
-      }
+  const updateFcmToken = async (token) => {
+    const cred = {
+      email: data?.email,
+      fcmToken: token,
     };
 
-    data?.id && requestPermission();
+    await axios
+      .put(`${BaseUrl}/api/update-fcm-token`, cred)
+      .then((res) => console.log("Token saved", res))
+      .catch((err) => console.log("Token saved Err", err));
+  };
+
+  const requestPermission = async () => {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: process.env.VAPID_KEY,
+      });
+      updateFcmToken(token);
+    } else {
+      console.error("Permission not granted for Notification");
+    }
+  };
+
+  useEffect(() => {
+    if (data?.id) {
+      requestPermission();
+    }
   }, [data?.id]);
 
   useEffect(() => {

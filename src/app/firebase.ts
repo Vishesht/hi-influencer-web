@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import { getMessaging, getToken } from "firebase/messaging";
+import { getMessaging } from "firebase/messaging";
 
 // Firebase configuration object
 const firebaseConfig = {

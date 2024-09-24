@@ -23,12 +23,22 @@ const ServiceWorkerToast = () => {
   };
 
   useEffect(() => {
-    // Add the service worker message event listener
+    // Register service worker and add the message event listener
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.addEventListener(
-        "message",
-        handleServiceWorkerMessage
-      );
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then((registration) => {
+          console.log("Service Worker registered successfully:", registration);
+
+          // Listen for messages from the service worker
+          navigator.serviceWorker.addEventListener(
+            "message",
+            handleServiceWorkerMessage
+          );
+        })
+        .catch((err) => {
+          console.error("Service Worker registration failed:", err);
+        });
     }
 
     // Clean up the event listener when the component unmounts
