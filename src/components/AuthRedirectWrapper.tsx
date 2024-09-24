@@ -9,6 +9,9 @@ import Header from "./header";
 import Footer from "./footer";
 import { useAppSelector } from "@/lib/hooks";
 import { Box } from "@mui/material";
+import { getToken } from "firebase/messaging";
+import { messaging } from "@/app/firebase";
+import ServiceWorkerToast from "./ServiceWorkerToast";
 
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -24,6 +27,23 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const isuserProfile: boolean = useProfilePathCheck();
+
+  useEffect(() => {
+    // Request permission and get token
+    const requestPermission = async () => {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        const token = await getToken(messaging, {
+          vapidKey: process.env.VAPID_KEY,
+        });
+        console.log("FCM Token:", token);
+      } else {
+        console.error("Permission not granted for Notification");
+      }
+    };
+
+    data?.id && requestPermission();
+  }, [data?.id]);
 
   useEffect(() => {
     if (!loading) {
@@ -55,6 +75,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
         minHeight: "100vh", // Full height of the viewport
       }}
     >
+      <ServiceWorkerToast />
       <Header />
       <Box sx={{ flexGrow: 1, pt: 10 }}>{children}</Box>
       <Footer />

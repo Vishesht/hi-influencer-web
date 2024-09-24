@@ -1,5 +1,5 @@
-// export const BaseUrl = "http://localhost:5001";
-export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
+export const BaseUrl = "http://localhost:5001";
+// export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
 export const ProfileCheckRegex = /^\/user\/[^\/]+$/;
 
 export const imgPlaceholderImg =
