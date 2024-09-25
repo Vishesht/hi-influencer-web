@@ -19,6 +19,9 @@ import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
+import PackageDetailsModal from "@/components/PackageDetailsModal";
+import InfluencerProfileComponent from "@/components/InfluencerProfileComponent";
+import ReviewPopup from "@/components/Review";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -44,6 +47,9 @@ const Orders: React.FC = () => {
   const [orderData, setOrders] = useState<any>([]);
   const [requestData, setRequests] = useState<any>([]); // State for requests
   const paymentStatus = useAppSelector((state) => state.payment.paymentStatus);
+  const [openModal, setOpenModal] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [reviewItem, setReviewItem] = useState();
 
   useEffect(() => {
     if (paymentStatus && tabIndex === 0) {
@@ -109,21 +115,21 @@ const Orders: React.FC = () => {
         return "#ff000080"; // Red
       case "Requested":
         return "#ff9800"; // Orange for requested orders
-      case "New":
+      case "Testing":
         return "#cddc39"; // Lime for new orders
       default:
         return "#ffffff80"; // Default white for any other status
     }
   };
 
-  const handleAcceptOrder = async (_id: string) => {
+  const handleAcceptOrder = async (_id: string, newStatus) => {
     try {
-      const newStatus = "Waiting for payment";
       await axios
         .put(`${BaseUrl}/api/changeStatus`, { _id, newStatus })
         .then((res) => console.log("res", res))
         .catch((err) => console.log("Err", err));
       getRequests();
+      getOrders();
     } catch (error) {
       console.error("Error approving order:", error);
     }
@@ -139,6 +145,19 @@ const Orders: React.FC = () => {
       getRequests();
     } catch (error) {
       console.error("Error approving order:", error);
+    }
+  };
+
+  const onClosePopup = () => {
+    setOpenModal(false);
+  };
+
+  const onReviewPopup = async (creds) => {
+    try {
+      await axios.post(`${BaseUrl}/api/addReview`, creds);
+      getOrders();
+    } catch (error) {
+      console.error("Error adding review:", error);
     }
   };
 
@@ -163,6 +182,7 @@ const Orders: React.FC = () => {
             </MenuItem>
             <MenuItem value="Waiting for payment">Waiting for payment</MenuItem>
             <MenuItem value="Payment Completed">Payment Completed</MenuItem>
+            <MenuItem value="Testing">Testing</MenuItem>
             <MenuItem value="Task Completed">Task Completed</MenuItem>
             <MenuItem value="Rejected">Rejected</MenuItem>
           </Select>
@@ -171,153 +191,240 @@ const Orders: React.FC = () => {
 
       <Grid container spacing={3}>
         {(tabIndex === 0 ? filteredOrders : filteredRequests).map(
-          (item: any) => (
-            <Grid item xs={12} sm={6} md={4} key={item._id}>
-              <OrderCard bgColor={getStatusBackgroundColor(item.status)}>
-                <CardContent>
-                  <Typography variant="h5" gutterBottom>
-                    Package Name: {item.orderDetails[0].pkgName}
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    Status: <strong>{item.status}</strong>
-                  </Typography>
-                  {item.status === "Payment Completed" && (
-                    <Typography variant="body1" gutterBottom>
-                      {tabIndex === 0
-                        ? "Note: Please allow some time for the influencer to complete your task. In the meantime, feel free to check the chat section for updates or to inquire about your task."
-                        : "Alert: Please begin working on the task assigned to you."}
+          (item: any) => {
+            const reviewDone = item?.influencerDetails?.reviewsData?.includes(
+              item._id
+            );
+            return (
+              <Grid item xs={12} sm={6} md={4} key={item._id}>
+                <OrderCard bgColor={getStatusBackgroundColor(item.status)}>
+                  <CardContent>
+                    <Typography variant="h5" gutterBottom>
+                      Package Name: {item.orderDetails[0].pkgName}
                     </Typography>
-                  )}
-                  <Typography variant="body2" gutterBottom>
-                    Created At: {new Date(item.createdAt).toLocaleString()}
-                  </Typography>
-
-                  <Box mt={2}>
-                    <Typography variant="body2" fontWeight="bold">
-                      Order Details:
-                    </Typography>
-                    <Typography variant="body2">
-                      Order ID: {item._id}
-                    </Typography>
-                    {item.orderDetails[0].socialMediaAccount && (
-                      <Typography variant="body2">
-                        Social Media Account:{" "}
-                        {item.orderDetails[0].socialMediaAccount}
-                      </Typography>
-                    )}
-                    {item.orderDetails[0].title && (
-                      <Typography variant="body2">
-                        Title: {item.orderDetails[0].title}
-                      </Typography>
-                    )}
-                    {item.orderDetails[0].description && (
-                      <Typography variant="body2">
-                        Description: {item.orderDetails[0].description}
-                      </Typography>
-                    )}
-                    {item.orderDetails[0].phone && (
-                      <Typography variant="body2">
-                        Phone: {item.orderDetails[0].phone}
-                      </Typography>
-                    )}
-                    {item.orderDetails[0].timing && (
-                      <Typography variant="body2">
-                        Timing: {item.orderDetails[0].timing}
-                      </Typography>
-                    )}
-                    {item.orderDetails[0].location && (
-                      <Typography variant="body2">
-                        Location: {item.orderDetails[0].location}
-                      </Typography>
-                    )}
-                    {item.orderDetails[0].negotiablePrice && (
-                      <Typography variant="body2">
-                        Price: {item.orderDetails[0].negotiablePrice}
-                      </Typography>
-                    )}
-                    {item.orderDetails[0].images?.length > 0 && (
-                      <Box mt={1}>
-                        <Typography variant="body2" fontWeight="bold">
-                          Images:
-                        </Typography>
-                        {item.orderDetails[0].images.map(
-                          (img: string, index: number) => (
-                            <img
-                              key={index}
-                              src={img}
-                              alt={`Order Image ${index}`}
-                              style={{
-                                width: "100%",
-                                height: "auto",
-                                marginBottom: "5px",
-                              }}
-                            />
-                          )
-                        )}
-                      </Box>
-                    )}
-                  </Box>
-                  {item.status === "Payment Completed" && (
-                    <Box mt={2} sx={{ display: "flex" }}>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => null}
-                        sx={{ marginRight: 1 }}
+                    {item?.requestedChanges && (
+                      <Typography
+                        variant="body2"
+                        gutterBottom
+                        sx={{ color: "red" }}
                       >
-                        Chat
-                      </Button>
-                      {tabIndex === 1 &&
-                        item.status === "Payment Completed" && (
+                        Note: {item.requestedChanges}
+                      </Typography>
+                    )}
+                    <InfluencerProfileComponent
+                      influencer={tabIndex === 0 ? true : false}
+                      influencerDetails={item?.influencerDetails}
+                    />
+                    <Typography variant="body1" gutterBottom>
+                      Status: <strong>{item.status}</strong>
+                    </Typography>
+                    {item.status === "Payment Completed" && (
+                      <Typography variant="body1" gutterBottom>
+                        {tabIndex === 0
+                          ? "Note: Please allow some time for the influencer to complete your task. In the meantime, feel free to check the chat section for updates or to inquire about your task."
+                          : "Alert: Please begin working on the task assigned to you."}
+                      </Typography>
+                    )}
+                    <Typography variant="body2" gutterBottom>
+                      Created At: {new Date(item.createdAt).toLocaleString()}
+                    </Typography>
+
+                    <Box mt={2}>
+                      <Typography variant="body2" fontWeight="bold">
+                        Order Details:
+                      </Typography>
+                      <Typography variant="body2">
+                        Order ID: {item._id}
+                      </Typography>
+                      {tabIndex === 0 &&
+                        item.status === "Task Completed" &&
+                        !reviewDone && (
                           <Button
                             variant="contained"
                             color="success"
-                            onClick={() => null}
-                            sx={{ marginRight: 1 }}
+                            onClick={() => {
+                              setOpen(true);
+                              setReviewItem(item);
+                            }}
+                            sx={{ marginRight: 1, mt: 1 }}
                           >
-                            View Details
+                            Add your review
                           </Button>
                         )}
+                      {item.orderDetails[0].socialMediaAccount && (
+                        <Typography variant="body2">
+                          Social Media Account:{" "}
+                          {item.orderDetails[0].socialMediaAccount}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].title && (
+                        <Typography variant="body2">
+                          Title: {item.orderDetails[0].title}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].description && (
+                        <Typography variant="body2">
+                          Description: {item.orderDetails[0].description}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].phone && (
+                        <Typography variant="body2">
+                          Phone: {item.orderDetails[0].phone}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].timing && (
+                        <Typography variant="body2">
+                          Timing: {item.orderDetails[0].timing}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].location && (
+                        <Typography variant="body2">
+                          Location: {item.orderDetails[0].location}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].negotiablePrice && (
+                        <Typography variant="body2">
+                          Price: {item.orderDetails[0].negotiablePrice}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].images?.length > 0 && (
+                        <Box mt={1}>
+                          <Typography variant="body2" fontWeight="bold">
+                            Images:
+                          </Typography>
+                          {item.orderDetails[0].images.map(
+                            (img: string, index: number) => (
+                              <img
+                                key={index}
+                                src={img}
+                                alt={`Order Image ${index}`}
+                                style={{
+                                  width: "100%",
+                                  height: "auto",
+                                  marginBottom: "5px",
+                                }}
+                              />
+                            )
+                          )}
+                        </Box>
+                      )}
                     </Box>
-                  )}
-
-                  {tabIndex === 1 && item.status === "Pending for approval" && (
-                    <Box mt={2}>
+                    {item.status === "Payment Completed" && (
+                      <Box mt={2} sx={{ display: "flex" }}>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          onClick={() => router.push("/chat")}
+                          sx={{ marginRight: 1 }}
+                        >
+                          Chat
+                        </Button>
+                        {tabIndex === 1 &&
+                          item.status === "Payment Completed" && (
+                            <Button
+                              variant="contained"
+                              color="success"
+                              onClick={() =>
+                                handleAcceptOrder(item._id, "Testing")
+                              }
+                              sx={{ marginRight: 1 }}
+                            >
+                              Review my work
+                            </Button>
+                          )}
+                      </Box>
+                    )}
+                    {tabIndex === 0 && item.status === "Testing" && (
                       <Button
                         variant="contained"
                         color="success"
-                        onClick={() => handleAcceptOrder(item._id)}
-                        sx={{ marginRight: 1 }}
+                        onClick={() =>
+                          handleAcceptOrder(item._id, "Task Completed")
+                        }
+                        sx={{ marginRight: 1, mt: 1 }}
                       >
-                        Accept
+                        Complete task
                       </Button>
+                    )}
+
+                    {item.requestedChanges && (
                       <Button
                         variant="contained"
-                        color="error"
-                        onClick={() => handleRejectOrder(item._id)}
+                        color="success"
+                        onClick={() => setOpenModal(true)}
+                        sx={{ marginRight: 1, mt: 2 }}
                       >
-                        Reject
+                        Edit
                       </Button>
-                    </Box>
-                  )}
+                    )}
 
-                  {tabIndex === 0 && item.status === "Waiting for payment" && (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      sx={{ marginTop: 2 }}
-                      onClick={() => router?.push(`payment?_id=${item._id}`)}
-                    >
-                      Pay
-                    </Button>
-                  )}
-                </CardContent>
-              </OrderCard>
-            </Grid>
-          )
+                    {tabIndex === 1 &&
+                      item.status === "Pending for approval" && (
+                        <Box mt={2}>
+                          <Button
+                            variant="contained"
+                            color="success"
+                            onClick={() =>
+                              handleAcceptOrder(item._id, "Waiting for payment")
+                            }
+                            sx={{ marginRight: 1 }}
+                          >
+                            Accept
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => handleRejectOrder(item._id)}
+                          >
+                            Reject
+                          </Button>
+                        </Box>
+                      )}
+
+                    {tabIndex === 0 &&
+                      item.status === "Waiting for payment" && (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          fullWidth
+                          sx={{ marginTop: 2 }}
+                          onClick={() =>
+                            router?.push(`payment?_id=${item._id}`)
+                          }
+                        >
+                          Pay
+                        </Button>
+                      )}
+                  </CardContent>
+                </OrderCard>
+                <PackageDetailsModal
+                  rework={true}
+                  influencerId={item?.influencerId}
+                  open={openModal}
+                  onClose={onClosePopup}
+                  pkg={{ name: item.orderDetails[0].pkgName, id: item._id }}
+                />
+              </Grid>
+            );
+          }
         )}
       </Grid>
+      <ReviewPopup
+        open={open}
+        onClose={() => {
+          setOpen(false), getOrders();
+        }}
+        onSubmit={({ rating, review }) => {
+          const item = {
+            userId: data?.id,
+            influencerId: reviewItem?.influencerId,
+            rating,
+            review,
+            orderId: reviewItem._id,
+          };
+          onReviewPopup(item);
+        }}
+      />
     </StyledBox>
   );
 };

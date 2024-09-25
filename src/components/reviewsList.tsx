@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import StarIcon from "@mui/icons-material/Star";
+import { formatDate } from "@/common/utils";
 
 // Styled container for the reviews
 const ReviewsContainer = styled(Box)(({ theme }) => ({
@@ -31,37 +32,45 @@ const CustomRating = styled(Rating)(({}) => ({
   },
 }));
 
-const ReviewsList = ({ reviewsData }) => (
-  <ReviewsContainer>
-    <Typography variant="h6" sx={{ marginBottom: 2, fontWeight: "bold" }}>
-      Reviews
-    </Typography>
-    <Grid container spacing={3}>
-      {reviewsData.map((review) => (
-        <Grid item xs={12} md={6} key={review.id}>
-          <ReviewCard>
-            <CardContent>
-              <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-                {review.user}
-              </Typography>
-              <CustomRating
-                name="read-only"
-                value={review.rating}
-                readOnly
-                precision={0.5}
-                icon={<StarIcon />}
-                emptyIcon={<StarIcon style={{ opacity: 0.55 }} />}
-                sx={{ marginBottom: 1 }}
-              />
-              <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                {review.comment}
-              </Typography>
-            </CardContent>
-          </ReviewCard>
-        </Grid>
-      ))}
-    </Grid>
-  </ReviewsContainer>
-);
+const ReviewsList = ({ reviewsData }) => {
+  return (
+    <ReviewsContainer>
+      <Typography variant="h6" sx={{ marginBottom: 2, fontWeight: "bold" }}>
+        Reviews
+      </Typography>
+      <Grid container spacing={3}>
+        {reviewsData.map((review) => {
+          const time = formatDate(review?.timestamp);
+          return (
+            <Grid item xs={12} md={6} key={review.id}>
+              <ReviewCard>
+                <CardContent>
+                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                    {review.user}
+                  </Typography>
+                  <CustomRating
+                    name="read-only"
+                    value={review.rating}
+                    readOnly
+                    precision={0.5}
+                    icon={<StarIcon />}
+                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} />}
+                    sx={{ marginBottom: 1 }}
+                  />
+                  <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                    {review.review}
+                  </Typography>
+                  <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                    {time}
+                  </Typography>
+                </CardContent>
+              </ReviewCard>
+            </Grid>
+          );
+        })}
+      </Grid>
+    </ReviewsContainer>
+  );
+};
 
 export default ReviewsList;

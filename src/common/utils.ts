@@ -106,3 +106,17 @@ export const checkUserDetails = (userDetails) => {
     message: "Verify your account to get listed in the influencer screen",
   };
 };
+
+export const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  const options = {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  };
+  const formattedDate = date.toLocaleString("en-US", options);
+  return formattedDate.replace(",", "");
+};

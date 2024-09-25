@@ -1,6 +1,7 @@
 // Import the necessary Firebase functions and services
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
 
@@ -18,12 +19,11 @@ const firebaseConfig = {
 // Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 
-// Firebase services
+// Initialize Firebase services
+export const db = getDatabase(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const storage = getStorage(app);
-
-// Firebase Cloud Messaging service
 const messaging = getMessaging(app);
 
 // Export Firebase services and modules

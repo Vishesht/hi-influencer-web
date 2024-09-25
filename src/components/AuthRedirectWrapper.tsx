@@ -80,6 +80,14 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   if (path === "/login" || path === "/signup") {
     return <>{children}</>;
   }
+  if (path === "/chat") {
+    return (
+      <>
+        <ServiceWorkerToast />
+        {children}
+      </>
+    );
+  }
 
   return (
     <Box

@@ -159,6 +159,9 @@ const Header = () => {
               <Button onClick={() => router.push("/ads")} color="inherit">
                 Ads
               </Button>
+              <Button onClick={() => router.push("/chat")} color="inherit">
+                Chat
+              </Button>
               <Button onClick={() => router.push("/orders")} color="inherit">
                 Orders
               </Button>
@@ -238,6 +241,13 @@ const Header = () => {
               onClick={() => handleListItemClick("/ads")}
             >
               <ListItemText primary="Ads" sx={{ color: "black" }} />
+            </ListItem>
+            <ListItem
+              component="div"
+              sx={{ backgroundColor: "#fff" }}
+              onClick={() => handleListItemClick("/chat")}
+            >
+              <ListItemText primary="Chat" sx={{ color: "black" }} />
             </ListItem>
             <ListItem
               component="div"

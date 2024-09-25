@@ -16,7 +16,13 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 
-const PackageDetailsModal = ({ open, onClose, pkg, influencerId }) => {
+const PackageDetailsModal = ({
+  open,
+  onClose,
+  pkg,
+  influencerId,
+  rework = false,
+}) => {
   const [formData, setFormData] = useState({});
   const [images, setImages] = useState([]);
   const dispatch = useAppDispatch();
@@ -35,6 +41,8 @@ const PackageDetailsModal = ({ open, onClose, pkg, influencerId }) => {
   };
 
   const handleSubmit = async () => {
+    const id = pkg.id;
+
     const item = {
       ...formData,
       images,
@@ -44,29 +52,43 @@ const PackageDetailsModal = ({ open, onClose, pkg, influencerId }) => {
     };
     try {
       const cred = {
+        id: Date.now(),
         orderDetails: item,
         status: "In Review",
         loggedUserId: data?.id,
         influencerId: influencerId,
       };
-      await axios
-        .post(`${BaseUrl}/api/saveneworder`, cred)
-        .then((res) => {
-          if (res.status === 201 || res.status === 200) {
-            dispatch(
-              showAlert({
-                message: "Your request is submitted for approval",
-                confirmText: "Ok",
-              })
-            );
-            setTimeout(() => {
-              router.push("/orders");
-            }, 0);
-          } else {
-            console.log("firsterr", res);
-          }
-        })
-        .catch((err) => console.log("first-err", err));
+      rework
+        ? await axios
+            .put(`${BaseUrl}/api/orders/update`, {
+              id,
+              ...cred,
+            })
+            .then((res) => {
+              if (res.status === 201 || res.status === 200) {
+                alert("Your request is submitted for approval");
+                onClose();
+              }
+            })
+            .catch((err) => console.log("firsterr", err))
+        : await axios
+            .post(`${BaseUrl}/api/saveneworder`, cred)
+            .then((res) => {
+              if (res.status === 201 || res.status === 200) {
+                dispatch(
+                  showAlert({
+                    message: "Your request is submitted for approval",
+                    confirmText: "Ok",
+                  })
+                );
+                setTimeout(() => {
+                  router.push("/orders");
+                }, 0);
+              } else {
+                console.log("firsterr", res);
+              }
+            })
+            .catch((err) => console.log("first-err", err));
     } catch (error) {
       console.error("first", error);
     }
@@ -343,7 +365,7 @@ const PackageDetailsModal = ({ open, onClose, pkg, influencerId }) => {
           Cancel
         </Button>
         <Button onClick={handleSubmit} color="primary">
-          Submit
+          {rework ? "Send for review" : "Submit"}
         </Button>
       </DialogActions>
     </Dialog>
