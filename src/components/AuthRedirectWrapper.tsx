@@ -45,7 +45,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       const token = await getToken(messaging, {
-        vapidKey: process.env.VAPID_KEY,
+        vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY, // Ensure VAPID_KEY is correctly set
       });
       updateFcmToken(token);
     } else {
@@ -54,7 +54,8 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    if (data?.id) {
+    // Only request permission if in the client
+    if (typeof window !== "undefined" && data?.id) {
       requestPermission();
     }
   }, [data?.id]);
