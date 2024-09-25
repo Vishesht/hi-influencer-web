@@ -63,6 +63,7 @@ const GridComponent = ({ data }) => {
         const imgUrl = cleanImageUrl(item.photoURL, index);
         return (
           <Button
+            key={item?.id || index}
             onClick={() => handleSubmit(item)}
             style={{ padding: 0, textTransform: "none" }}
           >

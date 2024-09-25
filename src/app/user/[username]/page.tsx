@@ -9,6 +9,7 @@ import {
   Grid,
   Card,
   CardMedia,
+  Tooltip,
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -19,6 +20,7 @@ import { BaseUrl, cleanImageUrl, imgPlaceholderImg } from "@/common/utils";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
+import VerifiedIcon from "@mui/icons-material/Verified";
 
 interface User {
   emailVerified: boolean;
@@ -129,8 +131,10 @@ export default function Username({ params }: any) {
         {/* User Name */}
         <Box display="flex" justifyContent="center" gap={0} alignItems="center">
           <Typography variant="h4">{user?.name}</Typography>
-          {user?.emailVerified && (
-            <CheckCircleIcon sx={{ color: "green", ml: 1 }} />
+          {user?.verified && (
+            <Tooltip title="Verified" arrow>
+              <VerifiedIcon sx={{ color: "blue", ml: 1 }} />
+            </Tooltip>
           )}
         </Box>
 

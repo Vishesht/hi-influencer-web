@@ -12,10 +12,17 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils"; // Adjust the import according to your structure
+import InfluencerProfileComponent from "@/components/InfluencerProfileComponent";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -53,6 +60,11 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
 
+  // Modal State
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [requestedChangesText, setRequestedChangesText] = useState("");
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -78,7 +90,7 @@ const AdminOrders = () => {
       ? orders
       : orders.filter((order) => order.status === filter);
 
-  const sortedOrders = [...filteredOrders].sort(
+  const sortedOrders: any = [...filteredOrders].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 
@@ -89,6 +101,34 @@ const AdminOrders = () => {
       fetchOrders();
     } catch (error) {
       console.error("Error approving order:", error);
+    }
+  };
+
+  // Open modal to add requested changes
+  const handleOpenModal = (_id) => {
+    setSelectedOrderId(_id);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setRequestedChangesText("");
+  };
+
+  const updateRequestedChanges = async () => {
+    try {
+      await axios.put(`${BaseUrl}/api/orders/requestedChanges`, {
+        _id: selectedOrderId,
+        requestedChanges: requestedChangesText,
+      });
+      console.log("Requested changes updated successfully");
+      fetchOrders(); // Optionally refresh the orders
+      handleCloseModal(); // Close the modal after successful update
+    } catch (error) {
+      console.error(
+        "Error updating requested changes:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -129,16 +169,19 @@ const AdminOrders = () => {
                 <Typography variant="h5" gutterBottom>
                   Package Name: {order.orderDetails[0].pkgName}
                 </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                  Influencer ID: {order.influencerId || "N/A"}
-                </Typography>
+                <InfluencerProfileComponent
+                  influencer={true}
+                  influencerDetails={order?.influencerDetails}
+                />
                 <Typography variant="body1" gutterBottom>
                   Status: <strong>{order.status}</strong>
                 </Typography>
                 <Typography variant="body2" gutterBottom>
                   Created At: {new Date(order.createdAt).toLocaleString()}
                 </Typography>
-
+                <InfluencerProfileComponent
+                  influencerDetails={order?.loggedUserId}
+                />
                 <Box mt={2}>
                   <Typography variant="body2" fontWeight="bold">
                     Order Details:
@@ -212,11 +255,48 @@ const AdminOrders = () => {
                     Approve Order
                   </Button>
                 )}
+                {order.status === "In Review" &&
+                  !sortedOrders.requestedChanges && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleOpenModal(order._id)}
+                      fullWidth
+                      sx={{ marginTop: 2, backgroundColor: "grey" }}
+                    >
+                      Requested changes
+                    </Button>
+                  )}
               </CardContent>
             </OrderCard>
           </Grid>
         ))}
       </Grid>
+
+      {/* Requested Changes Modal */}
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Requested Changes</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please provide the changes you would like to request for this order.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="requestedChanges"
+            label="Requested Changes"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={requestedChangesText}
+            onChange={(e) => setRequestedChangesText(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button onClick={updateRequestedChanges}>Send Request</Button>
+        </DialogActions>
+      </Dialog>
     </StyledBox>
   );
 };
