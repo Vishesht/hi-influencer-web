@@ -11,6 +11,7 @@ import {
   CardMedia,
   Snackbar,
   Alert,
+  Tooltip,
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -18,8 +19,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TelegramIcon from "@mui/icons-material/Telegram";
-
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import VerifiedIcon from "@mui/icons-material/Verified";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
 import { BaseUrl, checkUserDetails, cleanImageUrl } from "@/common/utils";
@@ -165,7 +165,11 @@ const ProfilePage = () => {
           <Typography variant="h4">
             {user?.name || firebaseData?.displayName || data?.name}
           </Typography>
-          {user?.verified && <CheckCircleIcon sx={{ color: "blue", ml: 1 }} />}
+          {user?.verified && (
+            <Tooltip title="Verified" arrow>
+              <VerifiedIcon sx={{ color: "blue", ml: 1 }} />
+            </Tooltip>
+          )}
         </Box>
 
         {user?.category && (

@@ -8,6 +8,7 @@ import {
   IconButton,
   Grid,
   Avatar,
+  Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import Image from "next/image";
@@ -16,7 +17,7 @@ import ReviewsList from "../../components/reviewsList";
 import HireModal from "../../components/HireModal";
 import SavedPackage from "@/components/SavedPackage";
 import { useAppSelector } from "@/lib/hooks";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import VerifiedIcon from "@mui/icons-material/Verified";
 
 const ProfileContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -123,7 +124,9 @@ const InfluencerProfile = () => {
                     {influencer?.name}
                   </Typography>
                   {influencer?.verified && (
-                    <CheckCircleIcon sx={{ color: "blue", ml: 1 }} />
+                    <Tooltip title="Verified" arrow>
+                      <VerifiedIcon sx={{ color: "blue", ml: 1 }} />
+                    </Tooltip>
                   )}
                 </Box>
                 <Typography
