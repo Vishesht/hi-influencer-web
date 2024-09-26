@@ -210,7 +210,7 @@ const ChatScreen = () => {
           </Box>
         )}
         {/* Chat Area - Keep it scrollable independently */}
-        <Box flexGrow={1} display="flex" flexDirection="column" height="90vh">
+        <Box flexGrow={1} display="flex" flexDirection="column" height="92vh">
           {/* Chat Header */}
           <Box
             display="flex"
@@ -253,7 +253,7 @@ const ChatScreen = () => {
           <ChatInput
             handleSendMessage={handleSendMessage}
             newMessage={newMessage}
-            setNewMessage={(e) => setNewMessage(e.target.value)}
+            setNewMessage={setNewMessage}
           />
         </Box>
       </Box>
