@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
-import { getMessaging } from "firebase/messaging";
+import { getMessaging, isSupported } from "firebase/messaging";
 
 // Firebase configuration object
 const firebaseConfig = {
@@ -24,7 +24,12 @@ export const db = getDatabase(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const storage = getStorage(app);
-const messaging = getMessaging(app);
+let messaging;
+
+// Check if messaging is supported in the current browser
+if (typeof window !== "undefined" && isSupported()) {
+  messaging = getMessaging(app);
+}
 
 // Export Firebase services and modules
 export { auth, provider, signInWithPopup, storage, messaging };
