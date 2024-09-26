@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconButton, InputBase, Box, Typography } from "@mui/material";
+import { IconButton, InputBase, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
 const ChatInput = ({ handleSendMessage, newMessage, setNewMessage }) => {
@@ -9,7 +9,10 @@ const ChatInput = ({ handleSendMessage, newMessage, setNewMessage }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleSendMessage();
+      if (newMessage.trim()) {
+        handleSendMessage();
+        setNewMessage("");
+      }
       animateSendIcon();
     }
   };
@@ -24,11 +27,11 @@ const ChatInput = ({ handleSendMessage, newMessage, setNewMessage }) => {
     <Box
       display="flex"
       alignItems="center"
-      mt={2}
+      mt={1}
       position="sticky"
       bottom={0}
       bgcolor="#fff"
-      padding={1}
+      paddingX={1}
       borderRadius={3}
       sx={{ zIndex: 1000 }}
     >
@@ -42,14 +45,17 @@ const ChatInput = ({ handleSendMessage, newMessage, setNewMessage }) => {
           backgroundColor: "#f5f5f5",
         }}
         value={newMessage}
-        onChange={(e) => setNewMessage(e.target.value)}
+        onChange={(e) => setNewMessage(e.target.value)} // Ensure you get the value from event
         onKeyDown={handleKeyDown}
         inputProps={{ style: { color: "#000" } }}
       />
       <IconButton
         color="primary"
         onClick={() => {
-          handleSendMessage();
+          if (newMessage.trim()) {
+            handleSendMessage(); // No need to pass newMessage again since it's already being sent
+            setNewMessage(""); // Clear the input after sending
+          }
           animateSendIcon();
         }}
         sx={{
