@@ -1,6 +1,5 @@
 "use client";
-// pages/ChatScreen.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -11,117 +10,208 @@ import {
   ListItemAvatar,
   ListItemText,
   Avatar,
+  SwipeableDrawer,
+  useMediaQuery,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import ChatIcon from "@mui/icons-material/Chat";
+import MenuIcon from "@mui/icons-material/Menu";
 import SendIcon from "@mui/icons-material/Send";
 import Header from "@/components/header";
+import { getChatDataFromFirebase, saveMessageToFirebase } from "../firebase";
+import axios from "axios";
+import { BaseUrl } from "@/common/utils";
+import { useAppSelector } from "@/lib/hooks";
+import { showChatComponent } from "@/components/chat/showChatComponent";
+import ChatInput from "@/components/chat/ChatInput";
 
 const ChatScreen = () => {
-  const chatData = [
-    {
-      id: 1,
-      name: "John Doe",
-      img: "https://via.placeholder.com/40",
-      messages: [
-        { text: "Hey! How are you?", sender: "John" },
-        { text: "I am good, thanks! And you?", sender: "me" },
-        { text: "Doing well, just working on some projects.", sender: "John" },
-      ],
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      img: "https://via.placeholder.com/40",
-      messages: [
-        { text: "Are we still on for the meeting tomorrow?", sender: "me" },
-        { text: "Yes, looking forward to it!", sender: "Jane" },
-        { text: "Great! What time should we meet?", sender: "me" },
-      ],
-    },
-    {
-      id: 3,
-      name: "Alice Johnson",
-      img: "https://via.placeholder.com/40",
-      messages: [
-        { text: "Did you finish the report?", sender: "Alice" },
-        { text: "Almost done, just need a few more details.", sender: "me" },
-        { text: "Let me know if you need any help!", sender: "Alice" },
-      ],
-    },
-  ];
-
   const [selectedChat, setSelectedChat] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [chatData, setChatData] = useState([]);
+  const [userData, setUserData] = useState();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const data = useAppSelector((state) => state.login.userData);
 
-  const handleChatSelect = (chat) => {
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  const getChatData = async (userId) => {
+    try {
+      const response = await axios.get(`${BaseUrl}/service/chat/${userId}`);
+      setUserData(response.data);
+    } catch (error) {
+      console.error("Error fetching chat data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getChatData(data?.id);
+  }, [data?.id]);
+
+  useEffect(() => {
+    if (selectedChat) {
+      getChatDataFromFirebase((item) => {
+        if (item) {
+          const chats = Object.keys(item).map((key) => ({
+            id: key,
+            name: key,
+            messages: item[key].messages || {},
+          }));
+
+          // Filter chats to get only the selected chat data
+          const filteredChat = chats.find(
+            (chat) => chat.id === selectedChat.id
+          );
+          if (filteredChat) {
+            setChatData([filteredChat]); // Set the chat data to only the selected chat
+          } else {
+            setChatData([]); // No chat found, reset chat data
+          }
+        }
+      });
+    }
+  }, [selectedChat]);
+
+  const handleSendMessage = () => {
+    if (newMessage.trim() === "" || !selectedChat) return;
+    const message = {
+      text: newMessage,
+      sender: data?.id,
+      timestamp: Date.now(),
+    };
+    selectedChat?.id && saveMessageToFirebase(selectedChat?.id, message);
+    setNewMessage("");
+  };
+
+  const handleChatSelect = async (chat) => {
     setSelectedChat(chat);
   };
 
-  const handleSendMessage = () => {
-    if (newMessage.trim() === "") return;
-    setSelectedChat((prev) => ({
-      ...prev,
-      messages: [...prev.messages, { text: newMessage, sender: "me" }],
-    }));
-    setNewMessage(""); // Clear input after sending
-  };
+  const filteredChats = userData?.filter((chat) => {
+    const searchLower = searchTerm.toLowerCase();
+    const influencerName = chat.influencerDetails.name.toLowerCase();
+    const myName = chat.myDetails.name.toLowerCase();
 
-  // Filter chat data based on search term
-  const filteredChats = chatData.filter((chat) =>
-    chat.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    return influencerName.includes(searchLower) || myName.includes(searchLower);
+  });
 
   return (
     <>
       <Header />
-      <Box sx={{ pt: 8 }} display="flex" flexGrow={1}>
-        <Box
-          width="300px"
-          borderRight="1px solid #e0e0e0"
-          overflow="auto"
-          display="flex"
-          flexDirection="column"
-          height="90vh"
-        >
-          <InputBase
-            placeholder="Search chats…"
-            style={{
-              padding: "10px",
-              margin: "10px",
-              border: "1px solid #e0e0e0",
-              borderRadius: "4px",
-            }}
-            startAdornment={<SearchIcon />}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <List style={{ overflowY: "auto", flexGrow: 1 }}>
-            {filteredChats.map((chat) => (
-              <ListItem
-                button
-                key={chat.id}
-                selected={selectedChat && selectedChat.id === chat.id}
-                onClick={() => handleChatSelect(chat)}
+      <Box sx={{ pt: isMobile ? 7 : 8 }} display="flex" flexGrow={1}>
+        {/* User List - Fixed Height */}
+        {isMobile ? (
+          <SwipeableDrawer
+            anchor="left"
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            onOpen={() => setDrawerOpen(true)}
+          >
+            <Box
+              width="240px"
+              borderRight="1px solid #e0e0e0"
+              display="flex"
+              flexDirection="column"
+              height="90vh"
+            >
+              {/* Search Input */}
+              <InputBase
+                placeholder="Search chats…"
                 style={{
-                  backgroundColor:
-                    selectedChat && selectedChat.id === chat.id
-                      ? "#f0f0f0"
-                      : "transparent", // Highlight selected chat
+                  padding: "10px",
+                  margin: "10px",
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "4px",
                 }}
-              >
-                <ListItemAvatar>
-                  <Avatar src={chat.img} />
-                </ListItemAvatar>
-                <ListItemText primary={chat.name} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-
-        {/* Chat Area */}
-        <Box flexGrow={1} display="flex" flexDirection="column">
+                startAdornment={<SearchIcon />}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {/* Chat List - Make it scrollable independently */}
+              <List style={{ overflowY: "auto", flexGrow: 1 }}>
+                {filteredChats?.length > 0 ? (
+                  filteredChats.map((chat) => (
+                    <ListItem
+                      button
+                      key={chat.id}
+                      selected={selectedChat && selectedChat.id === chat.id}
+                      onClick={() => handleChatSelect(chat)}
+                      style={{
+                        backgroundColor:
+                          selectedChat && selectedChat.id === chat.id
+                            ? "#f0f0f0"
+                            : "transparent",
+                      }}
+                    >
+                      <ListItemAvatar>
+                        <Avatar src={chat?.influencerDetails?.photoURL} />
+                      </ListItemAvatar>
+                      <ListItemText primary={chat?.influencerDetails?.name} />
+                    </ListItem>
+                  ))
+                ) : (
+                  <ListItem>
+                    <ListItemText primary="No users found." />
+                  </ListItem>
+                )}
+              </List>
+            </Box>
+          </SwipeableDrawer>
+        ) : (
+          <Box
+            width="240px"
+            borderRight="1px solid #e0e0e0"
+            display="flex"
+            flexDirection="column"
+            height="90vh"
+            overflow="hidden"
+          >
+            {/* Search Input */}
+            <InputBase
+              placeholder="Search chats…"
+              style={{
+                padding: "10px",
+                margin: "10px",
+                border: "1px solid #e0e0e0",
+                borderRadius: "4px",
+              }}
+              startAdornment={<SearchIcon />}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {/* Chat List - Make it scrollable independently */}
+            <List style={{ overflowY: "auto", flexGrow: 1 }}>
+              {filteredChats?.length > 0 ? (
+                filteredChats.map((chat) => (
+                  <ListItem
+                    button
+                    key={chat.id}
+                    selected={selectedChat && selectedChat.id === chat.id}
+                    onClick={() => handleChatSelect(chat)}
+                    style={{
+                      backgroundColor:
+                        selectedChat && selectedChat.id === chat.id
+                          ? "#f0f0f0"
+                          : "transparent",
+                    }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar src={chat?.influencerDetails?.photoURL} />
+                    </ListItemAvatar>
+                    <ListItemText primary={chat?.influencerDetails?.name} />
+                  </ListItem>
+                ))
+              ) : (
+                <ListItem>
+                  <ListItemText primary="No users found." />
+                </ListItem>
+              )}
+            </List>
+          </Box>
+        )}
+        {/* Chat Area - Keep it scrollable independently */}
+        <Box flexGrow={1} display="flex" flexDirection="column" height="90vh">
+          {/* Chat Header */}
           <Box
             display="flex"
             alignItems="center"
@@ -129,102 +219,42 @@ const ChatScreen = () => {
             bgcolor="#f5f5f5"
             boxShadow={1}
           >
+            {isMobile && (
+              <IconButton onClick={() => setDrawerOpen(true)}>
+                <MenuIcon />
+              </IconButton>
+            )}
             {selectedChat && (
               <>
                 <Avatar
-                  src={selectedChat.img}
+                  src={selectedChat.influencerDetails.photoURL}
                   style={{ marginRight: "10px" }}
                 />
-                <Typography variant="h6">{selectedChat.name}</Typography>
+                <Typography variant="h6">
+                  {selectedChat.influencerDetails.name}
+                </Typography>
               </>
             )}
           </Box>
-          {/* Chat Messages */}
+
+          {/* Chat Messages - Scrollable */}
           <Box
             flexGrow={1}
             display="flex"
             flexDirection="column"
-            overflow="auto"
-            paddingBottom={2}
+            overflow="auto" // Enable scrolling for chat messages
             paddingX={2}
-            sx={{ bgcolor: "#f9f9f9" }} // Background color for chat area
+            sx={{ bgcolor: "#f9f9f9" }}
           >
-            {selectedChat ? (
-              selectedChat.messages.length > 0 ? (
-                selectedChat.messages.map((msg, index) => (
-                  <Box
-                    key={index}
-                    display="flex"
-                    justifyContent={
-                      msg.sender === "me" ? "flex-end" : "flex-start"
-                    }
-                    mb={1}
-                    mt={2}
-                  >
-                    {/* {msg.sender !== "me" && <Avatar src={selectedChat.img} />} */}
-                    <Box
-                      bgcolor={msg.sender === "me" ? "#dcf8c6" : "#f1f1f1"}
-                      borderRadius="8px"
-                      p={1}
-                      ml={msg.sender === "me" ? 1 : 0}
-                      mr={msg.sender === "me" ? 0 : 1}
-                      maxWidth="70%"
-                      style={{ wordWrap: "break-word" }}
-                    >
-                      <Typography variant="body2">{msg.text}</Typography>
-                    </Box>
-                    {/* {msg.sender === "me" && (
-                      <Avatar src="https://via.placeholder.com/40" />
-                    )} */}
-                  </Box>
-                ))
-              ) : (
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  align="center"
-                >
-                  No messages yet.
-                </Typography>
-              )
-            ) : (
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                align="center"
-                sx={{ mt: "40vh" }}
-              >
-                Select a chat to start messaging.
-              </Typography>
-            )}
+            {showChatComponent(selectedChat, chatData, data?.id)}
           </Box>
 
           {/* Fixed Message Input */}
-          <Box
-            display="flex"
-            alignItems="center"
-            mt={2}
-            position="sticky"
-            bottom={0}
-            bgcolor="#fff"
-            padding={1}
-            boxShadow={1}
-          >
-            <InputBase
-              placeholder="Type a message..."
-              style={{
-                padding: "10px",
-                border: "1px solid #e0e0e0",
-                borderRadius: "4px",
-                flexGrow: 1,
-              }}
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-            />
-            <IconButton color="primary" onClick={handleSendMessage}>
-              <SendIcon />
-            </IconButton>
-          </Box>
+          <ChatInput
+            handleSendMessage={handleSendMessage}
+            newMessage={newMessage}
+            setNewMessage={(e) => setNewMessage(e.target.value)}
+          />
         </Box>
       </Box>
     </>
