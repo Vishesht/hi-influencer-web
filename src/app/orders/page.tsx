@@ -161,6 +161,23 @@ const Orders: React.FC = () => {
     }
   };
 
+  const saveChat = async (userId1, userId2) => {
+    try {
+      const response = await axios.post(`${BaseUrl}/service/create-chat`, {
+        userId1,
+        userId2,
+      });
+      console.log("saveChat", response.data);
+      router.push("/chat");
+    } catch (error) {
+      console.error("Error saving chat:", error);
+    }
+  };
+
+  const CreateChat = (item) => {
+    saveChat(item.loggedUserId, item.influencerId);
+  };
+
   return (
     <StyledBox>
       <Tabs
@@ -314,7 +331,7 @@ const Orders: React.FC = () => {
                         <Button
                           variant="contained"
                           color="success"
-                          onClick={() => router.push("/chat")}
+                          onClick={() => CreateChat(item)}
                           sx={{ marginRight: 1 }}
                         >
                           Chat

@@ -291,6 +291,8 @@ const Header = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            pl: 16,
+            pr: 16,
           }}
         >
           <Button
@@ -309,10 +311,10 @@ const Header = () => {
               {data?.photoURL || user?.displayName?.[0]}
             </Avatar>
             <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: "700" }}>
+              <Typography sx={{ fontSize: 12, fontWeight: "700" }}>
                 {data?.name}
               </Typography>
-              <Typography sx={{ fontSize: 14 }} color="textSecondary">
+              <Typography sx={{ fontSize: 12 }} color="textSecondary">
                 {data?.email}
               </Typography>
             </Box>

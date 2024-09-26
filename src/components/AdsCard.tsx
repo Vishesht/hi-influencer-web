@@ -16,6 +16,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { truncateText } from "@/common/utils";
 import ApplicantsPopup from "./ApplicantsPopup";
+import { useRouter } from "next/navigation";
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -97,6 +98,7 @@ const AdCard: React.FC<AdCardProps> = ({
   const [popupOpen, setPopupOpen] = useState(false);
   const [applicantsData, setApplicantsData] = useState([]);
   const [applicant, setApplicants] = useState("");
+  const router = useRouter();
 
   const handleOpenPopup = (applicant) => {
     if (applicant === "Requested") {
@@ -172,7 +174,16 @@ const AdCard: React.FC<AdCardProps> = ({
             {new Date(ad.createdAt).toLocaleDateString()}
           </Typography>
         </DetailItem>
-
+        {isApplied ||
+          (isApproved && (
+            <DetailItem>
+              <AttachMoneyIcon fontSize="small" />
+              <DetailLabel variant="body2">Status:</DetailLabel>
+              <Typography variant="body2" color="textPrimary">
+                {isApplied ? "Applied" : isApproved ? "Approved" : ""}
+              </Typography>
+            </DetailItem>
+          ))}
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <DetailItem>
             <AttachMoneyIcon fontSize="small" />
@@ -205,14 +216,22 @@ const AdCard: React.FC<AdCardProps> = ({
                   : "#007bff",
               },
             }}
-            onClick={myAds ? onEditClick : onApply}
+            onClick={
+              isApplied
+                ? () => null
+                : isApproved
+                ? () => router.push("/payment")
+                : myAds
+                ? onEditClick
+                : onApply
+            }
           >
             {myAds
               ? "Edit"
               : isApplied
               ? "Applied"
               : isApproved
-              ? "Approved"
+              ? "Pay"
               : "Apply"}
           </Button>
         </Box>
