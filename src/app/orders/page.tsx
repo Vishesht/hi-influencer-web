@@ -247,12 +247,12 @@ const Orders: React.FC = () => {
                     </Typography>
 
                     <Box mt={2}>
-                      <Typography variant="body2" fontWeight="bold">
+                      {/* <Typography variant="body2" fontWeight="bold">
                         Order Details:
                       </Typography>
                       <Typography variant="body2">
                         Order ID: {item._id}
-                      </Typography>
+                      </Typography> */}
                       {tabIndex === 0 &&
                         item.status === "Task Completed" &&
                         !reviewDone && (
@@ -268,40 +268,82 @@ const Orders: React.FC = () => {
                             Add your review
                           </Button>
                         )}
+                      {item.orderDetails[0].chatReason && (
+                        <Typography variant="body2">
+                          <b>Reason for chatting:</b>{" "}
+                          {item.orderDetails[0].chatReason}
+                        </Typography>
+                      )}
                       {item.orderDetails[0].socialMediaAccount && (
                         <Typography variant="body2">
-                          Social Media Account:{" "}
+                          <b>Social Media Account:</b>{" "}
                           {item.orderDetails[0].socialMediaAccount}
                         </Typography>
                       )}
                       {item.orderDetails[0].title && (
                         <Typography variant="body2">
-                          Title: {item.orderDetails[0].title}
+                          <b>Title:</b> {item.orderDetails[0].title}
                         </Typography>
                       )}
                       {item.orderDetails[0].description && (
                         <Typography variant="body2">
-                          Description: {item.orderDetails[0].description}
+                          <b>Description:</b> {item.orderDetails[0].description}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].selectedMedia && (
+                        <Typography variant="body2">
+                          <b>Type:</b> {item.orderDetails[0].selectedMedia}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].name && (
+                        <Typography variant="body2">
+                          <b>Name:</b> {item.orderDetails[0].name}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].email && (
+                        <Typography variant="body2">
+                          <b>Email:</b> {item.orderDetails[0].email}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].gender && (
+                        <Typography variant="body2">
+                          <b>Gender:</b> {item.orderDetails[0].gender}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].gender && (
+                        <Typography variant="body2">
+                          <b>Instagram Link:</b>{" "}
+                          {item.orderDetails[0].instagram}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].age && (
+                        <Typography variant="body2">
+                          <b>Age:</b> {item.orderDetails[0].age}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].profession && (
+                        <Typography variant="body2">
+                          <b>Profession:</b> {item.orderDetails[0].profession}
                         </Typography>
                       )}
                       {item.orderDetails[0].phone && (
                         <Typography variant="body2">
-                          Phone: {item.orderDetails[0].phone}
+                          <b>Phone:</b> {item.orderDetails[0].phone}
                         </Typography>
                       )}
                       {item.orderDetails[0].timing && (
                         <Typography variant="body2">
-                          Timing: {item.orderDetails[0].timing}
+                          <b>Timing:</b> {item.orderDetails[0].timing}
                         </Typography>
                       )}
                       {item.orderDetails[0].location && (
                         <Typography variant="body2">
-                          Location: {item.orderDetails[0].location}
+                          <b>Location:</b> {item.orderDetails[0].location}
                         </Typography>
                       )}
                       {item.orderDetails[0].negotiablePrice && (
                         <Typography variant="body2">
-                          Price: {item.orderDetails[0].negotiablePrice}
+                          <b>Price:</b> {item.orderDetails[0].negotiablePrice}
                         </Typography>
                       )}
                       {item.orderDetails[0].images?.length > 0 && (

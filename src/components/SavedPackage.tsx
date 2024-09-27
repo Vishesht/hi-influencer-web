@@ -31,16 +31,16 @@ const packagesData = [
   },
   {
     name: "Free Promotion",
-    description: "This is a free promotion to increase visibility.",
+    description: "You can ask influencer to do a free promotion for you.",
   },
   {
     name: "Ask for Follow",
-    description: "Encourage users to follow you on social media.",
+    description: "Encourage influencers to follow you on social media.",
   },
   {
     name: "Invitation",
     description:
-      "Invite to parties, clubs, or restaurants for promotional events.",
+      "You can invite influencers to join the parties, clubs, or restaurants for promotional events.",
   },
   {
     name: "Join the Trip with Influencer",
@@ -48,9 +48,14 @@ const packagesData = [
   },
   {
     name: "Book Appointment",
-    description: "Book personal appointments with the influencer.",
+    description:
+      "Schedule your appointment with a leading influencer and take your marketing to the next level.",
   },
-  { name: "Chat", description: "Pay to chat with the influencer." },
+  {
+    name: "Chat",
+    description:
+      "Pay to chat with the influencer and explore collaboration opportunities directly.",
+  },
 ];
 
 const SavedPackage = ({ pkg, isEdit, influencerId }) => {
@@ -97,6 +102,7 @@ const SavedPackage = ({ pkg, isEdit, influencerId }) => {
                 </Typography>
               </>
             )}
+
             {pkg.name === "Ask for Follow" && (
               <>
                 <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
@@ -120,7 +126,7 @@ const SavedPackage = ({ pkg, isEdit, influencerId }) => {
                   {pkg.data.appointmentOffer}
                 </Typography>
                 <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-                  <strong>Time:</strong> {pkg.data.appointmentTiming}
+                  <strong>Desc:</strong> {pkg.data.appointmentTiming}
                 </Typography>
                 <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
                   <strong>Price:</strong> Rs.{pkg.data.appointmentPrice}
@@ -162,7 +168,7 @@ const SavedPackage = ({ pkg, isEdit, influencerId }) => {
               onClick={handleOpen}
               fullWidth
             >
-              Hire
+              Select
             </Button>
           )}
         </CardContent>

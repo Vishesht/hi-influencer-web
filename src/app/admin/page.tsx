@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/hooks";
+import { isAdminLogin } from "@/lib/features/login/loginSlice";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   display: "flex",
@@ -19,8 +21,9 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   height: "100vh",
 }));
 
-const AdminLogin: React.FC = () => {
+const AdminLogin = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -29,7 +32,8 @@ const AdminLogin: React.FC = () => {
   const handleLogin = () => {
     if (email === "admin@hiin.com" && password === "Admin@001") {
       // Proceed with admin access
-      alert("Login successful!"); // You can redirect or handle the login here
+      alert("Admin Login successful!");
+      dispatch(isAdminLogin(true));
       router.push("/admin/dashboard");
     } else {
       setSnackbarMessage("Invalid email or password!");

@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/hooks";
+import { isAdminLogin } from "@/lib/features/login/loginSlice";
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -26,6 +28,7 @@ const DashboardCard = styled(Card)(({ theme }) => ({
 
 const AdminDashboard: React.FC = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   // Dummy data for demonstration
   const dataCounts = {
     users: 120,
@@ -42,9 +45,19 @@ const AdminDashboard: React.FC = () => {
   };
   return (
     <StyledContainer maxWidth="lg">
-      <Typography variant="h4" gutterBottom>
-        Admin Dashboard
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h4" gutterBottom>
+          Admin Dashboard
+        </Typography>
+        <Button
+          onClick={() => dispatch(isAdminLogin(false))}
+          sx={{ fontWeight: "bold" }}
+          color="primary"
+        >
+          Logout
+        </Button>
+      </Box>
+
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={3}>
           <DashboardCard>

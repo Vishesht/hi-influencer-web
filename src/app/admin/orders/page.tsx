@@ -139,7 +139,7 @@ const AdminOrders = () => {
       </StyledBox>
     );
   }
-
+  console.log("first", sortedOrders);
   return (
     <StyledBox>
       <Typography variant="h4" gutterBottom>
@@ -186,31 +186,45 @@ const AdminOrders = () => {
                   <Typography variant="body2" fontWeight="bold">
                     Order Details:
                   </Typography>
-                  <Typography variant="body2">Order ID: {order._id}</Typography>
+                  {/* <Typography variant="body2">{order._id}</Typography> */}
+                  {order.orderDetails[0].chatReason && (
+                    <Typography variant="body2">
+                      <b>Chat Reason: </b>
+                      {order.orderDetails[0].chatReason}
+                    </Typography>
+                  )}
+                  {order.orderDetails[0].selectedMedia && (
+                    <Typography variant="body2">
+                      <b>Type: </b>
+                      {order.orderDetails[0].selectedMedia}
+                    </Typography>
+                  )}
                   {order.orderDetails[0].socialMediaAccount && (
                     <Typography variant="body2">
-                      Social Media Account:{" "}
+                      <b>Social Media Account: </b>{" "}
                       {order.orderDetails[0].socialMediaAccount}
                     </Typography>
                   )}
                   {order.orderDetails[0].title && (
                     <Typography variant="body2">
-                      Title: {order.orderDetails[0].title}
+                      <b>Title: </b> {order.orderDetails[0].title}
                     </Typography>
                   )}
                   {order.orderDetails[0].description && (
                     <Typography variant="body2">
-                      Description: {order.orderDetails[0].description}
+                      <b>Description: </b> {order.orderDetails[0].description}
                     </Typography>
                   )}
                   {order.orderDetails[0].phone && (
                     <Typography variant="body2">
-                      Phone: {order.orderDetails[0].phone}
+                      <b>Phone: </b>
+                      {order.orderDetails[0].phone}
                     </Typography>
                   )}
                   {order.orderDetails[0].negotiablePrice && (
                     <Typography variant="body2">
-                      Price: {order.orderDetails[0].negotiablePrice}
+                      <b>Price: </b>
+                      {order.orderDetails[0].negotiablePrice}
                     </Typography>
                   )}
                   {order.orderDetails[0].images?.length > 0 && (
