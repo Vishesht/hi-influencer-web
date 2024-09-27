@@ -132,7 +132,7 @@ const Header = () => {
           <Typography
             onClick={() =>
               !isuserProfile
-                ? isAdmin
+                ? !path.startsWith("/admin")
                   ? router.push("/admin/dashboard")
                   : router.push("/")
                 : null
@@ -149,7 +149,7 @@ const Header = () => {
           </Typography>
 
           {/* Mobile Menu Icon */}
-          {!isuserProfile && isMobile && !isAdmin && (
+          {!isuserProfile && isMobile && !path.startsWith("/admin") && (
             <IconButton
               edge="end"
               color="inherit"
@@ -161,7 +161,7 @@ const Header = () => {
           )}
 
           {/* Desktop Nav Links */}
-          {!isMobile && !isuserProfile && !isAdmin && (
+          {!isMobile && !isuserProfile && !path.startsWith("/admin") && (
             <>
               <Button onClick={() => router.push("/ads")} color="inherit">
                 Ads
@@ -184,23 +184,26 @@ const Header = () => {
           )}
 
           {/* Avatar for Mobile */}
-          {(user || data) && !isMobile && !isuserProfile && !isAdmin && (
-            <Tooltip title="Click to view options" arrow>
-              <IconButton
-                edge="end"
-                color="inherit"
-                sx={{ marginLeft: "10px" }}
-                onClick={handleClick}
-              >
-                <Avatar
-                  src={data?.photoURL || user?.photoURL}
-                  sx={{ bgcolor: "#FFF3E0", color: "#000" }}
+          {(user || data) &&
+            !isMobile &&
+            !isuserProfile &&
+            !path.startsWith("/admin") && (
+              <Tooltip title="Click to view options" arrow>
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  sx={{ marginLeft: "10px" }}
+                  onClick={handleClick}
                 >
-                  {!user?.photoURL && user?.displayName?.[0]}
-                </Avatar>
-              </IconButton>
-            </Tooltip>
-          )}
+                  <Avatar
+                    src={data?.photoURL || user?.photoURL}
+                    sx={{ bgcolor: "#FFF3E0", color: "#000" }}
+                  >
+                    {!user?.photoURL && user?.displayName?.[0]}
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+            )}
         </Toolbar>
       </Container>
 

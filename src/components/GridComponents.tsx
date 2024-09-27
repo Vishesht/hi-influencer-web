@@ -60,7 +60,6 @@ const GridComponent = ({ data }) => {
       }}
     >
       {data.map((item, index) => {
-        const imgUrl = cleanImageUrl(item.photoURL, index);
         return (
           <Button
             key={item?.id || index}
@@ -82,7 +81,17 @@ const GridComponent = ({ data }) => {
                 cursor: "pointer",
               }}
             >
-              <CardMedia
+              <Image
+                src={item.photoURL}
+                alt="User Image"
+                width={230}
+                height={220}
+                // layout="responsive"
+                style={{
+                  objectFit: "cover",
+                }}
+              />
+              {/* <CardMedia
                 component="img"
                 image={imgUrl}
                 alt={item.name}
@@ -91,7 +100,7 @@ const GridComponent = ({ data }) => {
                   borderTopRightRadius: 2,
                   height: 180,
                 }}
-              />
+              /> */}
               <CardContent
                 sx={{
                   height: 140,
