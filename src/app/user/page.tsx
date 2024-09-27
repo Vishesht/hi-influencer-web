@@ -27,6 +27,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { useAppSelector } from "@/lib/hooks";
 import CustomButton from "@/components/CustomButton";
+import Image from "next/image";
 
 interface User {
   id: string;
@@ -123,8 +124,6 @@ const ProfilePage = () => {
     window.open(url, "_blank", "noopener noreferrer");
   };
 
-  const imgUrl = cleanImageUrl(user?.photoURL || data?.photoURL);
-
   const verifyAcc = async (id) => {
     try {
       const res = await axios.put(`${BaseUrl}/api/users/${id}/influencer`);
@@ -137,6 +136,8 @@ const ProfilePage = () => {
       console.error(err);
     }
   };
+  const fb = JSON?.stringify(firebaseData);
+  const firebaseDb = fb ? JSON?.parse(fb) : null;
 
   return (
     <Container>
@@ -152,11 +153,15 @@ const ProfilePage = () => {
             mb: 2,
           }}
         >
-          <CardMedia
-            component="img"
-            image={imgUrl}
-            // alt="User Image"
-            sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+          <Image
+            src={user?.photoURL || data?.photoURL || firebaseDb?.photoURL}
+            alt="User Image"
+            width={150}
+            height={150}
+            // layout="responsive"
+            style={{
+              objectFit: "cover",
+            }}
           />
         </Box>
 

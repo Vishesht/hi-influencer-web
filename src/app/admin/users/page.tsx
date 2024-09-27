@@ -18,6 +18,7 @@ import {
   Alert,
 } from "@mui/material";
 import { BaseUrl } from "@/common/utils";
+import Image from "next/image";
 
 const indianStates = [
   "Andhra Pradesh",
@@ -213,45 +214,54 @@ const AdminUsers = () => {
 
       <Typography variant="h6">User List</Typography>
       <Grid container spacing={3}>
-        {filteredUsers.map((user) => (
-          <Grid item xs={12} sm={6} md={4} key={user.id}>
-            <Paper
-              elevation={3}
-              sx={{ padding: 2, backgroundColor: "white", boxShadow: 3 }}
-            >
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">{user.name}</Typography>
-                  <Typography variant="subtitle1">
-                    Username: {user.username}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    Email: {user.email}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    State: {user.state}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    Gender: {user.gender}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    Category: {user.category}
-                  </Typography>
-                  {user?.isInfluencer && !user?.verified && (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      sx={{ mt: 2 }}
-                      onClick={() => verifyUser(user.id)}
-                    >
-                      Verify
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            </Paper>
-          </Grid>
-        ))}
+        {filteredUsers.map((user) => {
+          return (
+            <Grid item xs={12} sm={6} md={4} key={user.id}>
+              <Paper
+                elevation={3}
+                sx={{ padding: 2, backgroundColor: "white", boxShadow: 3 }}
+              >
+                <Card>
+                  <CardContent>
+                    <Image
+                      src={user.photoURL}
+                      alt="User Image"
+                      width={200}
+                      height={200}
+                      objectFit="cover"
+                    />
+                    <Typography variant="h6">{user.name}</Typography>
+                    <Typography variant="subtitle1">
+                      Username: {user.username}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      Email: {user.email}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      State: {user.state}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      Gender: {user.gender}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      Category: {user.category}
+                    </Typography>
+                    {user?.isInfluencer && !user?.verified && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ mt: 2 }}
+                        onClick={() => verifyUser(user.id)}
+                      >
+                        Verify
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              </Paper>
+            </Grid>
+          );
+        })}
       </Grid>
       <Snackbar
         open={snackbarOpen}

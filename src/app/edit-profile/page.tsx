@@ -37,6 +37,7 @@ import { add } from "@/lib/features/login/loginSlice";
 import AlertDialog from "@/components/Alert";
 import { showAlert } from "@/lib/features/alert/alertSlice";
 import PackagesSetup from "@/components/packagesSetup";
+import Image from "next/image";
 
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -266,7 +267,16 @@ const EditProfile: React.FC = () => {
               onChange={handleImageUpload}
             />
             <EditIconWrapper>
-              <ProfileImage src={imgUrl} alt="Profile Image" />
+              <Image
+                src={imgUrl}
+                alt="User Image"
+                width={150}
+                height={150}
+                // layout="responsive"
+                style={{
+                  objectFit: "cover",
+                }}
+              />
               <EditIconStyled
                 // component="span"
                 color="primary"
