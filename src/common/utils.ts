@@ -120,3 +120,5 @@ export const formatDate = (dateStr) => {
   const formattedDate = date.toLocaleString("en-US", options);
   return formattedDate.replace(",", "");
 };
+
+export const adminUserId = "ac8000bd-62ac-4fa5-b76b-9340951113e1";

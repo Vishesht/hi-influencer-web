@@ -19,7 +19,7 @@ import SendIcon from "@mui/icons-material/Send";
 import Header from "@/components/header";
 import { getChatDataFromFirebase, saveMessageToFirebase } from "../firebase";
 import axios from "axios";
-import { BaseUrl } from "@/common/utils";
+import { BaseUrl, adminUserId } from "@/common/utils";
 import { useAppSelector } from "@/lib/hooks";
 import { showChatComponent } from "@/components/chat/showChatComponent";
 import ChatInput from "@/components/chat/ChatInput";
@@ -40,8 +40,15 @@ const ChatScreen = () => {
       const response = await axios.get(`${BaseUrl}/service/chat/${userId}`);
       setUserData(response.data);
     } catch (error) {
-      console.error("Error fetching chat data:", error);
+      if (error.response.data.message === "No chats found for this user") {
+        data?.id && CreateChat();
+      }
+      console.error("Error fetching chat data:", error.response);
     }
+  };
+
+  const CreateChat = () => {
+    adminUserId !== data?.id && saveChat(data.id, adminUserId);
   };
 
   useEffect(() => {
@@ -58,25 +65,39 @@ const ChatScreen = () => {
             messages: item[key].messages || {},
           }));
 
-          // Filter chats to get only the selected chat data
-          const filteredChat = chats.find(
-            (chat) => chat.id === selectedChat.id
-          );
-          if (filteredChat) {
-            setChatData([filteredChat]); // Set the chat data to only the selected chat
+          // Ensure selectedChat is valid before accessing its id
+          if (selectedChat && selectedChat.id) {
+            const filteredChat = chats.find(
+              (chat) => chat.id === selectedChat.id
+            );
+
+            if (filteredChat) {
+              setChatData([filteredChat]);
+            } else {
+              setChatData([]);
+            }
           } else {
-            setChatData([]); // No chat found, reset chat data
+            // Handle case where selectedChat is null or doesn't have an id
+            setChatData([]); // or any appropriate fallback
           }
+        } else {
+          handleSendMessage(adminUserId, "Welcome to the Hi Influencer App!");
+          setTimeout(() => {
+            handleSendMessage(
+              adminUserId,
+              "If you need help or have any questions about our website, just send us a message here. We’re here to help you soon!"
+            );
+          }, 2000);
         }
       });
     }
   }, [selectedChat]);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim() === "" || !selectedChat) return;
+  const handleSendMessage = (senderId, msg) => {
+    if (msg.trim() === "" || !selectedChat) return;
     const message = {
-      text: newMessage,
-      sender: data?.id,
+      text: msg,
+      sender: senderId,
       timestamp: Date.now(),
     };
     selectedChat?.id && saveMessageToFirebase(selectedChat?.id, message);
@@ -94,6 +115,18 @@ const ChatScreen = () => {
 
     return influencerName.includes(searchLower) || myName.includes(searchLower);
   });
+
+  const saveChat = async (userId1, userId2) => {
+    try {
+      const response = await axios.post(`${BaseUrl}/service/create-chat`, {
+        userId1,
+        userId2,
+      });
+      data?.id && getChatData(data?.id);
+    } catch (error) {
+      console.error("Error saving chat:", error);
+    }
+  };
 
   return (
     <>
@@ -254,7 +287,7 @@ const ChatScreen = () => {
 
           {/* Fixed Message Input */}
           <ChatInput
-            handleSendMessage={handleSendMessage}
+            handleSendMessage={() => handleSendMessage(data?.id, newMessage)}
             newMessage={newMessage}
             setNewMessage={setNewMessage}
           />
