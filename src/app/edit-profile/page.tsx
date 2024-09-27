@@ -287,6 +287,13 @@ const EditProfile: React.FC = () => {
                 <EditIcon />
               </EditIconStyled>
             </EditIconWrapper>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+            >
+              <p>{data?.email}</p>
+            </Grid>
           </label>
         </Grid>
 

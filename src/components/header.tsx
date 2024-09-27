@@ -18,23 +18,28 @@ import {
   useMediaQuery,
   useTheme,
   Tooltip,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../app/firebase";
-import { ProfileCheckRegex } from "@/common/utils";
+import { BaseUrl, ProfileCheckRegex } from "@/common/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import axios from "axios";
 
 const Header = () => {
   const router = useRouter();
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const path = usePathname();
+  const [notificationData, setNotificationData] = useState([]);
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl1, setAnchorEl1] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<any>(null);
   const main = useAppSelector((state) => state.login);
   const data = main.userData;
@@ -43,6 +48,24 @@ const Header = () => {
     const profilePathRegex = ProfileCheckRegex;
     return profilePathRegex.test(path);
   };
+
+  const getUserNotifications = async (email) => {
+    try {
+      const response = await axios.get(
+        `${BaseUrl}/service/notifications/${email}`
+      );
+      response?.data?.notifications?.length > 0 &&
+        setNotificationData(response?.data?.notifications);
+    } catch (error) {
+      console.error("firstError fetching notifications:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (data?.email) {
+      getUserNotifications(data.email);
+    }
+  }, [data?.id]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -76,8 +99,16 @@ const Header = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleClick1 = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl1(event.currentTarget);
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClose1 = () => {
+    setAnchorEl1(null);
   };
 
   const postBtn = () => {
@@ -185,6 +216,14 @@ const Header = () => {
               </Button> */}
               {/* Post a Campaign Button */}
               {postBtn()}
+              <Button color="inherit" onClick={handleClick1}>
+                <Badge
+                  badgeContent={notificationData?.length}
+                  color="secondary"
+                >
+                  <NotificationsIcon />
+                </Badge>
+              </Button>
             </>
           )}
 
@@ -284,6 +323,72 @@ const Header = () => {
       </Drawer>
 
       {/* Popover for Desktop */}
+      <Popover
+        id={id}
+        open={Boolean(anchorEl1)}
+        anchorEl={anchorEl1}
+        onClose={handleClose1}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        sx={{ p: 2 }}
+      >
+        <Box sx={{ p: 2, width: 300 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Notifications
+          </Typography>
+          <List>
+            {notificationData.length > 0 ? (
+              notificationData.map((notification) => (
+                <ListItem
+                  key={notification._id}
+                  sx={{
+                    borderBottom: "1px solid #e0e0e0",
+                    backgroundColor: "transparent", // No background for ListItem
+                  }}
+                >
+                  <ListItemText
+                    primary={
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          color: notification.read
+                            ? "grey.500"
+                            : "text.primary", // Grey for read, black for unread
+                          fontWeight: notification.read ? "normal" : "bold", // Bold for unread
+                        }}
+                      >
+                        {notification.title}
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: notification.read
+                            ? "grey.500"
+                            : "text.secondary", // Grey for read, darker for unread
+                        }}
+                      >
+                        {notification.body}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              ))
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No new notifications
+              </Typography>
+            )}
+          </List>
+        </Box>
+      </Popover>
       <Popover
         id={id}
         open={Boolean(anchorEl)}

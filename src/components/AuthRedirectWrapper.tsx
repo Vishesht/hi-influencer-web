@@ -46,10 +46,15 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   const requestPermission = async () => {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
-      const token = await getToken(messaging, {
-        vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY, // Ensure VAPID_KEY is correctly set
-      });
-      updateFcmToken(token);
+      try {
+        const token = await getToken(messaging, {
+          vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
+        });
+        console.log("Successfully obtained token:", token);
+        updateFcmToken(token);
+      } catch (error) {
+        console.error("Error obtaining token:", error);
+      }
     } else {
       console.error("Permission not granted for Notification");
     }
