@@ -17,7 +17,9 @@ import axios from "axios";
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const data = useAppSelector((state) => state.login.userData);
+  const loginData = useAppSelector((state) => state.login);
+  const isAdmin = loginData?.isAdmin;
+  const data = loginData?.userData;
   const { user, loading } = useAuth();
   const router = useRouter();
   const path = usePathname();
@@ -27,7 +29,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
     return profilePathRegex.test(path);
   };
 
-  const isuserProfile: boolean = useProfilePathCheck();
+  const isUserProfile: boolean = useProfilePathCheck();
 
   const updateFcmToken = async (token) => {
     const cred = {
@@ -62,25 +64,47 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (!loading) {
+      // Handle admin access logic
+      if (isAdmin) {
+        // If an admin is trying to access /admin, redirect to /admin/dashboard
+        if (path === "/admin") {
+          router.push("/admin/dashboard");
+        }
+      } else {
+        if (path === "/admin" || path.startsWith("/admin")) {
+          router.push("/admin");
+        }
+      }
+
+      // Redirect logic for logged-in users on login/signup pages
       if (user || data) {
         if (path === "/login" || path === "/signup") {
           router.push("/");
         }
       } else {
-        if (path !== "/login" && path !== "/signup" && !isuserProfile) {
+        // Redirect non-logged-in users to /login if trying to access protected routes
+        if (
+          path !== "/login" &&
+          path !== "/signup" &&
+          !isUserProfile &&
+          !path.startsWith("/admin")
+        ) {
           router.push("/login");
         }
       }
     }
-  }, [user, loading, path, router]);
+  }, [user, loading, path, router, isAdmin, isUserProfile]);
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
+  // Allow access to login and signup pages
   if (path === "/login" || path === "/signup") {
     return <>{children}</>;
   }
+
+  // Allow chat access and show ServiceWorkerToast if data is available
   if (path === "/chat" && data) {
     return (
       <>

@@ -52,7 +52,7 @@ const PackageDetailsModal = ({
     };
     try {
       const cred = {
-        id: Date.now(),
+        id: rework ? id : Date.now(),
         orderDetails: item,
         status: "In Review",
         loggedUserId: data?.id,
@@ -329,8 +329,8 @@ const PackageDetailsModal = ({
               margin="normal"
             />
             <TextField
-              label="Preferred Timing"
-              name="timing"
+              label="Description"
+              name="description"
               onChange={handleChange}
               fullWidth
               variant="outlined"

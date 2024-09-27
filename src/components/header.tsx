@@ -36,8 +36,9 @@ const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<any>(null);
-  const data = useAppSelector((state) => state.login.userData);
-
+  const main = useAppSelector((state) => state.login);
+  const data = main.userData;
+  const isAdmin = main.isAdmin;
   const useProfilePathCheck = () => {
     const profilePathRegex = ProfileCheckRegex;
     return profilePathRegex.test(path);
@@ -129,7 +130,13 @@ const Header = () => {
         <Toolbar disableGutters>
           {/* Logo */}
           <Typography
-            onClick={() => (!isuserProfile ? router.push("/") : null)}
+            onClick={() =>
+              !isuserProfile
+                ? isAdmin
+                  ? router.push("/admin/dashboard")
+                  : router.push("/")
+                : null
+            }
             variant="h6"
             component="div"
             sx={{ flexGrow: 1, marginTop: 1 }}
@@ -142,7 +149,7 @@ const Header = () => {
           </Typography>
 
           {/* Mobile Menu Icon */}
-          {!isuserProfile && isMobile && (
+          {!isuserProfile && isMobile && !isAdmin && (
             <IconButton
               edge="end"
               color="inherit"
@@ -154,7 +161,7 @@ const Header = () => {
           )}
 
           {/* Desktop Nav Links */}
-          {!isMobile && !isuserProfile && (
+          {!isMobile && !isuserProfile && !isAdmin && (
             <>
               <Button onClick={() => router.push("/ads")} color="inherit">
                 Ads
@@ -177,7 +184,7 @@ const Header = () => {
           )}
 
           {/* Avatar for Mobile */}
-          {(user || data) && !isMobile && !isuserProfile && (
+          {(user || data) && !isMobile && !isuserProfile && !isAdmin && (
             <Tooltip title="Click to view options" arrow>
               <IconButton
                 edge="end"
@@ -291,11 +298,9 @@ const Header = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            pl: 16,
-            pr: 16,
           }}
         >
-          <Button
+          {/* <Button
             onClick={() => handleListItemClick("/user")}
             sx={{
               width: "100%",
@@ -318,27 +323,13 @@ const Header = () => {
                 {data?.email}
               </Typography>
             </Box>
-          </Button>
+          </Button> */}
           <Button
-            onClick={() => handleListItemClick("/ads")}
+            onClick={() => handleListItemClick("/user")}
             fullWidth
             sx={{ mb: 1 }}
           >
-            Ads
-          </Button>
-          <Button
-            onClick={() => handleListItemClick("/orders")}
-            fullWidth
-            sx={{ mb: 1 }}
-          >
-            Orders
-          </Button>
-          <Button
-            onClick={() => handleListItemClick("/payments")}
-            fullWidth
-            sx={{ mb: 1 }}
-          >
-            Payments
+            Profile
           </Button>
           <Button
             onClick={handleSignOut}

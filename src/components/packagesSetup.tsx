@@ -8,18 +8,9 @@ import {
   MenuItem,
   FormControl,
   Grid,
-  Card,
   Box,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import SavedPackage from "./SavedPackage";
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  margin: theme.spacing(2, 0),
-  padding: theme.spacing(2),
-  borderRadius: "10px",
-  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-}));
 
 const PackagesSetup = ({ packages, onSavePackages }) => {
   const [selectedPackage, setSelectedPackage] = useState("");
@@ -287,9 +278,9 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Timing"
-                name="appointmentTiming"
-                value={formData.appointmentTiming || ""}
+                label="Description"
+                name="appointmentDesc"
+                value={formData.appointmentDesc || ""}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -318,21 +309,21 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
   const renderSavedPackages = () => {
     return (
       <Box>
-      {savedPackages?.length > 0 && (
-        <Typography
-          variant="h6"
-          sx={{ marginBottom: 2, fontWeight: "bold", mt:4 }}
-        >
-          Packages
-        </Typography>
-      )}
-      <Grid container spacing={3} direction={{ xs: "column", sm: "row" }}>
-        {savedPackages?.map((pkg) => (
-          <SavedPackage key={pkg.name} pkg={pkg} isEdit={false} />
-        ))}
-      </Grid>
-    </Box>
-    )
+        {savedPackages?.length > 0 && (
+          <Typography
+            variant="h6"
+            sx={{ marginBottom: 2, fontWeight: "bold", mt: 4 }}
+          >
+            Packages
+          </Typography>
+        )}
+        <Grid container spacing={3} direction={{ xs: "column", sm: "row" }}>
+          {savedPackages?.map((pkg) => (
+            <SavedPackage key={pkg.name} pkg={pkg} isEdit={false} />
+          ))}
+        </Grid>
+      </Box>
+    );
   };
 
   return (
