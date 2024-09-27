@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -23,6 +23,7 @@ import { BaseUrl, adminUserId } from "@/common/utils";
 import { useAppSelector } from "@/lib/hooks";
 import { showChatComponent } from "@/components/chat/showChatComponent";
 import ChatInput from "@/components/chat/ChatInput";
+import { sendNotification } from "@/api/commonApi";
 
 const ChatScreen = () => {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -32,6 +33,7 @@ const ChatScreen = () => {
   const [userData, setUserData] = useState();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const data = useAppSelector((state) => state.login.userData);
+  const hasFetchedChatData = useRef(false);
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -40,6 +42,7 @@ const ChatScreen = () => {
       const response = await axios.get(`${BaseUrl}/service/chat/${userId}`);
       setUserData(response.data);
     } catch (error) {
+      console.log("first", error);
       if (error.response.data.message === "No chats found for this user") {
         data?.id && CreateChat();
       }
@@ -48,11 +51,16 @@ const ChatScreen = () => {
   };
 
   const CreateChat = () => {
-    adminUserId !== data?.id && saveChat(data.id, adminUserId);
+    if (adminUserId !== data?.id) {
+      saveChat(data.id, adminUserId);
+    }
   };
 
   useEffect(() => {
-    getChatData(data?.id);
+    if (data?.id && !hasFetchedChatData.current) {
+      getChatData(data.id);
+      hasFetchedChatData.current = true;
+    }
   }, [data?.id]);
 
   useEffect(() => {
@@ -101,6 +109,12 @@ const ChatScreen = () => {
       timestamp: Date.now(),
     };
     selectedChat?.id && saveMessageToFirebase(selectedChat?.id, message);
+    selectedChat?.id &&
+      sendNotification(
+        selectedChat?.influencerDetails?.email,
+        `${selectedChat?.myDetails?.name} sent a message`,
+        msg
+      );
     setNewMessage("");
   };
 
@@ -118,7 +132,7 @@ const ChatScreen = () => {
 
   const saveChat = async (userId1, userId2) => {
     try {
-      const response = await axios.post(`${BaseUrl}/service/create-chat`, {
+      await axios.post(`${BaseUrl}/service/create-chat`, {
         userId1,
         userId2,
       });
