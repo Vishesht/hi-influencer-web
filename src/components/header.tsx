@@ -115,6 +115,17 @@ const Header = () => {
   const id = open ? "simple-popover" : undefined;
   const isuserProfile: boolean = useProfilePathCheck();
 
+  const onLogoClick = () => {
+    if (path.startsWith("/admin") && isAdmin) {
+      router.push("/admin/dashboard");
+    } else if (path.startsWith("/admin") && !isAdmin) {
+      router.push("/admin");
+    } else {
+      router.push("/");
+    }
+    //isuserProfile
+  };
+
   return (
     <AppBar
       sx={{
@@ -130,13 +141,7 @@ const Header = () => {
         <Toolbar disableGutters>
           {/* Logo */}
           <Typography
-            onClick={() =>
-              !isuserProfile
-                ? !path.startsWith("/admin")
-                  ? router.push("/admin/dashboard")
-                  : router.push("/")
-                : null
-            }
+            onClick={onLogoClick}
             variant="h6"
             component="div"
             sx={{ flexGrow: 1, marginTop: 1 }}
