@@ -208,7 +208,7 @@ const InfluencerProfile = () => {
           <Grid container spacing={3} direction={{ xs: "column", sm: "row" }}>
             {influencer?.packages.map((pkg) => (
               <SavedPackage
-                influencerId={influencer?.id}
+                influencer={influencer}
                 key={pkg.name}
                 pkg={pkg}
                 isEdit={true}

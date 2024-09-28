@@ -23,6 +23,7 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils"; // Adjust the import according to your structure
 import InfluencerProfileComponent from "@/components/InfluencerProfileComponent";
+import { sendNotification } from "@/api/commonApi";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -94,10 +95,21 @@ const AdminOrders = () => {
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 
-  const approveOrder = async (_id) => {
+  const approveOrder = async (_id, order) => {
     try {
       const newStatus = "Pending for approval";
-      await axios.put(`${BaseUrl}/api/changeStatus`, { _id, newStatus });
+      await axios
+        .put(`${BaseUrl}/api/changeStatus`, { _id, newStatus })
+        .then((res) => {
+          if (res.status == 200) {
+            const title = "New Order Received";
+            const desc = `You got a new order for the package "${order.orderDetails[0].pkgName}". Please check your orders for more details.`;
+            sendNotification(order.influencerDetails.email, title, desc);
+            const title1 = "Order Received";
+            const desc1 = `Your order is received by "${order.influencerDetails.name}". Wait for his confirmation.`;
+            sendNotification(order.loggedUserId.email, title1, desc1);
+          }
+        });
       fetchOrders();
     } catch (error) {
       console.error("Error approving order:", error);
@@ -139,7 +151,7 @@ const AdminOrders = () => {
       </StyledBox>
     );
   }
-  console.log("first", sortedOrders);
+
   return (
     <StyledBox>
       <Typography variant="h4" gutterBottom>
@@ -262,7 +274,7 @@ const AdminOrders = () => {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => approveOrder(order._id)}
+                    onClick={() => approveOrder(order._id, order)}
                     fullWidth
                     sx={{ marginTop: 2 }}
                   >

@@ -58,7 +58,7 @@ const packagesData = [
   },
 ];
 
-const SavedPackage = ({ pkg, isEdit, influencerId }) => {
+const SavedPackage = ({ pkg, isEdit, influencer }) => {
   const packageData = packagesData?.find((data) => data.name === pkg.name);
   const packageDescription = packageData ? packageData.description : "";
   const [openModal, setOpenModal] = useState(false);
@@ -174,7 +174,7 @@ const SavedPackage = ({ pkg, isEdit, influencerId }) => {
         </CardContent>
       </StyledCard>
       <PackageDetailsModal
-        influencerId={influencerId}
+        influencer={influencer}
         open={openModal}
         onClose={handleClose}
         pkg={pkg}
