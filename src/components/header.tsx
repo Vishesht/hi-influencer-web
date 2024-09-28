@@ -49,6 +49,15 @@ const Header = () => {
     return profilePathRegex.test(path);
   };
 
+  const countUnreadNotifications = () => {
+    const unreadNotifications = notificationData.filter(
+      (notification) => !notification.read
+    );
+    return unreadNotifications.length;
+  };
+
+  const unreadCount = countUnreadNotifications();
+
   const getUserNotifications = async (email) => {
     try {
       const response = await axios.get(
@@ -65,7 +74,7 @@ const Header = () => {
     if (data?.email) {
       getUserNotifications(data.email);
     }
-  }, [data?.id]);
+  }, [data?.id, path]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -101,6 +110,7 @@ const Header = () => {
 
   const handleClick1 = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl1(event.currentTarget);
+    markAllNotificationsAsRead();
   };
 
   const handleClose = () => {
@@ -109,6 +119,32 @@ const Header = () => {
 
   const handleClose1 = () => {
     setAnchorEl1(null);
+    getUserNotifications(data?.email);
+  };
+
+  const markAllNotificationsAsRead = async () => {
+    try {
+      const response = await axios.post(
+        `${BaseUrl}/service/notifications/mark-all-read`,
+        {
+          email: data?.email,
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(
+          "All notifications marked as read:",
+          response.data.updatedCount
+        );
+      } else {
+        console.error(
+          "Failed to mark notifications as read:",
+          response.data.message
+        );
+      }
+    } catch (error) {
+      console.error("Error marking notifications as read:", error.message);
+    }
   };
 
   const postBtn = () => {
@@ -186,14 +222,20 @@ const Header = () => {
 
           {/* Mobile Menu Icon */}
           {!isuserProfile && isMobile && !path.startsWith("/admin") && (
-            <IconButton
-              edge="end"
-              color="inherit"
-              sx={{ ml: 1 }}
-              onClick={() => setDrawerOpen(true)}
-            >
-              <MenuIcon />
-            </IconButton>
+            <>
+              <Button color="inherit" onClick={handleClick1}>
+                <Badge badgeContent={unreadCount} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </Button>
+              <IconButton
+                edge="end"
+                color="inherit"
+                onClick={() => setDrawerOpen(true)}
+              >
+                <MenuIcon />
+              </IconButton>
+            </>
           )}
 
           {/* Desktop Nav Links */}
@@ -217,10 +259,7 @@ const Header = () => {
               {/* Post a Campaign Button */}
               {postBtn()}
               <Button color="inherit" onClick={handleClick1}>
-                <Badge
-                  badgeContent={notificationData?.length}
-                  color="secondary"
-                >
+                <Badge badgeContent={unreadCount} color="secondary">
                   <NotificationsIcon />
                 </Badge>
               </Button>
@@ -342,45 +381,53 @@ const Header = () => {
           <Typography variant="h6" sx={{ mb: 2 }}>
             Notifications
           </Typography>
-          <List>
+          <List
+            sx={{
+              maxHeight: 300, // Set a max height for the list
+              overflowY: "auto", // Enable vertical scroll when the content exceeds the height
+            }}
+          >
             {notificationData.length > 0 ? (
-              notificationData.map((notification) => (
-                <ListItem
-                  key={notification._id}
-                  sx={{
-                    borderBottom: "1px solid #e0e0e0",
-                    backgroundColor: "transparent", // No background for ListItem
-                  }}
-                >
-                  <ListItemText
-                    primary={
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: notification.read
-                            ? "grey.500"
-                            : "text.primary", // Grey for read, black for unread
-                          fontWeight: notification.read ? "normal" : "bold", // Bold for unread
-                        }}
-                      >
-                        {notification.title}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: notification.read
-                            ? "grey.500"
-                            : "text.secondary", // Grey for read, darker for unread
-                        }}
-                      >
-                        {notification.body}
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-              ))
+              notificationData
+                .slice() // Create a shallow copy of the array to avoid mutating original data
+                .reverse() // Reverse the array to show the newest notifications first
+                .map((notification) => (
+                  <ListItem
+                    key={notification._id}
+                    sx={{
+                      borderBottom: "1px solid #e0e0e0",
+                      backgroundColor: "transparent", // No background for ListItem
+                    }}
+                  >
+                    <ListItemText
+                      primary={
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            color: notification.read
+                              ? "grey.500"
+                              : "text.primary", // Grey for read, black for unread
+                            fontWeight: notification.read ? "normal" : "bold", // Bold for unread
+                          }}
+                        >
+                          {notification.title}
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: notification.read
+                              ? "grey.500"
+                              : "text.secondary", // Grey for read, darker for unread
+                          }}
+                        >
+                          {notification.body}
+                        </Typography>
+                      }
+                    />
+                  </ListItem>
+                ))
             ) : (
               <Typography variant="body2" color="text.secondary">
                 No new notifications

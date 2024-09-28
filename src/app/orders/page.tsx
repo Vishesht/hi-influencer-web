@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import PackageDetailsModal from "@/components/PackageDetailsModal";
 import InfluencerProfileComponent from "@/components/InfluencerProfileComponent";
 import ReviewPopup from "@/components/Review";
+import { sendNotification } from "@/api/commonApi";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -122,11 +123,17 @@ const Orders: React.FC = () => {
     }
   };
 
-  const handleAcceptOrder = async (_id: string, newStatus) => {
+  const handleAcceptOrder = async (_id: string, item, newStatus) => {
     try {
       await axios
         .put(`${BaseUrl}/api/changeStatus`, { _id, newStatus })
-        .then((res) => console.log("res", res))
+        .then((res) => {
+          if (res.status === 200) {
+            const title = "Order Confirmed";
+            const desc = `Your order is confirmed for the package ${item.orderDetails[0].pkgName}. The influencer has now started working on your task.`;
+            sendNotification(item.influencerDetails.email, title, desc);
+          }
+        })
         .catch((err) => console.log("Err", err));
       getRequests();
       getOrders();
@@ -384,7 +391,7 @@ const Orders: React.FC = () => {
                               variant="contained"
                               color="success"
                               onClick={() =>
-                                handleAcceptOrder(item._id, "Testing")
+                                handleAcceptOrder(item._id, item, "Testing")
                               }
                               sx={{ marginRight: 1 }}
                             >
@@ -424,7 +431,11 @@ const Orders: React.FC = () => {
                             variant="contained"
                             color="success"
                             onClick={() =>
-                              handleAcceptOrder(item._id, "Waiting for payment")
+                              handleAcceptOrder(
+                                item._id,
+                                item,
+                                "Waiting for payment"
+                              )
                             }
                             sx={{ marginRight: 1 }}
                           >

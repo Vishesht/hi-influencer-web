@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { BaseUrl } from "@/common/utils";
 import Image from "next/image";
+import { sendNotification } from "@/api/commonApi";
 
 const indianStates = [
   "Andhra Pradesh",
@@ -109,12 +110,16 @@ const AdminUsers = () => {
     }));
   };
 
-  const verifyUser = async (id) => {
+  const verifyUser = async (user) => {
     try {
       const res = await axios.put(
-        `${BaseUrl}/api/users/${id}/influencer?verified=true`
+        `${BaseUrl}/api/users/${user?.id}/influencer?verified=true`
       );
+      const title = "Account Verified";
+      const desc =
+        "Your account has been successfully verified. You are now listed and eligible to start receiving deals.";
       if (res.status == 200) {
+        sendNotification(user.email, title, desc);
         setSnackbarOpen(true);
         setSnackbarMessage(verificationText);
         fetchUsers();
@@ -251,7 +256,7 @@ const AdminUsers = () => {
                         variant="contained"
                         color="primary"
                         sx={{ mt: 2 }}
-                        onClick={() => verifyUser(user.id)}
+                        onClick={() => verifyUser(user)}
                       >
                         Verify
                       </Button>

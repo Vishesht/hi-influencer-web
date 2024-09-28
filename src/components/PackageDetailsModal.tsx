@@ -20,7 +20,7 @@ const PackageDetailsModal = ({
   open,
   onClose,
   pkg,
-  influencerId,
+  influencer,
   rework = false,
 }) => {
   const [formData, setFormData] = useState({});
@@ -48,7 +48,7 @@ const PackageDetailsModal = ({
       images,
       pkgName: pkg.name,
       loggedUserId: data?.id,
-      influencerId: influencerId,
+      influencerId: influencer.id,
     };
     try {
       const cred = {
@@ -56,7 +56,7 @@ const PackageDetailsModal = ({
         orderDetails: item,
         status: "In Review",
         loggedUserId: data?.id,
-        influencerId: influencerId,
+        influencerId: influencer.id,
       };
       rework
         ? await axios
