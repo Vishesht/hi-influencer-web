@@ -1,0 +1,50 @@
+export const validatePromotion = (promotion) => {
+  const requiredFields = ["videoPrice", "imagePrice", "storyPrice"];
+  const errors = [];
+  const data = promotion.data || {};
+  const platform = promotion.name || "Unknown Platform";
+
+  // Validate for "Promotions"
+  if (promotion.name === "Promotions") {
+    requiredFields.forEach((field) => {
+      if (!(field in data)) {
+        errors.push(`Error for ${platform}: Missing ${field}`);
+      } else if (Number(data[field]) <= 0) {
+        errors.push(`Error for ${platform}: ${field} must be greater than 0`);
+      }
+    });
+  }
+
+  // Validate for "Chat"
+  if (promotion.name === "Chat") {
+    const chatPrice = data.chatPrice;
+    if (chatPrice === undefined || chatPrice === null) {
+      errors.push(`Error for ${platform}: Missing chat price`);
+    } else if (Number(chatPrice) < 50) {
+      errors.push(`Error for ${platform}: Chat price must be at least 50`);
+    }
+  }
+
+  // Validate for "Book Appointment"
+  if (promotion.name === "Book Appointment") {
+    const appointmentFields = [
+      "appointmentOffer",
+      "appointmentPrice",
+      "appointmentLocation",
+      "appointmentDesc",
+    ];
+    appointmentFields.forEach((field) => {
+      if (!(field in data)) {
+        errors.push(`Error for ${platform}: Missing ${field}`);
+      }
+    });
+
+    if (data.appointmentPrice && Number(data.appointmentPrice) <= 0) {
+      errors.push(
+        `Error for ${platform}: appointmentPrice must be greater than 0`
+      );
+    }
+  }
+
+  return errors.length > 0 ? errors : [];
+};

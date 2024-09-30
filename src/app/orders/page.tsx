@@ -130,7 +130,7 @@ const Orders: React.FC = () => {
         .then((res) => {
           if (res.status === 200) {
             const title = "Order Confirmed";
-            const desc = `Your order is confirmed for the package ${item.orderDetails[0].pkgName}. The influencer has now started working on your task.`;
+            const desc = `Your order is confirmed for the package ${item.orderDetails[0].pkgName}.`;
             sendNotification(item.influencerDetails.email, title, desc);
           }
         })

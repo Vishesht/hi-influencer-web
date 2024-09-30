@@ -11,6 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import SavedPackage from "./SavedPackage";
+import { validatePromotion } from "@/common/validations";
 
 const PackagesSetup = ({ packages, onSavePackages }) => {
   const [selectedPackage, setSelectedPackage] = useState("");
@@ -29,26 +30,26 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
       description:
         "Promote through video, images, or story posts to maximize engagement and visibility.",
     },
-    {
-      name: "Free Promotion",
-      description:
-        "Offer a no-cost promotion option to attract potential clients and build your audience.",
-    },
-    {
-      name: "Ask for Follow",
-      description:
-        "Charge users a fee to follow you, enhancing engagement and fostering community.",
-    },
-    {
-      name: "Invitation",
-      description:
-        "Invite clients to parties, clubs, or restaurants for exclusive promotional events.",
-    },
-    {
-      name: "Join the Trip with Influencer",
-      description:
-        "Allow clients to join you on trips, providing unique experiences and opportunities for collaboration.",
-    },
+    // {
+    //   name: "Free Promotion",
+    //   description:
+    //     "Offer a no-cost promotion option to attract potential clients and build your audience.",
+    // },
+    // {
+    //   name: "Ask for Follow",
+    //   description:
+    //     "Charge users a fee to follow you, enhancing engagement and fostering community.",
+    // },
+    // {
+    //   name: "Invitation",
+    //   description:
+    //     "Invite clients to parties, clubs, or restaurants for exclusive promotional events.",
+    // },
+    // {
+    //   name: "Join the Trip with Influencer",
+    //   description:
+    //     "Allow clients to join you on trips, providing unique experiences and opportunities for collaboration.",
+    // },
     {
       name: "Book Appointment",
       description:
@@ -79,6 +80,20 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
         name: selectedPackage,
         data: formData,
       };
+      const validation = validatePromotion(packageToSave);
+      if (selectedPackage === "Promotions" && validation?.length > 0) {
+        alert(validation[0]);
+        return null;
+      } else if (selectedPackage === "Chat" && validation?.length > 0) {
+        alert(validation[0]);
+        return null;
+      } else if (
+        selectedPackage === "Book Appointment" &&
+        validation?.length > 0
+      ) {
+        alert(validation[0]);
+        return null;
+      }
       const updatedPackages = [...savedPackages, packageToSave];
       setSavedPackages(updatedPackages);
       onSavePackages(updatedPackages);
@@ -259,29 +274,53 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Appointment Offer"
+                label="Packages"
                 name="appointmentOffer"
+                placeholder="e.g. Book for makeup, book for wedding videography etc."
                 value={formData.appointmentOffer || ""}
                 onChange={handleInputChange}
+                variant="outlined"
+                helperText="Add the service you offer like Book for yoga class, cooking class, makeup, haircut, photography session, wedding videography, tutoring session"
+                required
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Price"
+                label="Service Price"
                 name="appointmentPrice"
                 type="number"
+                placeholder="Please specify the price for this service "
                 value={formData.appointmentPrice || ""}
                 onChange={handleInputChange}
+                variant="outlined"
+                required
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Description"
+                label="Service Location"
+                name="appointmentLocation"
+                placeholder="e.g., 123 Main St, Delhi or Online"
+                value={formData.appointmentLocation || ""}
+                onChange={handleInputChange}
+                variant="outlined"
+                helperText="Enter the full address for in-person services or specify 'Online' for virtual appointments."
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Service Description"
                 name="appointmentDesc"
+                placeholder="Provide details about the service (e.g., duration, special requirements)"
                 value={formData.appointmentDesc || ""}
                 onChange={handleInputChange}
+                variant="outlined"
+                helperText="Include any important information or specific details about the service."
+                required
               />
             </Grid>
           </Grid>
@@ -292,9 +331,10 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Chat Price"
+                label="How much you will charge for chatting?"
                 name="chatPrice"
                 type="number"
+                placeholder="Price"
                 value={formData.chatPrice || ""}
                 onChange={handleInputChange}
               />

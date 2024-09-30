@@ -14,6 +14,7 @@ import {
   InputLabel,
   FormControl,
   Chip,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -88,6 +89,7 @@ const SocialMediaLinks = () => {
         phoneNumber: phoneNumber,
         platform: platformData,
         photoURL: imgPlaceholderImg,
+        isClient: false,
       };
       try {
         await axios.post(`${BaseUrl}/api/users`, updatedData, {
@@ -122,6 +124,14 @@ const SocialMediaLinks = () => {
           onChange={(e) => setPhoneNumber(e.target.value)}
           style={{ marginBottom: "10px" }}
         />
+        <Typography
+          variant="inherit"
+          sx={{ color: "GrayText", fontFamily: "initial" }}
+          gutterBottom
+        >
+          We respect your privacy. Your phone number will be kept confidential
+          and will not be disclosed to any third parties.
+        </Typography>
       </div>
 
       {/* Multi-select dropdown for selecting social media platforms */}

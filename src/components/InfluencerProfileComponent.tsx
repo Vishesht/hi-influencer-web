@@ -48,7 +48,9 @@ const InfluencerProfileComponent = ({
           {influencerDetails?.gender}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {influencerDetails?.address + " " + influencerDetails?.state || "N/A"}
+          {(influencerDetails?.address
+            ? influencerDetails?.address
+            : "" + " " + influencerDetails?.state) || "N/A"}
         </Typography>
       </CardContent>
     </Card>

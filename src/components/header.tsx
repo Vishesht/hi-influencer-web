@@ -241,9 +241,9 @@ const Header = () => {
           {/* Desktop Nav Links */}
           {!isMobile && !isuserProfile && !path.startsWith("/admin") && (
             <>
-              <Button onClick={() => router.push("/ads")} color="inherit">
+              {/* <Button onClick={() => router.push("/ads")} color="inherit">
                 Ads
-              </Button>
+              </Button> */}
               <Button onClick={() => router.push("/chat")} color="inherit">
                 Chat
               </Button>
@@ -257,7 +257,7 @@ const Header = () => {
                 Download
               </Button> */}
               {/* Post a Campaign Button */}
-              {postBtn()}
+              {/* {postBtn()} */}
               <Button color="inherit" onClick={handleClick1}>
                 <Badge badgeContent={unreadCount} color="secondary">
                   <NotificationsIcon />
@@ -294,13 +294,18 @@ const Header = () => {
       <Drawer
         anchor="right"
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => {
+          setDrawerOpen(false);
+        }}
         sx={{ display: { xs: "block", md: "none" } }} // Show drawer only on mobile
       >
         <Box
           sx={{ width: 250, p: 2 }}
           role="presentation"
-          onClick={() => setDrawerOpen(false)}
+          onClick={() => {
+            setDrawerOpen(false);
+            handleListItemClick("/user");
+          }}
           onKeyDown={() => setDrawerOpen(false)}
         >
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -321,20 +326,20 @@ const Header = () => {
           </Box>
           <Divider />
           <List>
-            <ListItem
+            {/* <ListItem
               component="div"
               sx={{ backgroundColor: "#fff" }}
               onClick={() => handleListItemClick("/user")}
             >
               <ListItemText primary="Profile" sx={{ color: "black" }} />
-            </ListItem>
-            <ListItem
+            </ListItem> */}
+            {/* <ListItem
               component="div"
               sx={{ backgroundColor: "#fff" }}
               onClick={() => handleListItemClick("/ads")}
             >
               <ListItemText primary="Ads" sx={{ color: "black" }} />
-            </ListItem>
+            </ListItem> */}
             <ListItem
               component="div"
               sx={{ backgroundColor: "#fff" }}

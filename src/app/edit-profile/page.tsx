@@ -45,15 +45,6 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   maxWidth: "900px",
 }));
 
-const ProfileImage = styled("img")(({ theme }) => ({
-  width: "150px",
-  height: "150px",
-  borderRadius: "50%",
-  objectFit: "cover",
-  marginBottom: theme.spacing(2),
-  border: `4px solid ${theme.palette.primary.main}`,
-}));
-
 const EditIconWrapper = styled("div")({
   position: "relative",
   display: "inline-block",
@@ -85,7 +76,7 @@ const EditProfile: React.FC = () => {
   const [address, setAddress] = useState("");
   const [platform, setPlatform] = useState<any[]>([]);
   const [packages, setPackages] = useState<any[]>([]);
-
+  const [userData, setUserData] = useState<any>();
   const [newPlatform, setNewPlatform] = useState({
     name: "",
     link: "",
@@ -117,6 +108,7 @@ const EditProfile: React.FC = () => {
           return;
         }
         const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
+        setUserData(response.data);
         setBio(response.data.bio);
         setAddress(response.data.address);
         response.data.photoURL && setImageUri(response.data.photoURL);
@@ -204,6 +196,7 @@ const EditProfile: React.FC = () => {
         platform,
         category: selectedCategory,
         packages: packages,
+        isClient: userData?.isClient,
       };
       await axios
         .post(`${BaseUrl}/api/users`, updatedData, {
@@ -440,28 +433,31 @@ const EditProfile: React.FC = () => {
                 onChange={(e) => setAddress(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth margin="normal">
-                <Select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  renderValue={(value) => value || "Select Category"}
-                  displayEmpty
-                >
-                  {categories.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+            {!userData?.isClient && (
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth margin="normal">
+                  <Select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    renderValue={(value) => value || "Select Category"}
+                    displayEmpty
+                  >
+                    {categories.map((category) => (
+                      <MenuItem key={category} value={category}>
+                        {category}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
           </Grid>
-          <PackagesSetup
-            packages={packages}
-            onSavePackages={handleSavedPackages}
-          />
-
+          {!userData?.isClient && (
+            <PackagesSetup
+              packages={packages}
+              onSavePackages={handleSavedPackages}
+            />
+          )}
           <Button
             variant="contained"
             color="primary"
