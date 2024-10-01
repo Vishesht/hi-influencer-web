@@ -28,9 +28,9 @@ export const socialMediaPlatforms = [
   "Instagram",
   "Youtube",
   "Facebook",
-  "Twitter",
-  "LinkedIn",
-  "Telegram",
+  // "Twitter",
+  // "LinkedIn",
+  // "Telegram",
 ];
 
 const SocialMediaLinks = () => {
@@ -166,34 +166,39 @@ const SocialMediaLinks = () => {
           ))}
         </Select>
       </FormControl>
-
       {/* Render input fields for each selected platform */}
-      {selectedPlatforms.map((platform) => (
-        <div key={platform} style={{ marginBottom: "20px" }}>
-          <h4 style={{ marginBottom: 12 }}>{platform}</h4>
-          <TextField
-            label={`Enter ${platform} Link`}
-            variant="outlined"
-            fullWidth
-            value={linkData[platform]?.platformLink || ""}
-            onChange={(e) =>
-              handleInputChange(platform, "platformLink", e.target.value)
-            }
-            style={{ marginBottom: "10px" }}
-          />
-          <TextField
-            label="Number of Followers"
-            variant="outlined"
-            type="number"
-            fullWidth
-            value={linkData[platform]?.followers || ""}
-            onChange={(e) =>
-              handleInputChange(platform, "followers", e.target.value)
-            }
-            style={{ marginBottom: "10px" }}
-          />
-        </div>
-      ))}
+      {selectedPlatforms.map((platform) => {
+        return (
+          <div key={platform} style={{ marginBottom: "20px" }}>
+            <h4 style={{ marginBottom: 12 }}>{platform}</h4>
+            <TextField
+              label={`Enter ${platform} Link`}
+              variant="outlined"
+              fullWidth
+              value={linkData[platform]?.platformLink || ""}
+              onChange={(e) =>
+                handleInputChange(platform, "platformLink", e.target.value)
+              }
+              style={{ marginBottom: "10px" }}
+            />
+            <TextField
+              label={
+                platform === "Youtube"
+                  ? "Number of Subscribers"
+                  : "Number of Followers"
+              }
+              variant="outlined"
+              type="number"
+              fullWidth
+              value={linkData[platform]?.followers || ""}
+              onChange={(e) =>
+                handleInputChange(platform, "followers", e.target.value)
+              }
+              style={{ marginBottom: "10px" }}
+            />
+          </div>
+        );
+      })}
 
       {/* Submit and Skip buttons */}
       <div style={{ display: "flex", justifyContent: "space-between" }}>

@@ -124,7 +124,7 @@ const ChatScreen = () => {
   const filteredChats = userData?.filter((chat) => {
     const searchLower = searchTerm.toLowerCase();
     const influencerName = chat?.influencerDetails?.name?.toLowerCase();
-    const myName = chat.myDetails.name.toLowerCase();
+    const myName = chat?.myDetails?.name?.toLowerCase();
 
     return (
       influencerName?.includes(searchLower) || myName?.includes(searchLower)
