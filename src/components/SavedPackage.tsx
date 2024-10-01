@@ -147,7 +147,6 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
           </Box>
           {isEdit && (
             <Button
-              sx={{ mt: 2 }}
               variant="contained"
               color="primary"
               onClick={handleOpen}

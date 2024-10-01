@@ -108,16 +108,18 @@ const Orders: React.FC = () => {
         return "#ffeb3b80"; // Yellow
       case "Pending for approval":
         return "#2196f380"; // Blue
-      case "Payment Completed":
+      // case "Payment Completed":
+      case "In Progress":
         return "#4caf5080"; // Green
+      case "Testing":
+        return "#cddc39"; // Lime for new orders
       case "Task Completed":
         return "#9e9e9e80"; // Grey
       case "Rejected":
         return "#ff000080"; // Red
       case "Requested":
         return "#ff9800"; // Orange for requested orders
-      case "Testing":
-        return "#cddc39"; // Lime for new orders
+
       default:
         return "#ffffff80"; // Default white for any other status
     }
@@ -204,8 +206,9 @@ const Orders: React.FC = () => {
             <MenuItem value="Pending for approval">
               Pending for approval
             </MenuItem>
-            <MenuItem value="Waiting for payment">Waiting for payment</MenuItem>
-            <MenuItem value="Payment Completed">Payment Completed</MenuItem>
+            {/* <MenuItem value="Waiting for payment">Waiting for payment</MenuItem> */}
+            {/* <MenuItem value="Payment Completed">Payment Completed</MenuItem> */}
+            <MenuItem value="In Progress">In Progress</MenuItem>
             <MenuItem value="Testing">Testing</MenuItem>
             <MenuItem value="Task Completed">Task Completed</MenuItem>
             <MenuItem value="Rejected">Rejected</MenuItem>
@@ -317,7 +320,7 @@ const Orders: React.FC = () => {
                           <b>Gender:</b> {item.orderDetails[0].gender}
                         </Typography>
                       )}
-                      {item.orderDetails[0].gender && (
+                      {item.orderDetails[0].instagram && (
                         <Typography variant="body2">
                           <b>Instagram Link:</b>{" "}
                           {item.orderDetails[0].instagram}
@@ -375,42 +378,47 @@ const Orders: React.FC = () => {
                         </Box>
                       )}
                     </Box>
-                    {item.status === "Payment Completed" && (
+                    {item.status === "In Progress" && (
                       <Box mt={2} sx={{ display: "flex" }}>
                         <Button
                           variant="contained"
-                          color="success"
+                          color="primary"
                           onClick={() => CreateChat(item)}
                           sx={{ marginRight: 1 }}
                         >
                           Chat
                         </Button>
-                        {tabIndex === 1 &&
-                          item.status === "Payment Completed" && (
-                            <Button
-                              variant="contained"
-                              color="success"
-                              onClick={() =>
-                                handleAcceptOrder(item._id, item, "Testing")
-                              }
-                              sx={{ marginRight: 1 }}
-                            >
-                              Review my work
-                            </Button>
-                          )}
+                        {tabIndex === 1 && item.status === "In Progress" && (
+                          <Button
+                            variant="contained"
+                            color="success"
+                            onClick={() =>
+                              handleAcceptOrder(item._id, item, "Testing")
+                            }
+                            sx={{ marginRight: 1 }}
+                          >
+                            Mark Completed
+                          </Button>
+                        )}
                       </Box>
                     )}
                     {tabIndex === 0 && item.status === "Testing" && (
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() =>
-                          handleAcceptOrder(item._id, "Task Completed")
-                        }
-                        sx={{ marginRight: 1, mt: 1 }}
-                      >
-                        Complete task
-                      </Button>
+                      <>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          onClick={() =>
+                            handleAcceptOrder(item._id, item, "Task Completed")
+                          }
+                          sx={{ marginRight: 1, mt: 1 }}
+                        >
+                          Complete task
+                        </Button>
+                        <Typography variant="body2">
+                          Please click on <b>Complete Task</b> if you believe
+                          the influencer has successfully completed their work
+                        </Typography>
+                      </>
                     )}
 
                     {item.requestedChanges && (
@@ -434,7 +442,8 @@ const Orders: React.FC = () => {
                               handleAcceptOrder(
                                 item._id,
                                 item,
-                                "Waiting for payment"
+                                "In Progress"
+                                // "Waiting for payment"
                               )
                             }
                             sx={{ marginRight: 1 }}

@@ -74,7 +74,6 @@ const InfluencerProfile = () => {
             flexDirection: "row",
             alignItems: "flex-start",
             flexWrap: "wrap",
-            mt: 3,
           }}
         >
           <Container

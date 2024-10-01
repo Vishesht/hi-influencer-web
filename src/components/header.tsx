@@ -250,9 +250,9 @@ const Header = () => {
               <Button onClick={() => router.push("/orders")} color="inherit">
                 Orders
               </Button>
-              <Button onClick={() => router.push("/payments")} color="inherit">
+              {/* <Button onClick={() => router.push("/payments")} color="inherit">
                 Payment
-              </Button>
+              </Button> */}
               {/* <Button onClick={() => router.push("/download")} color="inherit">
                 Download
               </Button> */}
@@ -302,13 +302,15 @@ const Header = () => {
         <Box
           sx={{ width: 250, p: 2 }}
           role="presentation"
-          onClick={() => {
-            setDrawerOpen(false);
-            handleListItemClick("/user");
-          }}
           onKeyDown={() => setDrawerOpen(false)}
         >
-          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", mb: 2 }}
+            onClick={() => {
+              setDrawerOpen(false);
+              handleListItemClick("/user");
+            }}
+          >
             <Avatar
               src={data?.photoURL || user?.photoURL}
               sx={{ width: 50, height: 50 }}
@@ -353,12 +355,12 @@ const Header = () => {
             >
               <ListItemText primary="Orders" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem
+            {/* <ListItem
               component="div"
               onClick={() => handleListItemClick("/payments")}
             >
               <ListItemText primary="Payments" sx={{ color: "black" }} />
-            </ListItem>
+            </ListItem> */}
             <ListItem component="div" onClick={handleSignOut}>
               <ListItemText primary="Logout" sx={{ color: "black" }} />
             </ListItem>

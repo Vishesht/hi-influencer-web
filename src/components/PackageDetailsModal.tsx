@@ -50,6 +50,28 @@ const PackageDetailsModal = ({
       loggedUserId: data?.id,
       influencerId: influencer.id,
     };
+    if (item?.pkgName === "Promotions") {
+      if (
+        !item?.title ||
+        !item?.description ||
+        !item?.selectedMedia ||
+        !item?.negotiablePrice
+      ) {
+        alert("Please fill all the fields");
+        return null;
+      }
+    } else if (item?.pkgName === "Book Appointment") {
+      if (!item?.phone || !item?.description) {
+        alert("Please fill all the fields");
+        return null;
+      }
+    } else if (item?.pkgName === "Chat") {
+      if (!item?.chatReason) {
+        alert("Please fill all the fields");
+        return null;
+      }
+    }
+
     try {
       const cred = {
         id: rework ? id : Date.now(),
@@ -132,16 +154,16 @@ const PackageDetailsModal = ({
               variant="outlined"
               margin="normal"
             />
-            <input
+            {/* <input
               type="file"
               accept="image/*"
               multiple
               onChange={handleImageChange}
-            />
-            <Typography variant="body2" sx={{ mt: 2 }}>
+            /> */}
+            {/* <Typography variant="body2" sx={{ mt: 2 }}>
               Selected Images:
-            </Typography>
-            <div
+            </Typography> */}
+            {/* <div
               style={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -161,7 +183,7 @@ const PackageDetailsModal = ({
                   }}
                 />
               ))}
-            </div>
+            </div> */}
             <TextField
               label="Negotiable Price"
               name="negotiablePrice"
