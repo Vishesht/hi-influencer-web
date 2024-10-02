@@ -25,6 +25,7 @@ import { add } from "@/lib/features/login/loginSlice";
 import ReusableDialog from "@/components/LoginTypePopup";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
 import ForgotPasswordPopup from "@/components/ForgotPasswordPopup";
+import Loading from "@/components/LoadingSpinner";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
@@ -53,6 +54,7 @@ export default function LoginPage() {
   const [openSocialMediaDialog, setOpenSocialMediaDialog] = useState(false);
   const [response, setResponse] = useState<any>();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const handleEmailChange = (e) => {
     const value = e.target.value.toLowerCase();
@@ -71,18 +73,21 @@ export default function LoginPage() {
 
   const handleLogin = async (event: any) => {
     event.preventDefault();
-
+    setLoader(true);
     try {
       const res = await loginUser(email, password);
       dispatch(add(res.user));
       router.push("/");
+      setLoader(false);
     } catch (error) {
+      setLoader(false);
       console.log("first", error);
     }
   };
 
   const handleGmailLogin = async () => {
     try {
+      setLoader(true);
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
@@ -100,6 +105,8 @@ export default function LoginPage() {
             },
           })
           .then((response) => {
+            setLoader(false);
+
             if (response?.data?.user?.firstLogin) {
               setResponse(response?.data);
               setOpenDialog(true);
@@ -108,11 +115,13 @@ export default function LoginPage() {
               router.push("/");
             }
           })
-          .catch((err) =>
-            console.log("Something wrong. Please try again.", err)
-          );
+          .catch((err) => {
+            setLoader(false);
+            console.log("Something wrong. Please try again.", err);
+          });
       }
     } catch (error) {
+      setLoader(false);
       console.error(
         "Error logging in with Gmail or sending data to API:",
         error
@@ -138,15 +147,18 @@ export default function LoginPage() {
       isClient: true,
       photoURL: imgPlaceholderImg,
     };
+    setLoader(true);
     try {
       await axios.post(`${BaseUrl}/api/users`, updatedData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
+      setLoader(false);
       dispatch(add(response.user));
       router.push("/");
     } catch (error) {
+      setLoader(false);
       console.error("Error updating profile:", error);
     }
   };
@@ -301,6 +313,7 @@ export default function LoginPage() {
             </>
           }
         />
+        <Loading loading={loader} />
 
         {/* Social Media Input Dialog */}
         <ReusableDialog

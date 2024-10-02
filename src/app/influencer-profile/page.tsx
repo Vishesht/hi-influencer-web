@@ -7,7 +7,6 @@ import {
   Box,
   IconButton,
   Grid,
-  Avatar,
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/system";
@@ -22,6 +21,7 @@ import { influencerData } from "@/lib/features/influencer/influencerSlice";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import { usePathname } from "next/navigation";
+import Loading from "@/components/LoadingSpinner";
 
 const ProfileContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -42,18 +42,23 @@ const InfluencerProfile = () => {
   const influencer = data?.influencer;
   const extractUserId = (url) => url.split("/").pop();
   const [error, setError] = useState("");
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const fetchUser = async (username) => {
       try {
         const response = await axios.get(`${BaseUrl}/api/user/${username}`);
         dispatch(influencerData(response?.data));
+        setLoader(false);
       } catch (err) {
+        setLoader(false);
+
         if (err.response.data.message === "User not found") {
           setError(err.response.data.message);
         }
       }
     };
+    setLoader(true);
     path && fetchUser(extractUserId(path));
   }, [path]);
 
@@ -125,21 +130,25 @@ const InfluencerProfile = () => {
                 alignItems: "center",
               }}
             >
-              <IconButton
-                edge="end"
-                color="inherit"
-                // onClick={handleClick}
+              <Box
+                sx={{
+                  borderRadius: "100%",
+                  width: 80,
+                  height: 80,
+                  overflow: "hidden",
+                }}
               >
-                <Avatar
+                <Image
                   src={influencer?.photoURL}
-                  sx={{
-                    bgcolor: "#FFF3E0",
-                    color: "#000",
-                    width: 80,
-                    height: 80,
+                  alt="User Image"
+                  width={80}
+                  height={80}
+                  // layout="responsive"
+                  style={{
+                    objectFit: "cover",
                   }}
-                ></Avatar>
-              </IconButton>
+                />
+              </Box>
               <Container>
                 <Box
                   display="flex"
@@ -254,6 +263,7 @@ const InfluencerProfile = () => {
         {influencer?.reviewsData?.length > 0 && (
           <ReviewsList reviewsData={influencer?.reviewsData} />
         )}
+        <Loading loading={loader} />
       </ProfileContainer>
       <HireModal open={modalOpen} onClose={handleClose} />
     </>

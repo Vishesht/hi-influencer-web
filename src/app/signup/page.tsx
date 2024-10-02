@@ -17,7 +17,12 @@ import {
   DialogTitle,
   DialogContent,
 } from "@mui/material";
-import { Visibility, VisibilityOff, Email } from "@mui/icons-material";
+import {
+  Visibility,
+  VisibilityOff,
+  Email,
+  CheckCircle,
+} from "@mui/icons-material";
 import { registerUser } from "@/api/registerUser";
 import { useRouter } from "next/navigation";
 import { add } from "@/lib/features/login/loginSlice";
@@ -26,6 +31,8 @@ import SocialMediaLinks from "@/components/SocialMediaLinks";
 import { BaseUrl, imgPlaceholderImg } from "@/common/utils";
 import axios from "axios";
 import ReusableDialog from "@/components/LoginTypePopup";
+import { isValidEmail } from "@/common/validations";
+import Loading from "@/components/LoadingSpinner";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
@@ -49,20 +56,65 @@ export default function SignUpPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [openSocialMediaDialog, setOpenSocialMediaDialog] = useState(false);
   const [response, setResponse] = useState<any>();
+  const [loader, setLoader] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword(!showConfirmPassword);
+
+  // Send OTP to email
+  const sendOtp = async () => {
+    setLoader(true);
+    try {
+      const res = await axios.post(`${BaseUrl}/api/send-new-user-otp`, {
+        email,
+      });
+      setLoader(false);
+      setIsOtpSent(true);
+      alert("OTP sent to your email.");
+    } catch (error) {
+      console.log("Error sending OTP:", error);
+      setLoader(false);
+      alert("Failed to send OTP.");
+    }
+  };
+
+  // Verify OTP
+  const verifyOtp = async () => {
+    setLoader(true);
+    try {
+      const res = await axios.post(`${BaseUrl}/api/verify-otp`, { email, otp });
+      if (res.status === 200) {
+        setLoader(false);
+        setIsOtpVerified(true);
+        alert("OTP verified successfully.");
+      } else {
+        alert("Invalid or expired OTP.");
+      }
+    } catch (error) {
+      setLoader(false);
+      console.log("Error verifying OTP:", error);
+      alert("Failed to verify OTP.");
+    }
+  };
 
   const handleSignUp = async (event) => {
     if (password !== confirmPassword) {
       alert("The password and confirmation do not match.");
       return;
     }
+    if (!isOtpVerified) {
+      alert("Please verify the OTP first.");
+      return;
+    }
+
     event.preventDefault();
     try {
       const res = await registerUser(name, email, password);
@@ -171,8 +223,54 @@ export default function SignUpPage() {
                   <Email />
                 </InputAdornment>
               ),
+              endAdornment: isOtpVerified ? (
+                <InputAdornment position="end">
+                  <CheckCircle color="success" />
+                </InputAdornment>
+              ) : null,
             }}
           />
+          {!isOtpSent && isValidEmail(email) && (
+            <Button
+              onClick={sendOtp}
+              fullWidth
+              variant="contained"
+              sx={{
+                mt: 2,
+                backgroundColor: "#1D4ED8",
+                "&:hover": { backgroundColor: "#1A3A8E" },
+              }}
+            >
+              Send OTP
+            </Button>
+          )}
+          {isOtpSent && !isOtpVerified && (
+            <>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="otp"
+                label="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <Button
+                disabled={otp?.length !== 6}
+                onClick={verifyOtp}
+                fullWidth
+                variant="contained"
+                sx={{
+                  mt: 2,
+                  backgroundColor: "#1D4ED8",
+                  "&:hover": { backgroundColor: "#1A3A8E" },
+                }}
+              >
+                Verify OTP
+              </Button>
+            </>
+          )}
           <TextField
             variant="outlined"
             margin="normal"
@@ -199,6 +297,7 @@ export default function SignUpPage() {
                 </InputAdornment>
               ),
             }}
+            disabled={!isOtpVerified}
           />
           <TextField
             variant="outlined"
@@ -229,6 +328,7 @@ export default function SignUpPage() {
                 </InputAdornment>
               ),
             }}
+            disabled={!isOtpVerified}
           />
           <Button
             type="submit"
@@ -240,42 +340,59 @@ export default function SignUpPage() {
               backgroundColor: "#1D4ED8",
               "&:hover": { backgroundColor: "#1A3A8E" },
             }}
+            disabled={!isOtpVerified}
           >
             Sign Up
           </Button>
-          <Divider sx={{ my: 2 }}>Or</Divider>
-          <Typography variant="body2" color="textSecondary" align="center">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              variant="body2"
-              sx={{ fontWeight: "bold", color: "#1D4ED8" }}
-            >
-              Log In
-            </Link>
-          </Typography>
+          <Divider />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography variant="body2">
+              Already have an account?{" "}
+              <Link href="/login" underline="hover">
+                Sign In
+              </Link>
+            </Typography>
+          </Box>
         </Box>
       </Container>
-
-      {/* Role Selection Dialog */}
-      <ReusableDialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        title="Select Your Role"
-        content="Please choose your role:"
-        actions={
-          <>
-            <Button onClick={() => handleRoleSelection("creator")}>
-              Join as Creator/Influencer
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Account Created!</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            Congratulations! Choose your role.
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleRoleSelection("brand")}
+            >
+              Brand
             </Button>
-            <Button onClick={() => handleRoleSelection("brand")}>
-              Join as Brand/Client
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleRoleSelection("influencer")}
+            >
+              Influencer
             </Button>
-          </>
-        }
-      />
-
-      {/* Social Media Input Dialog */}
+          </Box>
+        </DialogContent>
+      </Dialog>
+      <Loading loading={loader} />
       <ReusableDialog
         open={openSocialMediaDialog}
         onClose={() => setOpenSocialMediaDialog(false)}

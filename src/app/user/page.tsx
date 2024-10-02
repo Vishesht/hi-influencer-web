@@ -29,6 +29,7 @@ import { useAppSelector } from "@/lib/hooks";
 import CustomButton from "@/components/CustomButton";
 import Image from "next/image";
 import ProfilePromotion from "@/components/ProfilePromotion";
+import Loading from "@/components/LoadingSpinner";
 
 interface User {
   id: string;
@@ -86,6 +87,7 @@ const ProfilePage = () => {
   const verifyData: any = user ? checkUserDetails(user) : {};
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: any) => {
@@ -100,6 +102,7 @@ const ProfilePage = () => {
   }, []);
 
   const fetchUserData = async () => {
+    setLoader(true);
     try {
       if (!data.id) {
         console.error("User ID not found in local storage.");
@@ -107,6 +110,7 @@ const ProfilePage = () => {
       }
       const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
       setUser(response.data);
+      setLoader(false);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -294,6 +298,7 @@ const ProfilePage = () => {
           </Grid>
         </Box>
       </Box>
+      <Loading loading={loader} />
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
