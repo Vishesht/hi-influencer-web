@@ -7,7 +7,6 @@ import {
   Box,
   IconButton,
   Grid,
-  Avatar,
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/system";
@@ -131,21 +130,25 @@ const InfluencerProfile = () => {
                 alignItems: "center",
               }}
             >
-              <IconButton
-                edge="end"
-                color="inherit"
-                // onClick={handleClick}
+              <Box
+                sx={{
+                  borderRadius: "100%",
+                  width: 80,
+                  height: 80,
+                  overflow: "hidden",
+                }}
               >
-                <Avatar
+                <Image
                   src={influencer?.photoURL}
-                  sx={{
-                    bgcolor: "#FFF3E0",
-                    color: "#000",
-                    width: 80,
-                    height: 80,
+                  alt="User Image"
+                  width={80}
+                  height={80}
+                  // layout="responsive"
+                  style={{
+                    objectFit: "cover",
                   }}
-                ></Avatar>
-              </IconButton>
+                />
+              </Box>
               <Container>
                 <Box
                   display="flex"
