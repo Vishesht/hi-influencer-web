@@ -24,6 +24,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
 import ReusableDialog from "@/components/LoginTypePopup";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
+import ForgotPasswordPopup from "@/components/ForgotPasswordPopup";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
@@ -51,6 +52,7 @@ export default function LoginPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSocialMediaDialog, setOpenSocialMediaDialog] = useState(false);
   const [response, setResponse] = useState<any>();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleEmailChange = (e) => {
     const value = e.target.value.toLowerCase();
@@ -147,6 +149,10 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
+  };
+
+  const handleForgotPasswordClick = () => {
+    setIsPopupOpen(true);
   };
 
   return (
@@ -251,7 +257,7 @@ export default function LoginPage() {
           <Box sx={{ display: "flex", justifyContent: "end" }}>
             <Button
               variant="text"
-              onClick={() => console.log("first,")}
+              onClick={handleForgotPasswordClick}
               sx={{ fontSize: 12 }}
             >
               Forgot Password?
@@ -302,6 +308,10 @@ export default function LoginPage() {
           onClose={() => setOpenSocialMediaDialog(false)}
           title="Enter Your Social Media Details"
           content={<SocialMediaLinks />}
+        />
+        <ForgotPasswordPopup
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
         />
       </Container>
     </>
