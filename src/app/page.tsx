@@ -15,6 +15,7 @@ import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import { useAppSelector } from "@/lib/hooks";
 import GridComponent from "@/components/GridComponents";
+import Loading from "@/components/LoadingSpinner";
 
 export default function Home() {
   const theme = useTheme();
@@ -26,6 +27,7 @@ export default function Home() {
   const [selectedPlatform, setSelectedPlatform] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("");
   const data = useAppSelector((state) => state.login.userData);
+  const [loader, setLoader] = React.useState(false);
 
   React.useEffect(() => {
     const fetchUsers = async () => {
@@ -40,12 +42,15 @@ export default function Home() {
         );
         setUserList(response.data);
         setFilteredUsers(response.data);
+        setLoader(false);
       } catch (error) {
+        setLoader(false);
         console.error("Error:", error);
       }
     };
 
     if (data?.id) {
+      setLoader(true);
       fetchUsers();
     }
   }, [data]);
@@ -196,6 +201,8 @@ export default function Home() {
         {/* Conditional rendering for filtered users */}
         {filteredUsers.length > 0 ? (
           <GridComponent data={filteredUsers} />
+        ) : loader ? (
+          <Loading loading={loader} />
         ) : (
           <Typography variant="h6" sx={{ mt: 4, color: "gray" }}>
             No data found.
