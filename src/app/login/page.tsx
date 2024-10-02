@@ -24,6 +24,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
 import ReusableDialog from "@/components/LoginTypePopup";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
+import ForgotPasswordPopup from "@/components/ForgotPasswordPopup";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
@@ -51,6 +52,7 @@ export default function LoginPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSocialMediaDialog, setOpenSocialMediaDialog] = useState(false);
   const [response, setResponse] = useState<any>();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleEmailChange = (e) => {
     const value = e.target.value.toLowerCase();
@@ -81,12 +83,7 @@ export default function LoginPage() {
 
   const handleGmailLogin = async () => {
     try {
-      const result = await signInWithPopup(
-        auth,
-        provider.setCustomParameters({
-          prompt: "select_account", // Forces the account selection every time
-        })
-      );
+      const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
       if (user.email) {
@@ -112,7 +109,7 @@ export default function LoginPage() {
             }
           })
           .catch((err) =>
-            console.log("Something went wrong. Please try again.", err)
+            console.log("Something wrong. Please try again.", err)
           );
       }
     } catch (error) {
@@ -152,6 +149,10 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
+  };
+
+  const handleForgotPasswordClick = () => {
+    setIsPopupOpen(true);
   };
 
   return (
@@ -246,13 +247,22 @@ export default function LoginPage() {
             variant="contained"
             sx={{
               mt: 3,
-              mb: 2,
+              mb: 1,
               backgroundColor: "#1D4ED8",
               "&:hover": { backgroundColor: "#1A3A8E" },
             }}
           >
             Log In
           </Button>
+          <Box sx={{ display: "flex", justifyContent: "end" }}>
+            <Button
+              variant="text"
+              onClick={handleForgotPasswordClick}
+              sx={{ fontSize: 12 }}
+            >
+              Forgot Password?
+            </Button>
+          </Box>
           <Divider sx={{ my: 2 }}>Or log in with</Divider>
           <Button
             fullWidth
@@ -298,6 +308,10 @@ export default function LoginPage() {
           onClose={() => setOpenSocialMediaDialog(false)}
           title="Enter Your Social Media Details"
           content={<SocialMediaLinks />}
+        />
+        <ForgotPasswordPopup
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
         />
       </Container>
     </>
