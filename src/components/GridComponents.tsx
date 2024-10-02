@@ -3,15 +3,11 @@ import React from "react";
 import {
   Card,
   CardContent,
-  CardMedia,
   Typography,
   Box,
   Button,
   IconButton,
 } from "@mui/material";
-import { cleanImageUrl } from "@/common/utils";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { influencerData } from "@/lib/features/influencer/influencerSlice";
 import { useRouter } from "next/navigation";
 import { styled } from "@mui/system";
 import Image from "next/image";
@@ -23,12 +19,10 @@ const PlatformList = styled(Box)(({ theme }) => ({
 }));
 
 const GridComponent = ({ data }) => {
-  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleSubmit = (item) => {
-    dispatch(influencerData(item));
-    router.push("/influencer-profile");
+    router.push(`/user/${item.username}`);
   };
 
   const SocialMediaIcon = (platformData: any, link: any) => {
@@ -69,8 +63,8 @@ const GridComponent = ({ data }) => {
             <Card
               key={index}
               sx={{
-                width: "100%",
-                maxWidth: 230,
+                width: "100%", // Full width of parent
+                maxWidth: 230, // Optional maximum width
                 borderRadius: 2,
                 boxShadow: 3,
                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -86,24 +80,17 @@ const GridComponent = ({ data }) => {
                 alt="User Image"
                 width={230}
                 height={220}
-                // layout="responsive"
                 style={{
                   objectFit: "cover",
+                  display: "block",
+                  width: "100%",
+                  margin: "0 auto",
                 }}
               />
-              {/* <CardMedia
-                component="img"
-                image={imgUrl}
-                alt={item.name}
-                sx={{
-                  borderTopLeftRadius: 2,
-                  borderTopRightRadius: 2,
-                  height: 180,
-                }}
-              /> */}
+
               <CardContent
                 sx={{
-                  height: 140,
+                  height: 160,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
@@ -113,14 +100,14 @@ const GridComponent = ({ data }) => {
                 <Typography
                   variant="subtitle1"
                   sx={{
-                    fontFamily: "Arial, sans-serif", // Replace with your custom font family
+                    fontFamily: "initial",
                     fontWeight: "bold",
                   }}
                 >
                   {item.name}
                 </Typography>
-                <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
-                  {/* Uncomment and use if needed
+                {/* <Box display="flex" alignItems="center" sx={{ mb: 0 }}>
+                 Uncomment and use if needed
               <Typography
                 variant="body2"
                 sx={{
@@ -139,8 +126,8 @@ const GridComponent = ({ data }) => {
                 }}
               >
                 ({item.ratings || "0"})
-              </Typography> */}
-                </Box>
+              </Typography>
+                </Box> */}
                 <Typography
                   variant="body2"
                   color="text.secondary"

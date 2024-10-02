@@ -28,6 +28,7 @@ import { auth } from "../firebase";
 import { useAppSelector } from "@/lib/hooks";
 import CustomButton from "@/components/CustomButton";
 import Image from "next/image";
+import ProfilePromotion from "@/components/ProfilePromotion";
 
 interface User {
   id: string;
@@ -138,7 +139,6 @@ const ProfilePage = () => {
   };
   const fb = JSON?.stringify(firebaseData);
   const firebaseDb = fb ? JSON?.parse(fb) : null;
-
   return (
     <Container>
       <Box textAlign="center" my={4}>
@@ -176,6 +176,28 @@ const ProfilePage = () => {
             </Tooltip>
           )}
         </Box>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => router.push("/edit-profile")}
+          sx={{
+            borderRadius: "50px", // Fully rounded corners
+            borderColor: "#6C63FF", // Custom border color
+            textTransform: "none", // Disable uppercase text
+            padding: "10px 30px", // Increase padding for a larger button
+            fontSize: "16px", // Slightly increase font size
+            fontWeight: "bold", // Make text bold
+            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Add subtle shadow for depth
+            transition: "transform 0.3s ease, background-color 0.3s ease",
+            "&:hover": {
+              backgroundColor: "#6C63FF", // Change background color on hover
+              color: "#fff", // Change text color on hover
+              transform: "scale(1.05)", // Add a slight zoom effect on hover
+            },
+          }}
+        >
+          Edit Profile
+        </Button>
 
         {user?.category && (
           <Typography variant="h6" color="textSecondary">
@@ -190,74 +212,65 @@ const ProfilePage = () => {
         )}
 
         {/* Social Media Platforms */}
-        <Box mt={4} mb={4}>
-          <Box display="flex" justifyContent="center" flexWrap="wrap">
-            {filteredArr?.map((platform, index) => (
-              <SocialMediaCard
-                onClick={() => handleClick(platform.platformLink)}
-                key={index}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mx: 1,
-                }}
-              >
-                {platform.platform === "Instagram" && <InstagramIcon />}
-                {platform.platform === "Facebook" && <FacebookIcon />}
-                {platform.platform === "Youtube" && <YouTubeIcon />}
-                {platform.platform === "Twitter" && <TwitterIcon />}
-                {platform.platform === "LinkedIn" && <LinkedInIcon />}
-                {platform.platform === "Telegram" && <TelegramIcon />}
+        {filteredArr?.length > 0 && (
+          <Box mt={4} mb={4}>
+            <Box display="flex" justifyContent="center" flexWrap="wrap">
+              {filteredArr?.map((platform, index) => (
+                <SocialMediaCard
+                  onClick={() => handleClick(platform.platformLink)}
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mx: 1,
+                  }}
+                >
+                  {platform.platform === "Instagram" && <InstagramIcon />}
+                  {platform.platform === "Facebook" && <FacebookIcon />}
+                  {platform.platform === "Youtube" && <YouTubeIcon />}
+                  {platform.platform === "Twitter" && <TwitterIcon />}
+                  {platform.platform === "LinkedIn" && <LinkedInIcon />}
+                  {platform.platform === "Telegram" && <TelegramIcon />}
 
-                <Box ml={1}>
-                  <Typography variant="body1">
-                    <a
-                      href={platform.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {platform.platform}
-                    </a>
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {platform.followers}
-                  </Typography>
-                </Box>
-              </SocialMediaCard>
-            ))}
+                  <Box ml={1}>
+                    <Typography variant="body1">
+                      <a
+                        href={platform.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {platform.platform}
+                      </a>
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {platform.followers}
+                    </Typography>
+                  </Box>
+                </SocialMediaCard>
+              ))}
+            </Box>
           </Box>
-        </Box>
-
-        {user && !user?.verified && !user?.isClient && (
-          <CustomButton
-            isInfluencer={!user?.isInfluencer}
-            isEnabled={!verifyData?.userDetailsMissing}
-            onClick={() => verifyAcc(user?.id)}
-            description={
-              !user?.isInfluencer ? verifyData?.message : verificationText
-            }
-          >
-            Verify Account
-          </CustomButton>
         )}
-        {/* Buttons */}
-        <Box mt={4} display="flex" justifyContent="center" gap={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => router.push("/orders")}
-          >
-            Your Orders
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => router.push("/edit-profile")}
-          >
-            Edit Profile
-          </Button>
-        </Box>
+        {user?.username && <ProfilePromotion userName={user?.username} />}
+
+        {!user?.isClient ? (
+          user &&
+          !user?.verified && (
+            <CustomButton
+              isInfluencer={!user?.isInfluencer}
+              isEnabled={!verifyData?.userDetailsMissing}
+              onClick={() => verifyAcc(user?.id)}
+              description={
+                !user?.isInfluencer ? verifyData?.message : verificationText
+              }
+            >
+              Verify Account
+            </CustomButton>
+          )
+        ) : (
+          <></>
+        )}
 
         {/* Profile Images */}
         <Box mt={4}>

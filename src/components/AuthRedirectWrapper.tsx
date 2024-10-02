@@ -82,7 +82,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
       }
 
       // Redirect logic for logged-in users on login/signup pages
-      if (user || data) {
+      if (data) {
         if (path === "/login" || path === "/signup") {
           router.push("/");
         }

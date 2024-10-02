@@ -42,11 +42,10 @@ const ChatScreen = () => {
       const response = await axios.get(`${BaseUrl}/service/chat/${userId}`);
       setUserData(response.data);
     } catch (error) {
-      console.log("first", error);
+      console.log("Error - chat", error);
       if (error.response.data.message === "No chats found for this user") {
         data?.id && CreateChat();
       }
-      console.error("Error fetching chat data:", error.response);
     }
   };
 
@@ -61,12 +60,13 @@ const ChatScreen = () => {
       getChatData(data.id);
       hasFetchedChatData.current = true;
     }
-  }, [data?.id]);
+  }, [data?.id, selectedChat]);
 
   useEffect(() => {
-    if (selectedChat) {
+    if (selectedChat?.id && data?.id) {
       getChatDataFromFirebase((item) => {
-        if (item) {
+        const chatStarted = item.hasOwnProperty(selectedChat?.id);
+        if (item && chatStarted) {
           const chats = Object.keys(item).map((key) => ({
             id: key,
             name: key,
@@ -121,13 +121,14 @@ const ChatScreen = () => {
   const handleChatSelect = async (chat) => {
     setSelectedChat(chat);
   };
-
   const filteredChats = userData?.filter((chat) => {
     const searchLower = searchTerm.toLowerCase();
-    const influencerName = chat.influencerDetails.name.toLowerCase();
-    const myName = chat.myDetails.name.toLowerCase();
+    const influencerName = chat?.influencerDetails?.name?.toLowerCase();
+    const myName = chat?.myDetails?.name?.toLowerCase();
 
-    return influencerName.includes(searchLower) || myName.includes(searchLower);
+    return (
+      influencerName?.includes(searchLower) || myName?.includes(searchLower)
+    );
   });
 
   const saveChat = async (userId1, userId2) => {
@@ -277,11 +278,11 @@ const ChatScreen = () => {
             {selectedChat && (
               <>
                 <Avatar
-                  src={selectedChat.influencerDetails.photoURL}
+                  src={selectedChat?.influencerDetails?.photoURL}
                   style={{ marginRight: "10px" }}
                 />
                 <Typography variant="h6">
-                  {selectedChat.influencerDetails.name}
+                  {selectedChat?.influencerDetails?.name}
                 </Typography>
               </>
             )}

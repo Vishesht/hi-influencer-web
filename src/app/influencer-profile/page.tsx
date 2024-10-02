@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -16,8 +16,12 @@ import ImageGallery from "../../components/imageGallery";
 import ReviewsList from "../../components/reviewsList";
 import HireModal from "../../components/HireModal";
 import SavedPackage from "@/components/SavedPackage";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import VerifiedIcon from "@mui/icons-material/Verified";
+import { influencerData } from "@/lib/features/influencer/influencerSlice";
+import axios from "axios";
+import { BaseUrl } from "@/common/utils";
+import { usePathname } from "next/navigation";
 
 const ProfileContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -31,11 +35,43 @@ const PlatformList = styled(Box)(({ theme }) => ({
 }));
 
 const InfluencerProfile = () => {
+  const dispatch = useAppDispatch();
+  const path = usePathname();
   const [modalOpen, setModalOpen] = useState(false);
   const data = useAppSelector((state) => state.influencer);
   const influencer = data?.influencer;
+  const extractUserId = (url) => url.split("/").pop();
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async (username) => {
+      try {
+        const response = await axios.get(`${BaseUrl}/api/user/${username}`);
+        dispatch(influencerData(response?.data));
+      } catch (err) {
+        if (err.response.data.message === "User not found") {
+          setError(err.response.data.message);
+        }
+      }
+    };
+    path && fetchUser(extractUserId(path));
+  }, [path]);
 
   const handleClose = () => setModalOpen(false);
+
+  if (error) {
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: "20%",
+          marginBottom: "6%",
+        }}
+      >
+        {error}
+      </div>
+    );
+  }
 
   const SocialMediaIcon = (platformData: any, link: any) => {
     const formattedLink = platformData.platformLink.startsWith("http")
@@ -74,7 +110,6 @@ const InfluencerProfile = () => {
             flexDirection: "row",
             alignItems: "flex-start",
             flexWrap: "wrap",
-            mt: 3,
           }}
         >
           <Container

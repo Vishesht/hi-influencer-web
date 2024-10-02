@@ -41,22 +41,44 @@ const PackageDetailsModal = ({
   };
 
   const handleSubmit = async () => {
-    const id = pkg.id;
+    const id = pkg?.id;
 
     const item = {
       ...formData,
       images,
       pkgName: pkg.name,
       loggedUserId: data?.id,
-      influencerId: influencer.id,
+      influencerId: rework ? influencer.influencerId : influencer.id,
     };
+    if (item?.pkgName === "Promotions") {
+      if (
+        !item?.title ||
+        !item?.description ||
+        !item?.selectedMedia ||
+        !item?.negotiablePrice
+      ) {
+        alert("Please fill all the fields");
+        return null;
+      }
+    } else if (item?.pkgName === "Book Appointment") {
+      if (!item?.phone || !item?.description) {
+        alert("Please fill all the fields");
+        return null;
+      }
+    } else if (item?.pkgName === "Chat") {
+      if (!item?.chatReason) {
+        alert("Please fill all the fields");
+        return null;
+      }
+    }
+
     try {
       const cred = {
         id: rework ? id : Date.now(),
         orderDetails: item,
         status: "In Review",
         loggedUserId: data?.id,
-        influencerId: influencer.id,
+        influencerId: rework ? influencer.influencerId : influencer.id,
       };
       rework
         ? await axios
@@ -66,8 +88,13 @@ const PackageDetailsModal = ({
             })
             .then((res) => {
               if (res.status === 201 || res.status === 200) {
-                alert("Your request is submitted for approval");
-                onClose();
+                dispatch(
+                  showAlert({
+                    message: "Your request is submitted for approval",
+                    confirmText: "Ok",
+                    onConfirm: () => onClose(),
+                  })
+                );
               }
             })
             .catch((err) => console.log("firsterr", err))
@@ -79,11 +106,9 @@ const PackageDetailsModal = ({
                   showAlert({
                     message: "Your request is submitted for approval",
                     confirmText: "Ok",
+                    onConfirm: () => router.push("/orders"),
                   })
                 );
-                setTimeout(() => {
-                  router.push("/orders");
-                }, 0);
               } else {
                 console.log("firsterr", res);
               }
@@ -132,16 +157,16 @@ const PackageDetailsModal = ({
               variant="outlined"
               margin="normal"
             />
-            <input
+            {/* <input
               type="file"
               accept="image/*"
               multiple
               onChange={handleImageChange}
-            />
-            <Typography variant="body2" sx={{ mt: 2 }}>
+            /> */}
+            {/* <Typography variant="body2" sx={{ mt: 2 }}>
               Selected Images:
-            </Typography>
-            <div
+            </Typography> */}
+            {/* <div
               style={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -161,7 +186,7 @@ const PackageDetailsModal = ({
                   }}
                 />
               ))}
-            </div>
+            </div> */}
             <TextField
               label="Negotiable Price"
               name="negotiablePrice"

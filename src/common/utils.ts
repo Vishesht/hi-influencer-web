@@ -2,6 +2,7 @@
 export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
 export const ProfileCheckRegex = /^\/user\/[^\/]+$/;
 
+export const WebUrl = "https://hi-influencer-web-qd5q.vercel.app";
 export const imgPlaceholderImg =
   "https://firebasestorage.googleapis.com/v0/b/hiinfluencer-1c689.appspot.com/o/avatar.avif?alt=media&token=668ca47c-867b-4716-9086-8df3aca7b66c";
 // "https://i.pravatar.cc/300";
@@ -9,18 +10,42 @@ export const womenPlaceholderImg =
   "https://randomuser.me/api/portraits/women/41.jpg";
 
 export const indianStates = [
+  "Andaman and Nicobar Islands",
   "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
   "Bihar",
+  "Chandigarh",
+  "Chhattisgarh",
+  "Dadra and Nagar Haveli and Daman and Diu",
   "Delhi",
   "Goa",
   "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
   "Jammu and Kashmir",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Ladakh",
+  "Lakshadweep",
+  "Madhya Pradesh",
   "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Puducherry",
   "Punjab",
   "Rajasthan",
+  "Sikkim",
   "Tamil Nadu",
+  "Telangana",
+  "Tripura",
   "Uttar Pradesh",
-  "Karnataka",
+  "Uttarakhand",
+  "West Bengal",
 ];
 
 export const socialMediaPlatforms = [
@@ -33,10 +58,38 @@ export const socialMediaPlatforms = [
 ];
 
 export const categories = [
-  "Influencer",
-  "Blogger",
-  "Content Creator",
-  "Photographer",
+  "Social Media Influencer",
+  "Lifestyle Blogger",
+  "Digital Content Creator",
+  "Professional Photographer",
+  "Singer & Vocal Artist",
+  "Makeup & Beauty Artist",
+  "Professional Dancer",
+  "Food Enthusiast",
+  "Actor",
+  "Musician",
+  "Gamer",
+  "Fitness Trainer",
+  "Chef",
+  "Fashion Designer",
+  "Entrepreneur",
+  "Public Speaker",
+  "Comedian",
+  "Visual Artist",
+  "Fashion Model",
+  "Podcaster",
+  "Author & Writer",
+  "Tech Enthusiast",
+  "Travel Blogger",
+  "Health & Wellness Expert",
+  "Sports Enthusiast",
+  "Vlogger",
+  "Film Maker",
+  "Illustrator",
+  "Lifestyle Influencer",
+  "Beauty Expert",
+  "Fitness Influencer",
+  "Business Consultant",
 ];
 
 export const genderList = ["Male", "Female", "Others"];

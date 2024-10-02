@@ -18,10 +18,12 @@ import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
 import { auth, provider, signInWithPopup } from "../firebase";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { BaseUrl } from "@/common/utils";
+import { BaseUrl, imgPlaceholderImg } from "@/common/utils";
 import { loginUser } from "@/api/loginUser";
 import { useAppDispatch } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
+import ReusableDialog from "@/components/LoginTypePopup";
+import SocialMediaLinks from "@/components/SocialMediaLinks";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
@@ -46,6 +48,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setemailError] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openSocialMediaDialog, setOpenSocialMediaDialog] = useState(false);
+  const [response, setResponse] = useState<any>();
 
   const handleEmailChange = (e) => {
     const value = e.target.value.toLowerCase();
@@ -93,7 +98,13 @@ export default function LoginPage() {
             },
           })
           .then((response) => {
-            dispatch(add(response.data.user));
+            if (response?.data?.user?.firstLogin) {
+              setResponse(response?.data);
+              setOpenDialog(true);
+            } else {
+              dispatch(add(response.data.user));
+              router.push("/");
+            }
           })
           .catch((err) =>
             console.log("Something wrong. Please try again.", err)
@@ -104,6 +115,37 @@ export default function LoginPage() {
         "Error logging in with Gmail or sending data to API:",
         error
       );
+    }
+  };
+
+  const handleRoleSelection = (role) => {
+    if (role === "brand") {
+      handleSubmit();
+    } else {
+      dispatch(add(response?.user));
+      setOpenSocialMediaDialog(true);
+    }
+    setOpenDialog(false);
+  };
+
+  const handleSubmit = async () => {
+    const updatedData = {
+      id: response.user.id,
+      name: response.user.name,
+      email: response.user.email,
+      isClient: true,
+      photoURL: imgPlaceholderImg,
+    };
+    try {
+      await axios.post(`${BaseUrl}/api/users`, updatedData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      dispatch(add(response.user));
+      router.push("/");
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
@@ -227,6 +269,31 @@ export default function LoginPage() {
             </Link>
           </Typography>
         </Box>
+        {/* Role Selection Dialog */}
+        <ReusableDialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          title="Select Your Role"
+          content="Please choose your role:"
+          actions={
+            <>
+              <Button onClick={() => handleRoleSelection("creator")}>
+                Join as Creator/Influencer
+              </Button>
+              <Button onClick={() => handleRoleSelection("brand")}>
+                Join as Brand/Client
+              </Button>
+            </>
+          }
+        />
+
+        {/* Social Media Input Dialog */}
+        <ReusableDialog
+          open={openSocialMediaDialog}
+          onClose={() => setOpenSocialMediaDialog(false)}
+          title="Enter Your Social Media Details"
+          content={<SocialMediaLinks />}
+        />
       </Container>
     </>
   );

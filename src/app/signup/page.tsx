@@ -25,6 +25,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
 import { BaseUrl, imgPlaceholderImg } from "@/common/utils";
 import axios from "axios";
+import ReusableDialog from "@/components/LoginTypePopup";
 
 const HeaderWrapper = styled(AppBar)({
   top: 0,
@@ -257,29 +258,30 @@ export default function SignUpPage() {
       </Container>
 
       {/* Role Selection Dialog */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Select Your Role</DialogTitle>
-        <DialogContent>
-          <Typography>Please choose your role:</Typography>
-          <Button onClick={() => handleRoleSelection("creator")}>
-            Join as Creator/Influencer
-          </Button>
-          <Button onClick={() => handleRoleSelection("brand")}>
-            Join as Brand/Client
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <ReusableDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        title="Select Your Role"
+        content="Please choose your role:"
+        actions={
+          <>
+            <Button onClick={() => handleRoleSelection("creator")}>
+              Join as Creator/Influencer
+            </Button>
+            <Button onClick={() => handleRoleSelection("brand")}>
+              Join as Brand/Client
+            </Button>
+          </>
+        }
+      />
 
       {/* Social Media Input Dialog */}
-      <Dialog
+      <ReusableDialog
         open={openSocialMediaDialog}
         onClose={() => setOpenSocialMediaDialog(false)}
-      >
-        <DialogTitle>Enter Your Social Media Details</DialogTitle>
-        <DialogContent>
-          <SocialMediaLinks />
-        </DialogContent>
-      </Dialog>
+        title="Enter Your Social Media Details"
+        content={<SocialMediaLinks />}
+      />
     </>
   );
 }

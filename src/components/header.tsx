@@ -43,6 +43,7 @@ const Header = () => {
   const [user, setUser] = useState<any>(null);
   const main = useAppSelector((state) => state.login);
   const data = main.userData;
+
   const isAdmin = main.isAdmin;
   const useProfilePathCheck = () => {
     const profilePathRegex = ProfileCheckRegex;
@@ -190,7 +191,6 @@ const Header = () => {
     } else {
       router.push("/");
     }
-    //isuserProfile
   };
 
   return (
@@ -221,7 +221,7 @@ const Header = () => {
           </Typography>
 
           {/* Mobile Menu Icon */}
-          {!isuserProfile && isMobile && !path.startsWith("/admin") && (
+          {isMobile && !path.startsWith("/admin") && data && (
             <>
               <Button color="inherit" onClick={handleClick1}>
                 <Badge badgeContent={unreadCount} color="secondary">
@@ -239,25 +239,25 @@ const Header = () => {
           )}
 
           {/* Desktop Nav Links */}
-          {!isMobile && !isuserProfile && !path.startsWith("/admin") && (
+          {!isMobile && !path.startsWith("/admin") && data && (
             <>
-              <Button onClick={() => router.push("/ads")} color="inherit">
+              {/* <Button onClick={() => router.push("/ads")} color="inherit">
                 Ads
-              </Button>
+              </Button> */}
               <Button onClick={() => router.push("/chat")} color="inherit">
                 Chat
               </Button>
               <Button onClick={() => router.push("/orders")} color="inherit">
                 Orders
               </Button>
-              <Button onClick={() => router.push("/payments")} color="inherit">
+              {/* <Button onClick={() => router.push("/payments")} color="inherit">
                 Payment
-              </Button>
+              </Button> */}
               {/* <Button onClick={() => router.push("/download")} color="inherit">
                 Download
               </Button> */}
               {/* Post a Campaign Button */}
-              {postBtn()}
+              {/* {postBtn()} */}
               <Button color="inherit" onClick={handleClick1}>
                 <Badge badgeContent={unreadCount} color="secondary">
                   <NotificationsIcon />
@@ -269,8 +269,8 @@ const Header = () => {
           {/* Avatar for Mobile */}
           {(user || data) &&
             !isMobile &&
-            !isuserProfile &&
-            !path.startsWith("/admin") && (
+            !path.startsWith("/admin") &&
+            data && (
               <Tooltip title="Click to view options" arrow>
                 <IconButton
                   edge="end"
@@ -294,16 +294,23 @@ const Header = () => {
       <Drawer
         anchor="right"
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => {
+          setDrawerOpen(false);
+        }}
         sx={{ display: { xs: "block", md: "none" } }} // Show drawer only on mobile
       >
         <Box
           sx={{ width: 250, p: 2 }}
           role="presentation"
-          onClick={() => setDrawerOpen(false)}
           onKeyDown={() => setDrawerOpen(false)}
         >
-          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", mb: 2 }}
+            onClick={() => {
+              setDrawerOpen(false);
+              handleListItemClick("/user");
+            }}
+          >
             <Avatar
               src={data?.photoURL || user?.photoURL}
               sx={{ width: 50, height: 50 }}
@@ -321,20 +328,20 @@ const Header = () => {
           </Box>
           <Divider />
           <List>
-            <ListItem
+            {/* <ListItem
               component="div"
               sx={{ backgroundColor: "#fff" }}
               onClick={() => handleListItemClick("/user")}
             >
               <ListItemText primary="Profile" sx={{ color: "black" }} />
-            </ListItem>
-            <ListItem
+            </ListItem> */}
+            {/* <ListItem
               component="div"
               sx={{ backgroundColor: "#fff" }}
               onClick={() => handleListItemClick("/ads")}
             >
               <ListItemText primary="Ads" sx={{ color: "black" }} />
-            </ListItem>
+            </ListItem> */}
             <ListItem
               component="div"
               sx={{ backgroundColor: "#fff" }}
@@ -348,12 +355,12 @@ const Header = () => {
             >
               <ListItemText primary="Orders" sx={{ color: "black" }} />
             </ListItem>
-            <ListItem
+            {/* <ListItem
               component="div"
               onClick={() => handleListItemClick("/payments")}
             >
               <ListItemText primary="Payments" sx={{ color: "black" }} />
-            </ListItem>
+            </ListItem> */}
             <ListItem component="div" onClick={handleSignOut}>
               <ListItemText primary="Logout" sx={{ color: "black" }} />
             </ListItem>

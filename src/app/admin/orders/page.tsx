@@ -166,7 +166,8 @@ const AdminOrders = () => {
             <MenuItem value="Pending for approval">
               Pending for approval
             </MenuItem>
-            <MenuItem value="Waiting for payment">Waiting for payment</MenuItem>
+            <MenuItem value="In Progress">In Progress</MenuItem>
+            {/* <MenuItem value="Waiting for payment">Waiting for payment</MenuItem> */}
             <MenuItem value="Payment Completed">Payment Completed</MenuItem>
             <MenuItem value="Task Completed">Task Completed</MenuItem>
             <MenuItem value="Rejected">Rejected</MenuItem>
