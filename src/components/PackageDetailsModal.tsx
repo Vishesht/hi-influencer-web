@@ -41,14 +41,14 @@ const PackageDetailsModal = ({
   };
 
   const handleSubmit = async () => {
-    const id = pkg.id;
+    const id = pkg?.id;
 
     const item = {
       ...formData,
       images,
       pkgName: pkg.name,
       loggedUserId: data?.id,
-      influencerId: influencer.id,
+      influencerId: rework ? influencer.influencerId : influencer.id,
     };
     if (item?.pkgName === "Promotions") {
       if (
@@ -78,7 +78,7 @@ const PackageDetailsModal = ({
         orderDetails: item,
         status: "In Review",
         loggedUserId: data?.id,
-        influencerId: influencer.id,
+        influencerId: rework ? influencer.influencerId : influencer.id,
       };
       rework
         ? await axios
@@ -88,8 +88,13 @@ const PackageDetailsModal = ({
             })
             .then((res) => {
               if (res.status === 201 || res.status === 200) {
-                alert("Your request is submitted for approval");
-                onClose();
+                dispatch(
+                  showAlert({
+                    message: "Your request is submitted for approval",
+                    confirmText: "Ok",
+                    onConfirm: () => onClose(),
+                  })
+                );
               }
             })
             .catch((err) => console.log("firsterr", err))
@@ -101,11 +106,9 @@ const PackageDetailsModal = ({
                   showAlert({
                     message: "Your request is submitted for approval",
                     confirmText: "Ok",
+                    onConfirm: () => router.push("/orders"),
                   })
                 );
-                setTimeout(() => {
-                  router.push("/orders");
-                }, 0);
               } else {
                 console.log("firsterr", res);
               }

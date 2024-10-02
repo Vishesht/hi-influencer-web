@@ -13,6 +13,7 @@ import {
   MenuItem,
   Tabs,
   Tab,
+  Badge,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
@@ -61,8 +62,9 @@ const Orders: React.FC = () => {
   useEffect(() => {
     if (tabIndex === 0) {
       getOrders();
+      getRequests();
     } else {
-      getRequests(); // Fetch requests when the Requests tab is active
+      getRequests();
     }
   }, [data?.id, tabIndex]);
 
@@ -72,7 +74,7 @@ const Orders: React.FC = () => {
       setOrders(response.data);
       dispatch(paymentStatus(false));
     } catch (err) {
-      console.error("Error fetching orders", err);
+      console.log("Error fetching orders", err);
     }
   };
 
@@ -83,7 +85,7 @@ const Orders: React.FC = () => {
       );
       setRequests(response.data);
     } catch (err) {
-      console.error("Error fetching orders", err);
+      console.log("Error fetching orders", err);
       if (err.status === 404) {
         setRequests([]);
       }
@@ -131,16 +133,32 @@ const Orders: React.FC = () => {
         .put(`${BaseUrl}/api/changeStatus`, { _id, newStatus })
         .then((res) => {
           if (res.status === 200) {
-            const title = "Order Confirmed";
-            const desc = `Your order is confirmed for the package ${item.orderDetails[0].pkgName}.`;
-            sendNotification(item.influencerDetails.email, title, desc);
+            const title =
+              newStatus == "In Progress"
+                ? "Order Confirmed"
+                : newStatus == "Testing"
+                ? "Task Completed"
+                : newStatus == "Task Completed"
+                ? "Review Finalized"
+                : "";
+            const desc =
+              newStatus == "In Progress"
+                ? `Your order is confirmed for the package ${item.orderDetails[0].pkgName}.`
+                : newStatus == "Testing"
+                ? "Your task has been successfully completed by the influencer. You may now proceed to review their work."
+                : newStatus == "Task Completed"
+                ? "The client has successfully completed their review of your task, and it has been approved."
+                : "";
+            title &&
+              desc &&
+              sendNotification(item.influencerDetails.email, title, desc);
           }
         })
         .catch((err) => console.log("Err", err));
       getRequests();
       getOrders();
     } catch (error) {
-      console.error("Error approving order:", error);
+      console.log("Error approving order:", error);
     }
   };
 
@@ -153,20 +171,30 @@ const Orders: React.FC = () => {
         .catch((err) => console.log("Err", err));
       getRequests();
     } catch (error) {
-      console.error("Error approving order:", error);
+      console.log("Error approving order:", error);
     }
   };
 
   const onClosePopup = () => {
+    getOrders();
     setOpenModal(false);
   };
 
   const onReviewPopup = async (creds) => {
     try {
       await axios.post(`${BaseUrl}/api/addReview`, creds);
+      const title = `You received a ${creds.rating}-star rating!`;
+      const desc = `Congratulations! Your recent work has been rated ${creds.rating} stars by the client. Keep up the great work!`;
+      const title1 = "You received a low rating.";
+      const desc1 = `Your recent work has been rated below ${creds.rating} stars by the client. We encourage you to review their feedback and strive for improvement.`;
+      sendNotification(
+        creds.influencerEmail,
+        creds.rating < 3 ? title1 : title,
+        creds.rating < 3 ? desc1 : desc
+      );
       getOrders();
     } catch (error) {
-      console.error("Error adding review:", error);
+      console.log("Error adding review:", error);
     }
   };
 
@@ -179,7 +207,7 @@ const Orders: React.FC = () => {
       console.log("saveChat", response.data);
       router.push("/chat");
     } catch (error) {
-      console.error("Error saving chat:", error);
+      console.log("Error saving chat:", error);
     }
   };
 
@@ -193,8 +221,20 @@ const Orders: React.FC = () => {
         value={tabIndex}
         onChange={(event, newValue) => setTabIndex(newValue)}
       >
-        <Tab label="Orders" />
-        <Tab label="Requests" />
+        <Tab
+          label={
+            <Badge badgeContent={filteredOrders?.length} color="secondary">
+              Orders -
+            </Badge>
+          }
+        />
+        <Tab
+          label={
+            <Badge badgeContent={filteredRequests?.length} color="secondary">
+              Requests -
+            </Badge>
+          }
+        />
       </Tabs>
 
       <FilterBox>
@@ -478,32 +518,33 @@ const Orders: React.FC = () => {
                 </OrderCard>
                 <PackageDetailsModal
                   rework={true}
-                  influencerId={item?.influencerId}
+                  influencer={item}
                   open={openModal}
                   onClose={onClosePopup}
                   pkg={{ name: item.orderDetails[0].pkgName, id: item._id }}
+                />
+                <ReviewPopup
+                  open={open}
+                  onClose={() => {
+                    setOpen(false), getOrders();
+                  }}
+                  onSubmit={({ rating, review }) => {
+                    const items = {
+                      userId: data?.id,
+                      influencerEmail: item?.influencerDetails?.email,
+                      influencerId: reviewItem?.influencerId,
+                      rating,
+                      review,
+                      orderId: reviewItem._id,
+                    };
+                    onReviewPopup(items);
+                  }}
                 />
               </Grid>
             );
           }
         )}
       </Grid>
-      <ReviewPopup
-        open={open}
-        onClose={() => {
-          setOpen(false), getOrders();
-        }}
-        onSubmit={({ rating, review }) => {
-          const item = {
-            userId: data?.id,
-            influencerId: reviewItem?.influencerId,
-            rating,
-            review,
-            orderId: reviewItem._id,
-          };
-          onReviewPopup(item);
-        }}
-      />
     </StyledBox>
   );
 };

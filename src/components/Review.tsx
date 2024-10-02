@@ -27,11 +27,15 @@ const ReviewPopup = ({ open, onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    onSubmit({ rating, review });
-    // Clear input fields after submission
-    setRating(0);
-    setReview("");
-    onClose();
+    if (rating > 0 && review) {
+      onSubmit({ rating, review });
+      // Clear input fields after submission
+      setRating(0);
+      setReview("");
+      onClose();
+    } else {
+      alert("Please fill all the fields");
+    }
   };
 
   return (

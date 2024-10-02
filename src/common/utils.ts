@@ -1,8 +1,8 @@
-export const BaseUrl = "http://localhost:5001";
-// export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
+// export const BaseUrl = "http://localhost:5001";
+export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
 export const ProfileCheckRegex = /^\/user\/[^\/]+$/;
 
-export const WebUrl = "http://localhost:3000";
+export const WebUrl = "https://hi-influencer-web-qd5q.vercel.app";
 export const imgPlaceholderImg =
   "https://firebasestorage.googleapis.com/v0/b/hiinfluencer-1c689.appspot.com/o/avatar.avif?alt=media&token=668ca47c-867b-4716-9086-8df3aca7b66c";
 // "https://i.pravatar.cc/300";

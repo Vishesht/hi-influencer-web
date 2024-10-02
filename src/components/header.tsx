@@ -43,6 +43,7 @@ const Header = () => {
   const [user, setUser] = useState<any>(null);
   const main = useAppSelector((state) => state.login);
   const data = main.userData;
+
   const isAdmin = main.isAdmin;
   const useProfilePathCheck = () => {
     const profilePathRegex = ProfileCheckRegex;
@@ -190,7 +191,6 @@ const Header = () => {
     } else {
       router.push("/");
     }
-    //isuserProfile
   };
 
   return (
@@ -221,7 +221,7 @@ const Header = () => {
           </Typography>
 
           {/* Mobile Menu Icon */}
-          {!isuserProfile && isMobile && !path.startsWith("/admin") && (
+          {isMobile && !path.startsWith("/admin") && data && (
             <>
               <Button color="inherit" onClick={handleClick1}>
                 <Badge badgeContent={unreadCount} color="secondary">
@@ -239,7 +239,7 @@ const Header = () => {
           )}
 
           {/* Desktop Nav Links */}
-          {!isMobile && !isuserProfile && !path.startsWith("/admin") && (
+          {!isMobile && !path.startsWith("/admin") && data && (
             <>
               {/* <Button onClick={() => router.push("/ads")} color="inherit">
                 Ads
@@ -269,8 +269,8 @@ const Header = () => {
           {/* Avatar for Mobile */}
           {(user || data) &&
             !isMobile &&
-            !isuserProfile &&
-            !path.startsWith("/admin") && (
+            !path.startsWith("/admin") &&
+            data && (
               <Tooltip title="Click to view options" arrow>
                 <IconButton
                   edge="end"

@@ -176,6 +176,28 @@ const ProfilePage = () => {
             </Tooltip>
           )}
         </Box>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => router.push("/edit-profile")}
+          sx={{
+            borderRadius: "50px", // Fully rounded corners
+            borderColor: "#6C63FF", // Custom border color
+            textTransform: "none", // Disable uppercase text
+            padding: "10px 30px", // Increase padding for a larger button
+            fontSize: "16px", // Slightly increase font size
+            fontWeight: "bold", // Make text bold
+            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Add subtle shadow for depth
+            transition: "transform 0.3s ease, background-color 0.3s ease",
+            "&:hover": {
+              backgroundColor: "#6C63FF", // Change background color on hover
+              color: "#fff", // Change text color on hover
+              transform: "scale(1.05)", // Add a slight zoom effect on hover
+            },
+          }}
+        >
+          Edit Profile
+        </Button>
 
         {user?.category && (
           <Typography variant="h6" color="textSecondary">
@@ -249,23 +271,6 @@ const ProfilePage = () => {
         ) : (
           <></>
         )}
-        {/* Buttons */}
-        <Box mt={4} display="flex" justifyContent="center" gap={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => router.push("/orders")}
-          >
-            Your Orders
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => router.push("/edit-profile")}
-          >
-            Edit Profile
-          </Button>
-        </Box>
 
         {/* Profile Images */}
         <Box mt={4}>

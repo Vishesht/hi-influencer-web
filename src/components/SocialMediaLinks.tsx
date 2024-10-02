@@ -38,6 +38,8 @@ const SocialMediaLinks = () => {
   const [linkData, setLinkData] = useState<any>({});
   const [phoneNumber, setPhoneNumber] = useState("");
   const [socialLinks, setSocialLinks] = useState<any[]>([]);
+  const [userName, setUserName] = useState("");
+  const [userAvailableData, setUserAvailableData] = useState("");
   const router = useRouter();
   const data = useAppSelector((state) => state.login.userData);
   const dispatch = useDispatch();
@@ -75,6 +77,14 @@ const SocialMediaLinks = () => {
   };
   // Handle form submission with API call
   const handleSubmit = async () => {
+    if (userName.length < 6) {
+      alert("Username must be at least 6 characters long");
+      return null;
+    }
+    if (phoneNumber.length && phoneNumber.length < 10) {
+      alert("Phone number must be at least 10 digits long");
+      return;
+    }
     if (selectedPlatforms.length > 0 && phoneNumber) {
       const platformData = selectedPlatforms.map((platform) => ({
         platform: platform,
@@ -88,6 +98,7 @@ const SocialMediaLinks = () => {
         email: data.email,
         phoneNumber: phoneNumber,
         platform: platformData,
+        username: userName,
         photoURL: imgPlaceholderImg,
         isClient: false,
       };
@@ -113,13 +124,59 @@ const SocialMediaLinks = () => {
     router.push("/");
   };
 
+  const checkUsernameAvailability = async (username) => {
+    try {
+      // Make a GET request to the backend API to check username availability
+      const response = await axios.get(`${BaseUrl}/api/check-username`, {
+        params: {
+          username: username,
+        },
+      });
+      console.log("firstresponse", response);
+      if (response.data.available) {
+        console.log("Username is available");
+        return { available: true, message: response.data.message };
+      } else {
+        console.log("Username is taken");
+        return { available: false, message: response.data.message };
+      }
+    } catch (error) {
+      console.error("Error checking username availability:", error);
+      return {
+        available: false,
+        message: "Error occurred while checking username",
+      };
+    }
+  };
+
+  const handleCheckUsername = async () => {
+    const result: any = await checkUsernameAvailability(userName);
+    setUserAvailableData(result);
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <div style={{ marginBottom: "20px" }}>
         <TextField
+          label="User Name"
+          variant="outlined"
+          fullWidth
+          value={userName}
+          onChange={(e) => {
+            setUserName(e.target.value);
+            e.target.value.length > 5 && handleCheckUsername();
+          }}
+          helperText={userName?.length > 5 && userAvailableData.message}
+          FormHelperTextProps={{
+            style: { color: userAvailableData.available ? "green" : "red" },
+          }}
+          style={{ marginBottom: "10px" }}
+        />
+        <TextField
           label="Phone Number"
           variant="outlined"
           fullWidth
+          type="number"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
           style={{ marginBottom: "10px" }}

@@ -44,14 +44,19 @@ const InfluencerProfileComponent = ({
                 (influencerDetails?.phoneNumber || "")}
             </Typography>
           ))}
-        <Typography variant="body2" color="text.secondary" sx={{}}>
-          {influencerDetails?.gender}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {(influencerDetails?.address
-            ? influencerDetails?.address
-            : "" + " " + influencerDetails?.state) || "N/A"}
-        </Typography>
+        {influencerDetails?.gender && (
+          <Typography variant="body2" color="text.secondary" sx={{}}>
+            {influencerDetails?.gender}
+          </Typography>
+        )}
+        {influencerDetails?.address ||
+          (influencerDetails?.state && (
+            <Typography variant="body2" color="text.secondary">
+              {(influencerDetails?.address
+                ? influencerDetails?.address
+                : "" + " " + influencerDetails?.state) || "N/A"}
+            </Typography>
+          ))}
       </CardContent>
     </Card>
   );

@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogTitle,
   InputLabel,
+  Box,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
@@ -38,7 +39,7 @@ import AlertDialog from "@/components/Alert";
 import { showAlert } from "@/lib/features/alert/alertSlice";
 import PackagesSetup from "@/components/packagesSetup";
 import Image from "next/image";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -243,282 +244,295 @@ const EditProfile: React.FC = () => {
   const imgUrl = cleanImageUrl(imageUri);
 
   return (
-    <StyledContainer>
-      <Typography variant="h5" sx={{ mb: 4 }} gutterBottom>
-        Edit Profile
-      </Typography>
-
-      <Grid container spacing={4}>
-        {/* Profile Image Section */}
-        <Grid item xs={12} md={4} textAlign="center">
-          <label htmlFor="profile-image-upload">
-            <input
-              id="profile-image-upload"
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={handleImageUpload}
-            />
-            <EditIconWrapper>
-              <Image
-                src={imgUrl}
-                alt="User Image"
-                width={150}
-                height={150}
-                // layout="responsive"
-                style={{
-                  objectFit: "cover",
-                }}
+    <>
+      <Box display="flex" alignItems="center" sx={{ mb: 3 }}>
+        <IconButton
+          onClick={() => router.back()} // Navigates back to the previous page
+          sx={{
+            color: "inherit", // You can customize the color if needed
+            mr: 1,
+            mb: 1,
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+        <Typography variant="h5" gutterBottom>
+          Edit Profile
+        </Typography>
+      </Box>
+      <StyledContainer>
+        <Grid container spacing={4}>
+          {/* Profile Image Section */}
+          <Grid item xs={12} md={4} textAlign="center">
+            <label htmlFor="profile-image-upload">
+              <input
+                id="profile-image-upload"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleImageUpload}
               />
-              <EditIconStyled
-                // component="span"
-                color="primary"
-                onClick={() =>
-                  document.getElementById("profile-image-upload")?.click()
-                }
-              >
-                <EditIcon />
-              </EditIconStyled>
-            </EditIconWrapper>
-            <Grid
-              item
-              xs={12}
-              sx={{ display: "flex", justifyContent: "center", mt: 2 }}
-            >
-              <p>{data?.email}</p>
-            </Grid>
-          </label>
-        </Grid>
-
-        {/* Form Fields */}
-        <Grid item xs={12} md={8}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Name"
-                variant="outlined"
-                margin="normal"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Username"
-                variant="outlined"
-                margin="normal"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                inputProps={{ pattern: "[a-z0-9]*" }}
-                helperText="Username must be lowercase and contain no spaces."
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Bio"
-                variant="outlined"
-                margin="normal"
-                multiline
-                rows={4}
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-              />
-            </Grid>
-            {platform.map((p, index) => (
+              <EditIconWrapper>
+                <Image
+                  src={imgUrl}
+                  alt="User Image"
+                  width={150}
+                  height={150}
+                  // layout="responsive"
+                  style={{
+                    objectFit: "cover",
+                  }}
+                />
+                <EditIconStyled
+                  // component="span"
+                  color="primary"
+                  onClick={() =>
+                    document.getElementById("profile-image-upload")?.click()
+                  }
+                >
+                  <EditIcon />
+                </EditIconStyled>
+              </EditIconWrapper>
               <Grid
                 item
                 xs={12}
-                sm={6}
-                key={index}
-                style={{ position: "relative" }}
+                sx={{ display: "flex", justifyContent: "center", mt: 2 }}
               >
+                <p>{data?.email}</p>
+              </Grid>
+            </label>
+          </Grid>
+
+          {/* Form Fields */}
+          <Grid item xs={12} md={8}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label={p.platform}
+                  label="Name"
                   variant="outlined"
                   margin="normal"
-                  value={p.platformLink}
-                  onChange={(e) => {
-                    const updatedPlatform = [...platform];
-                    updatedPlatform[index].platformLink = e.target.value;
-                    setPlatform(updatedPlatform);
-                  }}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
                 />
-                <IconButton
-                  onClick={(p) => {
-                    const newItems = platform.filter((_, i) => i !== index);
-                    setPlatform(newItems);
-                  }}
-                  style={{
-                    position: "absolute",
-                    top: 32,
-                    right: -6,
-                    color: "red", // Optional: Customize the icon color
-                  }}
-                >
-                  <Clear />
-                </IconButton>
               </Grid>
-            ))}
-            <Grid item xs={12}>
-              <Button variant="outlined" onClick={() => setOpenDialog(true)}>
-                Add Your Social Media
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                variant="outlined"
-                margin="normal"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                type="tel"
-                inputProps={{ pattern: "[0-9]{10}" }}
-                helperText="Phone number must be 10 digits."
-              />
-              <Typography
-                variant="inherit"
-                sx={{ color: "GrayText", fontFamily: "initial" }}
-                gutterBottom
-              >
-                We respect your privacy. Your phone number will be kept
-                confidential and will not be disclosed to any third parties.
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth margin="normal">
-                <Select
-                  value={selectedGender}
-                  onChange={(e) => setSelectedGender(e.target.value)}
-                  renderValue={(value) => value || "Select Gender"}
-                  displayEmpty
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Username"
+                  variant="outlined"
+                  margin="normal"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  inputProps={{ pattern: "[a-z0-9]*" }}
+                  helperText="Username must be lowercase and contain no spaces."
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Bio"
+                  variant="outlined"
+                  margin="normal"
+                  multiline
+                  rows={4}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                />
+              </Grid>
+              {platform.map((p, index) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  key={index}
+                  style={{ position: "relative" }}
                 >
-                  {genderList.map((gender) => (
-                    <MenuItem key={gender} value={gender}>
-                      {gender}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth margin="normal">
-                <Select
-                  value={selectedState}
-                  onChange={(e) => setSelectedState(e.target.value)}
-                  renderValue={(value) => value || "Select State"}
-                  displayEmpty
+                  <TextField
+                    fullWidth
+                    label={p.platform}
+                    variant="outlined"
+                    margin="normal"
+                    value={p.platformLink}
+                    onChange={(e) => {
+                      const updatedPlatform = [...platform];
+                      updatedPlatform[index].platformLink = e.target.value;
+                      setPlatform(updatedPlatform);
+                    }}
+                  />
+                  <IconButton
+                    onClick={(p) => {
+                      const newItems = platform.filter((_, i) => i !== index);
+                      setPlatform(newItems);
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: 32,
+                      right: -6,
+                      color: "red", // Optional: Customize the icon color
+                    }}
+                  >
+                    <Clear />
+                  </IconButton>
+                </Grid>
+              ))}
+              <Grid item xs={12}>
+                <Button variant="outlined" onClick={() => setOpenDialog(true)}>
+                  Add Your Social Media
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Phone Number"
+                  variant="outlined"
+                  margin="normal"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  type="tel"
+                  inputProps={{ pattern: "[0-9]{10}" }}
+                  helperText="Phone number must be 10 digits."
+                />
+                <Typography
+                  variant="inherit"
+                  sx={{ color: "GrayText", fontFamily: "initial" }}
+                  gutterBottom
                 >
-                  {indianStates.map((state) => (
-                    <MenuItem key={state} value={state}>
-                      {state}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Address (optional)"
-                variant="outlined"
-                margin="normal"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </Grid>
-            {!userData?.isClient && (
+                  We respect your privacy. Your phone number will be kept
+                  confidential and will not be disclosed to any third parties.
+                </Typography>
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth margin="normal">
                   <Select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    renderValue={(value) => value || "Select Category"}
+                    value={selectedGender}
+                    onChange={(e) => setSelectedGender(e.target.value)}
+                    renderValue={(value) => value || "Select Gender"}
                     displayEmpty
                   >
-                    {categories.map((category) => (
-                      <MenuItem key={category} value={category}>
-                        {category}
+                    {genderList.map((gender) => (
+                      <MenuItem key={gender} value={gender}>
+                        {gender}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth margin="normal">
+                  <Select
+                    value={selectedState}
+                    onChange={(e) => setSelectedState(e.target.value)}
+                    renderValue={(value) => value || "Select State"}
+                    displayEmpty
+                  >
+                    {indianStates.map((state) => (
+                      <MenuItem key={state} value={state}>
+                        {state}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Address (optional)"
+                  variant="outlined"
+                  margin="normal"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </Grid>
+              {!userData?.isClient && (
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth margin="normal">
+                    <Select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      renderValue={(value) => value || "Select Category"}
+                      displayEmpty
+                    >
+                      {categories.map((category) => (
+                        <MenuItem key={category} value={category}>
+                          {category}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+            </Grid>
+            {!userData?.isClient && (
+              <PackagesSetup
+                packages={packages}
+                onSavePackages={handleSavedPackages}
+              />
             )}
-          </Grid>
-          {!userData?.isClient && (
-            <PackagesSetup
-              packages={packages}
-              onSavePackages={handleSavedPackages}
-            />
-          )}
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            style={{
-              width: "100%",
-              marginTop: 36,
-              marginBottom: 22,
-            }}
-            onClick={handleSave}
-          >
-            Save
-          </Button>
-        </Grid>
-      </Grid>
-
-      {/* Dialog for Adding New Social Media */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Add New Social Media</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Platform Name</InputLabel>
-            <Select
-              name="name"
-              value={newPlatform.name}
-              onChange={handlePlatformChange}
-              label="Platform Name"
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{
+                width: "100%",
+                marginTop: 36,
+                marginBottom: 22,
+              }}
+              onClick={handleSave}
             >
-              {socialMediaPlatforms.map((platform) => (
-                <MenuItem key={platform} value={platform}>
-                  {platform}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            margin="dense"
-            label="Platform Link"
-            fullWidth
-            variant="outlined"
-            name="link"
-            value={newPlatform.link}
-            onChange={handlePlatformChange}
-          />
-          <TextField
-            margin="dense"
-            label="Followers"
-            fullWidth
-            variant="outlined"
-            name="followers"
-            value={newPlatform.followers}
-            onChange={handlePlatformChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button onClick={handleAddPlatform}>Add</Button>
-        </DialogActions>
-      </Dialog>
-      <AlertDialog />
-    </StyledContainer>
+              Save
+            </Button>
+          </Grid>
+        </Grid>
+
+        {/* Dialog for Adding New Social Media */}
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+          <DialogTitle>Add New Social Media</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth margin="dense">
+              <InputLabel>Platform Name</InputLabel>
+              <Select
+                name="name"
+                value={newPlatform.name}
+                onChange={handlePlatformChange}
+                label="Platform Name"
+              >
+                {socialMediaPlatforms.map((platform) => (
+                  <MenuItem key={platform} value={platform}>
+                    {platform}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              margin="dense"
+              label="Platform Link"
+              fullWidth
+              variant="outlined"
+              name="link"
+              value={newPlatform.link}
+              onChange={handlePlatformChange}
+            />
+            <TextField
+              margin="dense"
+              label="Followers"
+              fullWidth
+              variant="outlined"
+              name="followers"
+              value={newPlatform.followers}
+              onChange={handlePlatformChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+            <Button onClick={handleAddPlatform}>Add</Button>
+          </DialogActions>
+        </Dialog>
+        <AlertDialog />
+      </StyledContainer>
+    </>
   );
 };
 
