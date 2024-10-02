@@ -15,7 +15,6 @@ import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import { useAppSelector } from "@/lib/hooks";
 import GridComponent from "@/components/GridComponents";
-import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Home() {
   const theme = useTheme();

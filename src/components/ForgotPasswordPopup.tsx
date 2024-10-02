@@ -2,6 +2,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
+import LoadingButton from "./LoadingButton";
+import { isValidEmail, isValidPassword } from "@/common/validations";
 
 const ForgotPasswordPopup = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
@@ -10,8 +12,10 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: Change Password
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const handleSendOtp = async (e) => {
+    setLoader(true);
     e.preventDefault();
     setMessage("");
     setError("");
@@ -19,7 +23,9 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
       const res = await axios.post(`${BaseUrl}/api/sendOtp`, { email });
       setMessage(res.data.message);
       setStep(2); // Move to OTP step
+      setLoader(false);
     } catch (err) {
+      setLoader(false);
       const errorMsg =
         err.response?.data?.message || "Failed to send OTP. Please try again.";
       setError(errorMsg);
@@ -27,6 +33,7 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
   };
 
   const handleVerifyOtp = async (e) => {
+    setLoader(true);
     e.preventDefault();
     setMessage("");
     setError("");
@@ -34,7 +41,10 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
       const res = await axios.post(`${BaseUrl}/api/verify-otp`, { email, otp });
       setMessage(res.data.message);
       setStep(3); // Move to password change step
+      setLoader(false);
     } catch (err) {
+      setLoader(false);
+
       const errorMsg =
         err.response?.data?.message ||
         "Failed to verify OTP. Please try again.";
@@ -43,6 +53,7 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
   };
 
   const handleChangePassword = async (e) => {
+    setLoader(true);
     e.preventDefault();
     setMessage("");
     setError("");
@@ -52,9 +63,12 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
         newPassword,
       });
       setMessage(res.data.message);
+      setLoader(false);
+
       // Optionally close the popup after successful password change
       setTimeout(onClose, 2000); // Close after 2 seconds
     } catch (err) {
+      setLoader(false);
       const errorMsg =
         err.response?.data?.message ||
         "Failed to change password. Please try again.";
@@ -92,9 +106,13 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button type="submit" className="submit-btn">
-              Send OTP
-            </button>
+            <LoadingButton
+              disabled={!isValidEmail(email)}
+              loading={loader}
+              onClick={handleSendOtp}
+            >
+              {loader ? "Loading..." : "Send OTP"}
+            </LoadingButton>
           </form>
         )}
         {step === 2 && (
@@ -108,9 +126,13 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
               onChange={(e) => setOtp(e.target.value)}
               required
             />
-            <button type="submit" className="submit-btn">
-              Verify OTP
-            </button>
+            <LoadingButton
+              disabled={otp?.length !== 6}
+              loading={loader}
+              onClick={handleVerifyOtp}
+            >
+              {loader ? "Loading..." : "Verify OTP"}
+            </LoadingButton>
           </form>
         )}
         {step === 3 && (
@@ -124,9 +146,13 @@ const ForgotPasswordPopup = ({ isOpen, onClose }) => {
               onChange={(e) => setNewPassword(e.target.value)}
               required
             />
-            <button type="submit" className="submit-btn">
-              Change Password
-            </button>
+            <LoadingButton
+              disabled={!isValidPassword(newPassword)}
+              loading={loader}
+              onClick={handleChangePassword}
+            >
+              {loader ? "Loading..." : "Change Password"}
+            </LoadingButton>
           </form>
         )}
         {message && <p className="message success-message">{message}</p>}

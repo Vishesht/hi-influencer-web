@@ -3,7 +3,6 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import LoadingSpinner from "./LoadingSpinner";
 import { BaseUrl, ProfileCheckRegex } from "@/common/utils";
 import Header from "./header";
 import Footer from "./footer";
@@ -13,6 +12,7 @@ import { getToken } from "firebase/messaging";
 import { messaging } from "@/app/firebase";
 import ServiceWorkerToast from "./ServiceWorkerToast";
 import axios from "axios";
+import Loading from "./LoadingSpinner";
 
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -101,7 +101,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   }, [user, loading, path, router, isAdmin, isUserProfile]);
 
   if (loading) {
-    return <LoadingSpinner />;
+    return <Loading loading={loading} />;
   }
 
   // Allow access to login and signup pages
