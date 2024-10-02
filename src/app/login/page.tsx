@@ -81,7 +81,12 @@ export default function LoginPage() {
 
   const handleGmailLogin = async () => {
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(
+        auth,
+        provider.setCustomParameters({
+          prompt: "select_account", // Forces the account selection every time
+        })
+      );
       const user = result.user;
 
       if (user.email) {
@@ -107,7 +112,7 @@ export default function LoginPage() {
             }
           })
           .catch((err) =>
-            console.log("Something wrong. Please try again.", err)
+            console.log("Something went wrong. Please try again.", err)
           );
       }
     } catch (error) {
