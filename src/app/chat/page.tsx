@@ -44,7 +44,7 @@ const ChatScreen = () => {
     } catch (error) {
       console.log("Error - chat", error);
       if (error.response.data.message === "No chats found for this user") {
-        data?.id && CreateChat();
+        // data?.id && CreateChat();
       }
     }
   };
@@ -65,7 +65,7 @@ const ChatScreen = () => {
   useEffect(() => {
     if (selectedChat?.id && data?.id) {
       getChatDataFromFirebase((item) => {
-        const chatStarted = item.hasOwnProperty(selectedChat?.id);
+        const chatStarted = item?.hasOwnProperty(selectedChat?.id);
         if (item && chatStarted) {
           const chats = Object.keys(item).map((key) => ({
             id: key,
@@ -89,13 +89,13 @@ const ChatScreen = () => {
             setChatData([]); // or any appropriate fallback
           }
         } else {
-          handleSendMessage(adminUserId, "Welcome to the Hi Influencer App!");
-          setTimeout(() => {
-            handleSendMessage(
-              adminUserId,
-              "If you need help or have any questions about our website, just send us a message here. We’re here to help you soon!"
-            );
-          }, 2000);
+          // handleSendMessage(adminUserId, "Welcome to the Hi Influencer App!");
+          // setTimeout(() => {
+          //   handleSendMessage(
+          //     adminUserId,
+          //     "If you need help or have any questions about our website, just send us a message here. We’re here to help you soon!"
+          //   );
+          // }, 2000);
         }
       });
     }

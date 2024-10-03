@@ -14,12 +14,11 @@ import {
   Grid,
   Paper,
   Button,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { BaseUrl } from "@/common/utils";
 import Image from "next/image";
 import { sendNotification } from "@/api/commonApi";
+import ReusableSnackbar from "@/components/ReusableSnackbar";
 
 const indianStates = [
   "Andhra Pradesh",
@@ -268,15 +267,12 @@ const AdminUsers = () => {
           );
         })}
       </Grid>
-      <Snackbar
+      <ReusableSnackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert onClose={() => setSnackbarOpen(false)} severity="success">
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        message={snackbarMessage}
+        severity="success" // Change this to "error", "info", etc., as needed
+      />
     </Container>
   );
 };

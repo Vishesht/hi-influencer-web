@@ -234,6 +234,12 @@ const AdminOrders = () => {
                       {order.orderDetails[0].phone}
                     </Typography>
                   )}
+                  {order.requestedChanges && (
+                    <Typography variant="body2">
+                      <b>RequestedChanges: </b>
+                      {order.requestedChanges}
+                    </Typography>
+                  )}
                   {order.orderDetails[0].negotiablePrice && (
                     <Typography variant="body2">
                       <b>Price: </b>

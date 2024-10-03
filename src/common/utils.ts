@@ -4,7 +4,7 @@ export const ProfileCheckRegex = /^\/user\/[^\/]+$/;
 
 export const WebUrl = "https://hi-influencer-web-qd5q.vercel.app";
 export const imgPlaceholderImg =
-  "https://firebasestorage.googleapis.com/v0/b/hiinfluencer-1c689.appspot.com/o/avatar.avif?alt=media&token=668ca47c-867b-4716-9086-8df3aca7b66c";
+  "https://firebasestorage.googleapis.com/v0/b/hiinfluencer-1c689.appspot.com/o/avatar.jpg?alt=media&token=a66d6700-97fd-4759-8de5-63ba49d2759f";
 // "https://i.pravatar.cc/300";
 export const womenPlaceholderImg =
   "https://randomuser.me/api/portraits/women/41.jpg";
@@ -70,6 +70,7 @@ export const categories = [
   "Musician",
   "Gamer",
   "Fitness Trainer",
+  "Freelancer",
   "Chef",
   "Fashion Designer",
   "Entrepreneur",
@@ -127,6 +128,18 @@ export const checkUserDetails = (userDetails) => {
   if (platformMissing) {
     missingFields.push("platform");
   }
+  if (userDetails?.packages?.length === 0) {
+    missingFields.push("packages");
+  }
+  if (!userDetails?.category) {
+    missingFields.push("category");
+  }
+  if (!userDetails?.state) {
+    missingFields.push("state");
+  }
+  if (userDetails?.photoURL === imgPlaceholderImg) {
+    missingFields.push("image");
+  }
 
   // Construct the response based on missing fields
   if (missingFields.length > 0) {
@@ -140,14 +153,23 @@ export const checkUserDetails = (userDetails) => {
           return "Social Media Accounts";
         case "username":
           return "Username";
+        case "packages":
+          return "Packages";
+        case "category":
+          return "Category";
+        case "state":
+          return "State";
+        case "image":
+          return "Your Profile Image";
         default:
           return "";
       }
     });
 
-    const message = `Please complete the following required fields: ${missingItems.join(
+    const message = `Add the following items from the edit profile to enable this button: "${missingItems.join(
       ", "
-    )} to make this button enable`;
+    )}".`;
+
     return {
       userDetailsMissing: true,
       message,
@@ -174,4 +196,4 @@ export const formatDate = (dateStr) => {
   return formattedDate.replace(",", "");
 };
 
-export const adminUserId = "ac8000bd-62ac-4fa5-b76b-9340951113e1";
+export const adminUserId = "5fc5f033-df88-49fe-980c-becd3c43e1d3";
