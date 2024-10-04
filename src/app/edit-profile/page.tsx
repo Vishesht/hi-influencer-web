@@ -40,6 +40,7 @@ import { showAlert } from "@/lib/features/alert/alertSlice";
 import PackagesSetup from "@/components/packagesSetup";
 import Image from "next/image";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Loading from "@/components/LoadingSpinner";
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -78,6 +79,7 @@ const EditProfile: React.FC = () => {
   const [platform, setPlatform] = useState<any[]>([]);
   const [packages, setPackages] = useState<any[]>([]);
   const [userData, setUserData] = useState<any>();
+  const [loader, setLoader] = useState<any>();
   const [newPlatform, setNewPlatform] = useState({
     name: "",
     link: "",
@@ -133,14 +135,17 @@ const EditProfile: React.FC = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
+    setLoader(true);
     if (file) {
       const storageRef = ref(storage, `images/${username + "-" + file.name}`);
       try {
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
         setImageUri(downloadURL);
+        setLoader(false);
       } catch (error) {
         console.error("Error uploading file:", error);
+        setLoader(false);
       }
     }
   };
@@ -181,7 +186,7 @@ const EditProfile: React.FC = () => {
         handleAlert("Please enter a valid phone number");
         return;
       }
-
+      setLoader(true);
       const updatedData = {
         id: data.id,
         name,
@@ -206,10 +211,12 @@ const EditProfile: React.FC = () => {
           },
         })
         .then(() => {
+          setLoader(false);
           router.push("/user");
           dispatch(add({ ...data, name: name, photoURL: imageUri }));
         });
     } catch (error) {
+      setLoader(false);
       console.error("Error updating profile:", error);
     }
   };
@@ -531,6 +538,7 @@ const EditProfile: React.FC = () => {
           </DialogActions>
         </Dialog>
         <AlertDialog />
+        <Loading loading={loader} />
       </StyledContainer>
     </>
   );

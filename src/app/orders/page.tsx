@@ -83,7 +83,10 @@ const Orders: React.FC = () => {
       const response = await axios.get(
         `${BaseUrl}/api/getOrderByInfluencerId/${data?.id}`
       );
-      setRequests(response.data);
+      const filteredRequest = response?.data?.filter(
+        (order) => order.status !== "In Review"
+      );
+      setRequests(filteredRequest);
     } catch (err) {
       console.log("Error fetching orders", err);
       if (err.status === 404) {
@@ -214,6 +217,7 @@ const Orders: React.FC = () => {
   const CreateChat = (item) => {
     saveChat(item.loggedUserId, item.influencerId);
   };
+  console.log("first", filteredRequests);
 
   return (
     <StyledBox>
@@ -255,7 +259,6 @@ const Orders: React.FC = () => {
           </Select>
         </FormControl>
       </FilterBox>
-
       <Grid container spacing={3}>
         {(tabIndex === 0 ? filteredOrders : filteredRequests).map(
           (item: any) => {

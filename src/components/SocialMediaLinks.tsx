@@ -37,7 +37,6 @@ const SocialMediaLinks = () => {
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [linkData, setLinkData] = useState<any>({});
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [socialLinks, setSocialLinks] = useState<any[]>([]);
   const [userName, setUserName] = useState("");
   const [userAvailableData, setUserAvailableData] = useState("");
   const router = useRouter();
@@ -149,8 +148,8 @@ const SocialMediaLinks = () => {
     }
   };
 
-  const handleCheckUsername = async () => {
-    const result: any = await checkUsernameAvailability(userName);
+  const handleCheckUsername = async (user) => {
+    const result: any = await checkUsernameAvailability(user);
     setUserAvailableData(result);
   };
 
@@ -164,7 +163,7 @@ const SocialMediaLinks = () => {
           value={userName}
           onChange={(e) => {
             setUserName(e.target.value);
-            e.target.value.length > 5 && handleCheckUsername();
+            e.target.value.length > 5 && handleCheckUsername(e.target.value);
           }}
           helperText={userName?.length > 5 && userAvailableData.message}
           FormHelperTextProps={{
@@ -266,40 +265,6 @@ const SocialMediaLinks = () => {
           Skip
         </Button> */}
       </div>
-
-      {/* Display the added social media links */}
-      {socialLinks.length > 0 && (
-        <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Platform</TableCell>
-                <TableCell>Link</TableCell>
-                <TableCell>Followers</TableCell>
-                <TableCell>ID</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {socialLinks.map((linkData, index) => (
-                <TableRow key={index}>
-                  <TableCell>{linkData.platform}</TableCell>
-                  <TableCell>
-                    <a
-                      href={linkData.platformLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {linkData.platformLink}
-                    </a>
-                  </TableCell>
-                  <TableCell>{linkData.followers}</TableCell>
-                  <TableCell>{linkData._id.$oid}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
     </div>
   );
 };

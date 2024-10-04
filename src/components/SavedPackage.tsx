@@ -8,6 +8,10 @@ import {
   styled,
   Card,
   Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import PackageDetailsModal from "./PackageDetailsModal";
 import { truncateText } from "@/common/utils";
@@ -60,9 +64,19 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
   const packageData = packagesData?.find((data) => data.name === pkg.name);
   const packageDescription = packageData ? packageData.description : "";
   const [openModal, setOpenModal] = useState(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  // Function to handle closing the dialog
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -111,6 +125,7 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
                   backgroundColor: "#f9f9f9",
                   marginBottom: 2,
                 }}
+                onClick={handleOpenDialog}
               >
                 <Typography variant="h6" sx={{ marginBottom: 1 }}>
                   Appointment Details
@@ -163,6 +178,29 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
         onClose={handleClose}
         pkg={pkg}
       />
+      {/* Dialog for full description */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Appointment Details</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" sx={{ marginBottom: 1 }}>
+            <strong>Service Offered:</strong> {pkg.data.appointmentOffer}
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 1 }}>
+            <strong>Description:</strong> {pkg.data.appointmentDesc}
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 1 }}>
+            <strong>Location:</strong> {pkg.data.appointmentLocation}
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 1 }}>
+            <strong>Price:</strong> Rs. {pkg.data.appointmentPrice}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };

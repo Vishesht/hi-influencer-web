@@ -94,7 +94,7 @@ export default function SignUpPage() {
       if (res.status === 200) {
         setLoader(false);
         setIsOtpVerified(true);
-        alert("OTP verified successfully.");
+        // alert("OTP verified successfully.");
       } else {
         alert("Invalid or expired OTP.");
       }
@@ -362,36 +362,22 @@ export default function SignUpPage() {
           </Box>
         </Box>
       </Container>
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Account Created!</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">
-            Congratulations! Choose your role.
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: 2,
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleRoleSelection("brand")}
-            >
-              Brand
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => handleRoleSelection("influencer")}
-            >
-              Influencer
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
+      <ReusableDialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          title="Select Your Role"
+          content="Please choose your role:"
+          actions={
+            <>
+              <Button onClick={() => handleRoleSelection("creator")}>
+                Join as Creator/Influencer
+              </Button>
+              <Button onClick={() => handleRoleSelection("brand")}>
+                Join as Brand/Client
+              </Button>
+            </>
+          }
+        />
       <Loading loading={loader} />
       <ReusableDialog
         open={openSocialMediaDialog}

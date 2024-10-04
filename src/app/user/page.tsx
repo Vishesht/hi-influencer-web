@@ -9,8 +9,6 @@ import {
   Grid,
   Card,
   CardMedia,
-  Snackbar,
-  Alert,
   Tooltip,
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -30,6 +28,7 @@ import CustomButton from "@/components/CustomButton";
 import Image from "next/image";
 import ProfilePromotion from "@/components/ProfilePromotion";
 import Loading from "@/components/LoadingSpinner";
+import ReusableSnackbar from "@/components/ReusableSnackbar";
 
 interface User {
   id: string;
@@ -299,15 +298,12 @@ const ProfilePage = () => {
         </Box>
       </Box>
       <Loading loading={loader} />
-      <Snackbar
+      <ReusableSnackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert onClose={() => setSnackbarOpen(false)} severity="success">
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        message={snackbarMessage}
+        severity="success" // Change this to "error", "info", etc., as needed
+      />
     </Container>
   );
 };

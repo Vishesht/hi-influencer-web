@@ -7,9 +7,6 @@ import {
   Button,
   Card,
   CardContent,
-  Grid,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
@@ -17,6 +14,7 @@ import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 import { useAppDispatch } from "@/lib/hooks";
 import { paymentStatus } from "@/lib/features/Payments/paymentSlice";
+import ReusableSnackbar from "@/components/ReusableSnackbar";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -179,16 +177,12 @@ const PaymentPage: React.FC = ({ searchParams }) => {
           </Button>
         </CardContent>
       </PaymentCard>
-
-      <Snackbar
+      <ReusableSnackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert onClose={() => setSnackbarOpen(false)} severity="success">
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        message={snackbarMessage}
+        severity="success"
+      />
     </StyledBox>
   );
 };
