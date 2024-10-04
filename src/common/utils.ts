@@ -2,7 +2,7 @@
 export const BaseUrl = "https://hi-influencer-nodejs.vercel.app";
 export const ProfileCheckRegex = /^\/user\/[^\/]+$/;
 
-export const WebUrl = "https://hi-influencer-web-qd5q.vercel.app";
+export const WebUrl = "https://www.hiinfluencer.in";
 export const imgPlaceholderImg =
   "https://firebasestorage.googleapis.com/v0/b/hiinfluencer-1c689.appspot.com/o/avatar.jpg?alt=media&token=a66d6700-97fd-4759-8de5-63ba49d2759f";
 // "https://i.pravatar.cc/300";
