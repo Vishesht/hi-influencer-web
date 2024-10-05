@@ -24,6 +24,7 @@ import PackageDetailsModal from "@/components/PackageDetailsModal";
 import InfluencerProfileComponent from "@/components/InfluencerProfileComponent";
 import ReviewPopup from "@/components/Review";
 import { sendNotification } from "@/api/commonApi";
+import Loading from "@/components/LoadingSpinner";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -52,6 +53,7 @@ const Orders: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [open, setOpen] = useState(false);
   const [reviewItem, setReviewItem] = useState();
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     if (paymentStatus && tabIndex === 0) {
@@ -69,25 +71,31 @@ const Orders: React.FC = () => {
   }, [data?.id, tabIndex]);
 
   const getOrders = async () => {
+    setLoader(true);
     try {
       const response = await axios.get(`${BaseUrl}/api/getorders/${data?.id}`);
       setOrders(response.data);
       dispatch(paymentStatus(false));
+      setLoader(false);
     } catch (err) {
+      setLoader(false);
       console.log("Error fetching orders", err);
     }
   };
 
   const getRequests = async () => {
+    setLoader(true);
     try {
       const response = await axios.get(
         `${BaseUrl}/api/getOrderByInfluencerId/${data?.id}`
       );
+      setLoader(false);
       const filteredRequest = response?.data?.filter(
         (order) => order.status !== "In Review"
       );
       setRequests(filteredRequest);
     } catch (err) {
+      setLoader(false);
       console.log("Error fetching orders", err);
       if (err.status === 404) {
         setRequests([]);
@@ -202,14 +210,17 @@ const Orders: React.FC = () => {
   };
 
   const saveChat = async (userId1, userId2) => {
+    setLoader(true);
     try {
       const response = await axios.post(`${BaseUrl}/service/create-chat`, {
         userId1,
         userId2,
       });
       console.log("saveChat", response.data);
+      setLoader(false);
       router.push("/chat");
     } catch (error) {
+      setLoader(false);
       console.log("Error saving chat:", error);
     }
   };
@@ -217,7 +228,6 @@ const Orders: React.FC = () => {
   const CreateChat = (item) => {
     saveChat(item.loggedUserId, item.influencerId);
   };
-  console.log("first", filteredRequests);
 
   return (
     <StyledBox>
@@ -548,6 +558,7 @@ const Orders: React.FC = () => {
           }
         )}
       </Grid>
+      <Loading loading={loader} />
     </StyledBox>
   );
 };

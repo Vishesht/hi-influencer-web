@@ -47,7 +47,6 @@ const GridComponent = ({ data }) => {
           sm: "repeat(3, 1fr)", // 3 items per row on tablets
           md: "repeat(4, 1fr)", // 4 items per row on web
         },
-        gap: 2,
         justifyContent: "center",
         padding: 2,
         mt: 4,
