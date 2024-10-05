@@ -488,7 +488,7 @@ const EditProfile: React.FC = () => {
                 marginTop: 36,
                 marginBottom: 22,
               }}
-              onClick={handleSave}
+              onClick={() => handleSave()}
             >
               Save
             </Button>
