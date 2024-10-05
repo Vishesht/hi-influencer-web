@@ -9,28 +9,22 @@ const nextConfig = {
         type: "memory",
       });
     }
-
-    // Optional: Add polyfills for older browsers
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      // Include any polyfills you may need, e.g., for 'crypto'
-      crypto: require.resolve("crypto-browserify"),
-    };
-
     // Important: return the modified config
     return config;
   },
   eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
-  // Additional config to improve compatibility
-  experimental: {
-    modern: true,
-  },
 };
 
 export default nextConfig;
