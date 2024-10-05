@@ -303,7 +303,11 @@ const InfluencerProfile = () => {
         )}
         <Loading loading={loader} />
       </ProfileContainer>
-      <ShareModal open={copyModalOpen} onClose={handleShareModalClose}>
+      <ShareModal
+        sx={{ ml: 2, mr: 2 }}
+        open={copyModalOpen}
+        onClose={handleShareModalClose}
+      >
         <ShareModalContent>
           <Typography variant="h6" gutterBottom>
             Share this Profile
