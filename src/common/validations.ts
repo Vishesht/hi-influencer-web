@@ -20,8 +20,8 @@ export const validatePromotion = (promotion) => {
     const chatPrice = data.chatPrice;
     if (chatPrice === undefined || chatPrice === null) {
       errors.push(`Error for ${platform}: Missing chat price`);
-    } else if (Number(chatPrice) < 50) {
-      errors.push(`Error for ${platform}: Chat price must be at least 50`);
+    } else if (Number(chatPrice) < 0) {
+      errors.push(`Error for ${platform}: Enter the valid price`);
     }
   }
 

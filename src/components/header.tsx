@@ -279,7 +279,7 @@ const Header = () => {
                   onClick={handleClick}
                 >
                   <Avatar
-                    src={data?.photoURL || user?.photoURL}
+                    src={data?.photoURL}
                     sx={{ bgcolor: "#FFF3E0", color: "#000" }}
                   >
                     {!user?.photoURL && user?.displayName?.[0]}

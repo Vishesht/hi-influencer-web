@@ -53,8 +53,6 @@ export const socialMediaPlatforms = [
   "Youtube",
   "Facebook",
   "Twitter",
-  "LinkedIn",
-  "Telegram",
 ];
 
 export const categories = [
@@ -68,6 +66,7 @@ export const categories = [
   "Food Enthusiast",
   "Actor",
   "Musician",
+  "Business",
   "Gamer",
   "Fitness Trainer",
   "Freelancer",

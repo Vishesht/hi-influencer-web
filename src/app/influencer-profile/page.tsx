@@ -8,6 +8,9 @@ import {
   IconButton,
   Grid,
   Tooltip,
+  Modal,
+  TextField,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import Image from "next/image";
@@ -16,7 +19,7 @@ import ReviewsList from "../../components/reviewsList";
 import HireModal from "../../components/HireModal";
 import SavedPackage from "@/components/SavedPackage";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import VerifiedIcon from "@mui/icons-material/Verified";
+import { Verified, Share } from "@mui/icons-material";
 import { influencerData } from "@/lib/features/influencer/influencerSlice";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
@@ -34,6 +37,28 @@ const PlatformList = styled(Box)(({ theme }) => ({
   alignItems: "center",
 }));
 
+const ShareButton = styled(IconButton)(({ theme }) => ({
+  color: "black",
+  "&:hover": {
+    backgroundColor: "#25d366",
+  },
+}));
+
+const ShareModal = styled(Modal)(() => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+}));
+
+const ShareModalContent = styled(Box)(({ theme }) => ({
+  backgroundColor: "white",
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  maxWidth: "400px",
+  width: "100%",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+}));
+
 const InfluencerProfile = () => {
   const dispatch = useAppDispatch();
   const path = usePathname();
@@ -43,6 +68,8 @@ const InfluencerProfile = () => {
   const extractUserId = (url) => url.split("/").pop();
   const [error, setError] = useState("");
   const [loader, setLoader] = useState(false);
+  const [copyModalOpen, setCopyModalOpen] = useState(false);
+  const [urlToCopy, setUrlToCopy] = useState("");
 
   useEffect(() => {
     const fetchUser = async (username) => {
@@ -63,6 +90,19 @@ const InfluencerProfile = () => {
   }, [path]);
 
   const handleClose = () => setModalOpen(false);
+
+  const handleShareModalOpen = () => {
+    setUrlToCopy(`${window.location.origin}${path}`);
+    setCopyModalOpen(true);
+  };
+  const handleShareModalClose = () => setCopyModalOpen(false);
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(urlToCopy).then(() => {
+      alert("Link copied to clipboard!");
+      handleShareModalClose();
+    });
+  };
 
   if (error) {
     return (
@@ -154,24 +194,30 @@ const InfluencerProfile = () => {
                   display="flex"
                   gap={0}
                   alignItems="center"
+                  justifyContent={"space-between"}
                   sx={{
                     mt: 4,
                   }}
                 >
-                  <Typography
-                    sx={{
-                      fontWeight: "bold",
-                      fontFamily: "Roboto, sans-serif",
-                    }}
-                    variant="h5"
-                  >
-                    {influencer?.name}
-                  </Typography>
-                  {influencer?.verified && (
-                    <Tooltip title="Verified" arrow>
-                      <VerifiedIcon sx={{ color: "blue", ml: 1 }} />
-                    </Tooltip>
-                  )}
+                  <Box display={"flex"}>
+                    <Typography
+                      sx={{
+                        fontWeight: "bold",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                      variant="h5"
+                    >
+                      {influencer?.name}
+                    </Typography>
+                    {influencer?.verified && (
+                      <Tooltip title="Verified" arrow>
+                        <Verified sx={{ color: "blue", ml: 1 }} />
+                      </Tooltip>
+                    )}
+                  </Box>
+                  <ShareButton onClick={handleShareModalOpen}>
+                    <Share />
+                  </ShareButton>
                 </Box>
                 <Typography
                   sx={{
@@ -265,6 +311,32 @@ const InfluencerProfile = () => {
         )}
         <Loading loading={loader} />
       </ProfileContainer>
+      <ShareModal open={copyModalOpen} onClose={handleShareModalClose}>
+        <ShareModalContent>
+          <Typography variant="h6" gutterBottom>
+            Share this Profile
+          </Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            value={urlToCopy}
+            InputProps={{
+              readOnly: true,
+            }}
+            sx={{
+              marginBottom: 2,
+            }}
+          />
+          <Button
+            variant="contained"
+            fullWidth
+            color="primary"
+            onClick={handleCopyToClipboard}
+          >
+            Copy Link
+          </Button>
+        </ShareModalContent>
+      </ShareModal>
       <HireModal open={modalOpen} onClose={handleClose} />
     </>
   );

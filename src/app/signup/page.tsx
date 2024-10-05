@@ -73,6 +73,7 @@ export default function SignUpPage() {
     if (isOtpSent || isOtpVerified) {
       setIsOtpSent(false);
       setIsOtpVerified(false);
+      setOtp("");
     }
   }, [email]);
 
@@ -83,13 +84,25 @@ export default function SignUpPage() {
       const res = await axios.post(`${BaseUrl}/api/send-new-user-otp`, {
         email,
       });
-      setLoader(false);
-      setIsOtpSent(true);
-      alert("OTP sent to your email.");
+      if (res.status === 200) {
+        setLoader(false);
+        setIsOtpSent(true);
+        alert(res?.data?.message || "OTP sent to your email.");
+      } else {
+        alert(res?.data?.message || "Something went wrong. Please try again");
+      }
     } catch (error) {
       console.log("Error sending OTP:", error);
       setLoader(false);
-      alert("Failed to send OTP.");
+      alert(
+        error?.response?.data?.message ||
+          "Something went wrong. Please try again"
+      );
+      if (
+        error?.response?.data?.message == "User already exists. Please log in."
+      ) {
+        router.push("/login");
+      }
     }
   };
 
@@ -101,6 +114,7 @@ export default function SignUpPage() {
       if (res.status === 200) {
         setLoader(false);
         setIsOtpVerified(true);
+        setOtp("");
         // alert("OTP verified successfully.");
       } else {
         alert("Invalid or expired OTP.");

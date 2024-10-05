@@ -30,7 +30,7 @@ const AdminLogin = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleLogin = () => {
-    if (email === "admin@hiin.com" && password === "Admin@001") {
+    if (email === "admin@hiinfluencer.in" && password === "Admin@001") {
       // Proceed with admin access
       alert("Admin Login successful!");
       dispatch(isAdminLogin(true));
