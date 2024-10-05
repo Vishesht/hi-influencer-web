@@ -25,6 +25,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  experimental: {
+    modern: true,
+  },
 };
 
 export default nextConfig;
