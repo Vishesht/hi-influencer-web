@@ -58,7 +58,7 @@ const packagesData = [
   {
     name: "Chat",
     description:
-      "You can reach out to the influencer or brand for inquiries about their orders, bookings, and collaborations. Feel free to ask anything!",
+      "Feel free to reach out via chat for any inquiries, whether it's regarding brand promotions, influencer searches, or any other services. We’re here to assist you in connecting with the best opportunities. Don’t hesitate to ask – we’re happy to help!",
   },
 ];
 
@@ -172,12 +172,12 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
             )}
             {pkg.name === "Chat" && (
               <>
-                <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
+                {/* <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
                   <strong>Chat Price: </strong>
                   {pkg?.data?.chatPrice == "0"
                     ? " Free"
                     : `Rs.${pkg?.data?.chatPrice}`}
-                </Typography>
+                </Typography> */}
               </>
             )}
             {/* Other package types */}

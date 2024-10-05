@@ -94,7 +94,7 @@ export default function Home() {
 
   return (
     <Box>
-      <Container sx={{ textAlign: "center", mt: 4 }}>
+      <Container sx={{ textAlign: "center", mt: 3 }}>
         <Typography
           variant="h4"
           component="h1"

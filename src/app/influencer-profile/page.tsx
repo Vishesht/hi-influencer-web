@@ -196,7 +196,7 @@ const InfluencerProfile = () => {
                   alignItems="center"
                   justifyContent={"space-between"}
                 >
-                  <Box display={"flex"}>
+                  <Box alignItems={"center"} display={"flex"}>
                     <Typography
                       sx={{
                         fontWeight: "bold",

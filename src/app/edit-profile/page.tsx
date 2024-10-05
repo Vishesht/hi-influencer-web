@@ -23,7 +23,6 @@ import {
   BaseUrl,
   cleanImageUrl,
   indianStates,
-  imgPlaceholderImg,
   socialMediaPlatforms,
   genderList,
   categories,
