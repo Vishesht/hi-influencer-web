@@ -142,6 +142,7 @@ const EditProfile: React.FC = () => {
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
         setImageUri(downloadURL);
+        handleSave(downloadURL);
         setLoader(false);
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -167,7 +168,7 @@ const EditProfile: React.FC = () => {
     return phoneNumberPattern.test(number);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (downloadURL?) => {
     try {
       if (!name) {
         handleAlert("Name cannot be empty. Please provide a valid name.");
@@ -195,7 +196,7 @@ const EditProfile: React.FC = () => {
         isInfluencer: false,
         phoneNumber,
         gender: selectedGender,
-        photoURL: imageUri,
+        photoURL: downloadURL || imageUri,
         bio,
         state: selectedState,
         address,
@@ -212,8 +213,8 @@ const EditProfile: React.FC = () => {
         })
         .then(() => {
           setLoader(false);
+          dispatch(add({ ...data, photoURL: downloadURL || imageUri }));
           router.push("/user");
-          dispatch(add({ ...data, name: name, photoURL: imageUri }));
         });
     } catch (error) {
       setLoader(false);

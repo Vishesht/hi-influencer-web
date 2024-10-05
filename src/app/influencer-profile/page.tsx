@@ -27,7 +27,11 @@ import { usePathname } from "next/navigation";
 import Loading from "@/components/LoadingSpinner";
 
 const ProfileContainer = styled(Container)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(1), // Default for mobile
+  [theme.breakpoints.up("md")]: {
+    // Change to web breakpoint (e.g., md)
+    padding: theme.spacing(3),
+  },
 }));
 
 const PlatformList = styled(Box)(({ theme }) => ({
@@ -35,10 +39,11 @@ const PlatformList = styled(Box)(({ theme }) => ({
   flexDirection: "row",
   gap: theme.spacing(2),
   alignItems: "center",
+  padding: 8,
 }));
 
 const ShareButton = styled(IconButton)(({ theme }) => ({
-  color: "black",
+  color: "#00000090",
   "&:hover": {
     backgroundColor: "#25d366",
   },
@@ -157,12 +162,12 @@ const InfluencerProfile = () => {
             flexWrap: "wrap",
           }}
         >
-          <Container
-            sx={{
-              flex: 1,
-              flexDirection: "column",
-            }}
-          >
+          <Container>
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <ShareButton onClick={handleShareModalOpen}>
+                <Share />
+              </ShareButton>
+            </Box>
             <Container
               sx={{
                 display: "flex",
@@ -170,14 +175,7 @@ const InfluencerProfile = () => {
                 alignItems: "center",
               }}
             >
-              <Box
-                sx={{
-                  borderRadius: "100%",
-                  width: 80,
-                  height: 80,
-                  overflow: "hidden",
-                }}
-              >
+              <Box>
                 <Image
                   src={influencer?.photoURL}
                   alt="User Image"
@@ -186,18 +184,17 @@ const InfluencerProfile = () => {
                   // layout="responsive"
                   style={{
                     objectFit: "cover",
+                    borderRadius: 200,
                   }}
                 />
               </Box>
+
               <Container>
                 <Box
                   display="flex"
                   gap={0}
                   alignItems="center"
                   justifyContent={"space-between"}
-                  sx={{
-                    mt: 4,
-                  }}
                 >
                   <Box display={"flex"}>
                     <Typography
@@ -215,16 +212,11 @@ const InfluencerProfile = () => {
                       </Tooltip>
                     )}
                   </Box>
-                  <ShareButton onClick={handleShareModalOpen}>
-                    <Share />
-                  </ShareButton>
                 </Box>
                 <Typography
                   sx={{
                     color: "text.secondary",
                     fontFamily: "Roboto, sans-serif",
-                    mt: 1,
-                    mb: 2,
                   }}
                   variant="body1"
                 >
@@ -286,7 +278,7 @@ const InfluencerProfile = () => {
             </Typography>
           </Container>
         </Box>
-        <Box>
+        <Box sx={{ px: 2.2 }}>
           {influencer?.packages?.length > 0 && (
             <Typography
               variant="h6"

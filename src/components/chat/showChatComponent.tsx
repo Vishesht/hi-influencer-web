@@ -108,7 +108,12 @@ export const showChatComponent = (selectedChat, chatData, userId) => {
               );
             })
         ) : (
-          <Typography variant="body2" color="textSecondary" align="center">
+          <Typography
+            sx={{ pt: "50%" }}
+            variant="body2"
+            color="textSecondary"
+            align="center"
+          >
             No messages yet.
           </Typography>
         )
