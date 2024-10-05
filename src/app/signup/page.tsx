@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Box,
@@ -68,6 +68,13 @@ export default function SignUpPage() {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword(!showConfirmPassword);
+
+  useEffect(() => {
+    if (isOtpSent || isOtpVerified) {
+      setIsOtpSent(false);
+      setIsOtpVerified(false);
+    }
+  }, [email]);
 
   // Send OTP to email
   const sendOtp = async () => {
@@ -363,21 +370,21 @@ export default function SignUpPage() {
         </Box>
       </Container>
       <ReusableDialog
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
-          title="Select Your Role"
-          content="Please choose your role:"
-          actions={
-            <>
-              <Button onClick={() => handleRoleSelection("creator")}>
-                Join as Creator/Influencer
-              </Button>
-              <Button onClick={() => handleRoleSelection("brand")}>
-                Join as Brand/Client
-              </Button>
-            </>
-          }
-        />
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        title="Select Your Role"
+        content="Please choose your role:"
+        actions={
+          <>
+            <Button onClick={() => handleRoleSelection("creator")}>
+              Join as Creator/Influencer
+            </Button>
+            <Button onClick={() => handleRoleSelection("brand")}>
+              Join as Brand/Client
+            </Button>
+          </>
+        }
+      />
       <Loading loading={loader} />
       <ReusableDialog
         open={openSocialMediaDialog}
