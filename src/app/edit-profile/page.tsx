@@ -524,7 +524,9 @@ const EditProfile: React.FC = () => {
             />
             <TextField
               margin="dense"
-              label="Followers"
+              label={
+                newPlatform.name === "Youtube" ? "Subscribers" : "Followers"
+              }
               fullWidth
               variant="outlined"
               name="followers"

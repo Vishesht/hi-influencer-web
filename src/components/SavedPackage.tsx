@@ -14,7 +14,8 @@ import {
   DialogActions,
 } from "@mui/material";
 import PackageDetailsModal from "./PackageDetailsModal";
-import { truncateText } from "@/common/utils";
+import { useAppSelector } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
 
 // Custom styled Card with better spacing and shadow
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -56,17 +57,29 @@ const packagesData = [
   },
   {
     name: "Chat",
-    description: "Pay to chat with the influencer for collaboration.",
+    description:
+      "You can reach out to the influencer or brand for inquiries about their orders, bookings, and collaborations. Feel free to ask anything!",
   },
 ];
 
 const SavedPackage = ({ pkg, isEdit, influencer }) => {
+  const router = useRouter();
   const packageData = packagesData?.find((data) => data.name === pkg.name);
   const packageDescription = packageData ? packageData.description : "";
   const [openModal, setOpenModal] = useState(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const data = useAppSelector((state) => state.login.userData);
 
-  const handleOpen = () => setOpenModal(true);
+  const handleOpen = () => {
+    if (data) {
+      setOpenModal(true);
+    } else {
+      alert(
+        "You must be logged in to access this feature. Please log in first."
+      );
+      router.push("/login");
+    }
+  };
   const handleClose = () => setOpenModal(false);
 
   const handleOpenDialog = () => {
@@ -157,10 +170,19 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
                 </Typography>
               </Box>
             )}
-
+            {pkg.name === "Chat" && (
+              <>
+                <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
+                  <strong>Chat Price: </strong>
+                  {pkg?.data?.chatPrice == "0"
+                    ? " Free"
+                    : `Rs.${pkg?.data?.chatPrice}`}
+                </Typography>
+              </>
+            )}
             {/* Other package types */}
           </Box>
-          {isEdit && (
+          {isEdit && influencer?.id !== data?.id && (
             <Button
               variant="contained"
               color="primary"

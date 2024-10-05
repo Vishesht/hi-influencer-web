@@ -289,8 +289,8 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
                 fullWidth
                 label="Service Price"
                 name="appointmentPrice"
-                type="number"
-                placeholder="eg. 1200"
+                // type="number"
+                placeholder="Staring from Rs.22000"
                 helperText="Please specify the price for this service "
                 value={formData.appointmentPrice || ""}
                 onChange={handleInputChange}

@@ -36,21 +36,21 @@ const Footer = () => {
   return (
     <FooterContainer sx={{ backgroundColor: "#fff" }}>
       <Container>
-        <Typography color="#000" variant="h6" align="center" gutterBottom>
+        {/* <Typography color="#000" variant="h6" align="center" gutterBottom>
           HI - INFLUENCER
-        </Typography>
-        <Typography variant="body2" align="center" color="#000">
+        </Typography> */}
+        {/* <Typography variant="body2" align="center" color="#000">
           © {new Date().getFullYear()} Your Hi Influencer. All rights reserved.
-        </Typography>
-        <Box display="flex" justifyContent="center" mt={2}>
+        </Typography> */}
+        {/* <Box display="flex" justifyContent="center" mt={2}>
           <Link color="#000" href="/privacy-policy" variant="body2" mx={1}>
             Privacy Policy
           </Link>
           <Link color="#000" href="/terms-of-service" variant="body2" mx={1}>
             Terms of Service
           </Link>
-        </Box>
-        <SocialIcons>
+        </Box> */}
+        {/* <SocialIcons>
           <IconButton
             color="inherit"
             aria-label="facebook"
@@ -83,7 +83,7 @@ const Footer = () => {
           >
             <LinkedIn />
           </IconButton>
-        </SocialIcons>
+        </SocialIcons> */}
       </Container>
     </FooterContainer>
   );

@@ -20,12 +20,17 @@ import Header from "@/components/header";
 import { getChatDataFromFirebase, saveMessageToFirebase } from "../firebase";
 import axios from "axios";
 import { BaseUrl, adminUserId } from "@/common/utils";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { showChatComponent } from "@/components/chat/showChatComponent";
 import ChatInput from "@/components/chat/ChatInput";
 import { sendNotification } from "@/api/commonApi";
+import AlertDialog from "@/components/Alert";
+import { showAlert } from "@/lib/features/alert/alertSlice";
+import { useRouter } from "next/navigation";
 
 const ChatScreen = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [selectedChat, setSelectedChat] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,6 +50,14 @@ const ChatScreen = () => {
       console.log("Error - chat", error);
       if (error.response.data.message === "No chats found for this user") {
         // data?.id && CreateChat();
+        dispatch(
+          showAlert({
+            message:
+              "To start chatting, please first place an order with the influencer. Once the order is confirmed, you will be able to access the chat feature.",
+            confirmText: "Ok",
+            onConfirm: () => router.back(),
+          })
+        );
       }
     }
   };
@@ -306,6 +319,7 @@ const ChatScreen = () => {
             newMessage={newMessage}
             setNewMessage={setNewMessage}
           />
+          <AlertDialog />
         </Box>
       </Box>
     </>
