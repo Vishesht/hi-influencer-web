@@ -48,7 +48,7 @@ const GridComponent = ({ data }) => {
           md: "repeat(4, 1fr)", // 4 items per row on web
         },
         justifyContent: "center",
-        padding: 2,
+        padding: 0.4,
         mt: 4,
       }}
     >
