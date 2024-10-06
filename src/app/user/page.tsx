@@ -255,7 +255,9 @@ const ProfilePage = () => {
         >
           Edit Profile
         </Button>
-        {user?.username && <ProfilePromotion userName={user?.username} />}
+        {user?.username && user?.verified && (
+          <ProfilePromotion userName={user?.username} />
+        )}
 
         {!user?.isClient ? (
           user &&
