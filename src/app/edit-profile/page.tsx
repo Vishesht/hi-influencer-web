@@ -92,7 +92,7 @@ const EditProfile: React.FC = () => {
       if (user) {
         const item = user?.providerData[0];
         item?.displayName && setName(item?.displayName);
-        setImageUri(item?.photoURL);
+        // setImageUri(item?.photoURL);
       } else {
         setName(data?.name);
         setImageUri(data?.photoURL);
