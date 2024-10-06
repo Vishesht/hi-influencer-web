@@ -40,15 +40,15 @@ const GridComponent = ({ data }) => {
   return (
     <Box
       sx={{
-        alignSelf: "center",
         display: "grid",
         gridTemplateColumns: {
-          xs: "repeat(2, 1fr)", // 2 items per row on mobile
-          sm: "repeat(3, 1fr)", // 3 items per row on tablets
-          md: "repeat(4, 1fr)", // 4 items per row on web
+          xs: "repeat(2, 1fr)", // 2 items per row on mobile (xs)
+          sm: "repeat(3, 1fr)", // 3 items per row on small screens (sm, e.g., tablets)
+          md: "repeat(4, 1fr)", // 4 items per row on medium screens (md, e.g., laptops)
+          lg: "repeat(5, 1fr)", // 5 items per row on large screens (lg, e.g., desktops)
+          xl: "repeat(6, 1fr)", // 6 items per row on extra-large screens (xl)
         },
-        justifyContent: "center",
-        padding: 0.4,
+        gap: 2,
         mt: 4,
       }}
     >
@@ -57,13 +57,15 @@ const GridComponent = ({ data }) => {
           <Button
             key={item?.id || index}
             onClick={() => handleSubmit(item)}
-            style={{ padding: 0, textTransform: "none" }}
+            style={{
+              marginTop: 4,
+              marginBottom: 4,
+              textTransform: "none",
+            }}
           >
             <Card
               key={index}
               sx={{
-                width: "100%", // Full width of parent
-                maxWidth: 230, // Optional maximum width
                 borderRadius: 2,
                 boxShadow: 3,
                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -72,24 +74,23 @@ const GridComponent = ({ data }) => {
                   boxShadow: 6,
                 },
                 cursor: "pointer",
+                width: "100%",
               }}
             >
               <Image
                 src={item.photoURL}
                 alt="User Image"
-                width={230}
-                height={220}
+                layout="responsive" // Ensures the image adjusts to the width of the parent container
+                width={1200} // Set a large value for width, will be scaled based on parent container
+                height={220} // Set a fixed height, or adjust as needed
                 style={{
-                  objectFit: "cover",
-                  display: "block",
-                  width: "100%",
-                  margin: "0 auto",
+                  objectFit: "cover", // Ensures the image covers the container without distorting
+                  display: "block", // Prevents any unwanted spacing below the image
                 }}
               />
 
               <CardContent
                 sx={{
-                  height: 160,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",

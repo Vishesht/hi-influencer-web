@@ -23,7 +23,6 @@ import {
   BaseUrl,
   cleanImageUrl,
   indianStates,
-  imgPlaceholderImg,
   socialMediaPlatforms,
   genderList,
   categories,
@@ -103,33 +102,37 @@ const EditProfile: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        if (!data.id) {
-          console.error("User ID not found in redux.");
-          return;
-        }
-        const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
-        setUserData(response.data);
-        setBio(response.data.bio);
-        setAddress(response.data.address);
-        response.data.photoURL && setImageUri(response.data.photoURL);
-        setSelectedGender(response.data.gender);
-        setSelectedState(response.data.state);
-        setPhoneNumber(response.data.phoneNumber);
-        setPlatform(response.data.platform);
-        setSelectedCategory(response.data.category);
-        setUsername(response.data.username);
-        setName(response.data.name);
-        setPackages(response?.data?.packages);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+  const fetchUserData = async () => {
+    try {
+      if (!data.id) {
+        console.error("User ID not found in redux.");
+        return;
       }
-    };
+      const response = await axios.get(`${BaseUrl}/api/users/${data.id}`);
+      setUserData(response.data);
+      setBio(response.data.bio);
+      setAddress(response.data.address);
+      response.data.photoURL && setImageUri(response.data.photoURL);
+      setSelectedGender(response.data.gender);
+      setSelectedState(response.data.state);
+      setPhoneNumber(response.data.phoneNumber);
+      setPlatform(response.data.platform);
+      setSelectedCategory(response.data.category);
+      setUsername(response.data.username);
+      setName(response.data.name);
+      setPackages(response?.data?.packages);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchUserData();
   }, []);
+
+  const reloadUserData = () => {
+    fetchUserData();
+  };
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -475,6 +478,7 @@ const EditProfile: React.FC = () => {
             </Grid>
             {!userData?.isClient && (
               <PackagesSetup
+                reloadData={reloadUserData}
                 packages={packages}
                 onSavePackages={handleSavedPackages}
               />

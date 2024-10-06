@@ -12,10 +12,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Menu,
+  MenuItem,
 } from "@mui/material";
+import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 import PackageDetailsModal from "./PackageDetailsModal";
 import { useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
+import { packagesData } from "@/common";
+import axios from "axios";
+import { BaseUrl } from "@/common/utils";
 
 // Custom styled Card with better spacing and shadow
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -30,44 +36,13 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const packagesData = [
-  {
-    name: "Promotions",
-    description: "Promote through video, images, or story posts.",
-  },
-  {
-    name: "Free Promotion",
-    description: "You can ask influencer to do a free promotion for you.",
-  },
-  {
-    name: "Ask for Follow",
-    description: "Encourage influencers to follow you on social media.",
-  },
-  {
-    name: "Invitation",
-    description: "You can invite influencers to join promotional events.",
-  },
-  {
-    name: "Join the Trip with Influencer",
-    description: "Join influencers on their trips for unique experiences.",
-  },
-  {
-    name: "Book Appointment",
-    description: "Schedule your appointment with a leading influencer.",
-  },
-  {
-    name: "Chat",
-    description:
-      "You can reach out to the influencer or brand for inquiries about their orders, bookings, and collaborations. Feel free to ask anything!",
-  },
-];
-
-const SavedPackage = ({ pkg, isEdit, influencer }) => {
+const SavedPackage = ({ pkg, isEdit, influencer, reloadData }) => {
   const router = useRouter();
   const packageData = packagesData?.find((data) => data.name === pkg.name);
   const packageDescription = packageData ? packageData.description : "";
   const [openModal, setOpenModal] = useState(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const data = useAppSelector((state) => state.login.userData);
 
   const handleOpen = () => {
@@ -91,9 +66,36 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
     setOpenDialog(false);
   };
 
+  // Menu for MoreVertRoundedIcon
+  const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleEdit = () => {
+    // Handle edit action here (you might want to redirect or open an edit modal)
+    console.log("Edit package:", pkg);
+    handleCloseMenu();
+  };
+
+  const handleDelete = async (pkg) => {
+    try {
+      await axios.delete(`${BaseUrl}/api/deletePackage/${data?.id}`, {
+        data: { name: pkg?.name },
+      });
+      reloadData();
+      handleCloseMenu();
+    } catch (error) {
+      // Handle error here, e.g., throw it to be handled by the component
+      throw error.response?.data || { message: "An error occurred" };
+    }
+  };
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-      {" "}
       {/* Adjust grid sizes for responsiveness */}
       <StyledCard>
         <CardContent
@@ -105,12 +107,21 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
           }}
         >
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              {pkg.name}
-            </Typography>
-            <Typography variant="body2" sx={{ marginBottom: 1 }}>
-              {packageDescription}
-            </Typography>
+            <Box sx={{ display: "flex" }}>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  {pkg.name}
+                </Typography>
+                <Typography
+                  color="grey"
+                  variant="body2"
+                  sx={{ marginBottom: 1 }}
+                >
+                  {packageDescription}
+                </Typography>
+              </Box>
+              {!isEdit && <MoreVertRoundedIcon onClick={handleClickMenu} />}
+            </Box>
             {/* Existing package-specific details here */}
             {pkg.name === "Promotions" && (
               <>
@@ -172,12 +183,12 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
             )}
             {pkg.name === "Chat" && (
               <>
-                <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
+                {/* <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
                   <strong>Chat Price: </strong>
                   {pkg?.data?.chatPrice == "0"
                     ? " Free"
                     : `Rs.${pkg?.data?.chatPrice}`}
-                </Typography>
+                </Typography> */}
               </>
             )}
             {/* Other package types */}
@@ -223,6 +234,16 @@ const SavedPackage = ({ pkg, isEdit, influencer }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Menu for edit and delete */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
+      >
+        {/* <MenuItem onClick={handleEdit}>Edit</MenuItem> */}
+        <MenuItem onClick={() => handleDelete(pkg)}>Delete</MenuItem>
+      </Menu>
     </Grid>
   );
 };

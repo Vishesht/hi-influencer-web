@@ -13,7 +13,7 @@ import {
 import SavedPackage from "./SavedPackage";
 import { validatePromotion } from "@/common/validations";
 
-const PackagesSetup = ({ packages, onSavePackages }) => {
+const PackagesSetup = ({ packages, onSavePackages, reloadData }) => {
   const [selectedPackage, setSelectedPackage] = useState("");
   const [formData, setFormData] = useState({});
   const [savedPackages, setSavedPackages] = useState([]);
@@ -55,11 +55,11 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
       description:
         "Clients can schedule appointments for personalized services like makeup or consulting sessions.",
     },
-    {
-      name: "Chat",
-      description:
-        "Set a price for clients to chat with you, enhancing interaction and connection.",
-    },
+    // {
+    //   name: "Chat",
+    //   description:
+    //     "Set a price for clients to chat with you, enhancing interaction and connection.",
+    // },
   ];
 
   const platforms = ["Facebook", "Instagram", "YouTube"];
@@ -322,6 +322,9 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
                 variant="outlined"
                 helperText="Include any important information or specific details about the service."
                 required
+                multiline
+                rows={4} // You can set this to control the initial height (number of visible rows)
+                maxRows={6} // Optional: Limit the maximum number of rows
               />
             </Grid>
           </Grid>
@@ -360,7 +363,12 @@ const PackagesSetup = ({ packages, onSavePackages }) => {
         )}
         <Grid container spacing={3} direction={{ xs: "column", sm: "row" }}>
           {savedPackages?.map((pkg) => (
-            <SavedPackage key={pkg.name} pkg={pkg} isEdit={false} />
+            <SavedPackage
+              key={pkg.name}
+              pkg={pkg}
+              isEdit={false}
+              reloadData={reloadData}
+            />
           ))}
         </Grid>
       </Box>
