@@ -90,6 +90,7 @@ const Header = () => {
   }, []);
 
   const handleListItemClick = (path: string) => {
+    setDrawerOpen(false);
     router.push(path);
     setAnchorEl(null); // Close popover after navigation
   };
