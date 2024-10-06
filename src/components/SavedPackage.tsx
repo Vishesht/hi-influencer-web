@@ -93,7 +93,7 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData }) => {
       throw error.response?.data || { message: "An error occurred" };
     }
   };
-  console.log("first", influencer);
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       {/* Adjust grid sizes for responsiveness */}
