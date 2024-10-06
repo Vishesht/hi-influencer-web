@@ -61,10 +61,10 @@ const GridComponent = ({ data }) => {
               marginTop: 4,
               marginBottom: 4,
               textTransform: "none",
+              width: "100%", // Make buttons take full width
             }}
           >
             <Card
-              key={index}
               sx={{
                 borderRadius: 2,
                 boxShadow: 3,
@@ -74,20 +74,29 @@ const GridComponent = ({ data }) => {
                   boxShadow: 6,
                 },
                 cursor: "pointer",
-                width: "100%",
+                display: "flex", // Use flexbox
+                flexDirection: "column", // Column layout
+                height: "340px", // Fixed height for cards
+                overflow: "hidden", // Prevent overflow
               }}
             >
-              <Image
-                src={item.photoURL}
-                alt="User Image"
-                layout="responsive" // Ensures the image adjusts to the width of the parent container
-                width={1200} // Set a large value for width, will be scaled based on parent container
-                height={220} // Set a fixed height, or adjust as needed
-                style={{
-                  objectFit: "cover", // Ensures the image covers the container without distorting
-                  display: "block", // Prevents any unwanted spacing below the image
+              <Box
+                sx={{
+                  height: "180px", // Fixed height for images
+                  width: "100%", // Full width
+                  position: "relative", // Required for absolutely positioned children
                 }}
-              />
+              >
+                <Image
+                  src={item.photoURL}
+                  alt="User Image"
+                  layout="fill" // Fills the parent Box
+                  objectFit="cover" // Ensures the image covers the container without distortion
+                  style={{
+                    display: "block", // Prevents any unwanted spacing below the image
+                  }}
+                />
+              </Box>
 
               <CardContent
                 sx={{
@@ -95,6 +104,7 @@ const GridComponent = ({ data }) => {
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
+                  flex: 1, // Allow this section to grow
                 }}
               >
                 <Typography
@@ -106,28 +116,6 @@ const GridComponent = ({ data }) => {
                 >
                   {item.name}
                 </Typography>
-                {/* <Box display="flex" alignItems="center" sx={{ mb: 0 }}>
-                 Uncomment and use if needed
-              <Typography
-                variant="body2"
-                sx={{
-                  fontFamily: "Arial, sans-serif", // Replace with your custom font family
-                  mr: 0.5,
-                }}
-              >
-                {item.star || "0.0"}
-              </Typography>
-              <StarIcon sx={{ height: 16, color: "primary.main" }} />
-              <Typography
-                variant="body2"
-                sx={{
-                  fontFamily: "Arial, sans-serif", // Replace with your custom font family
-                  ml: 0.5,
-                }}
-              >
-                ({item.ratings || "0"})
-              </Typography>
-                </Box> */}
                 <Typography
                   variant="body2"
                   color="text.secondary"
@@ -147,9 +135,9 @@ const GridComponent = ({ data }) => {
                   {item.state}
                 </Typography>
                 <PlatformList>
-                  {item.platform.map((platformData: any, index: any) => (
+                  {item.platform.map((platformData, platformIndex) => (
                     <Box
-                      key={index}
+                      key={platformIndex}
                       display="flex"
                       alignItems="center"
                       flexDirection={{ xs: "column", sm: "row" }}
@@ -158,26 +146,10 @@ const GridComponent = ({ data }) => {
                         href={platformData.platformLink}
                         target="_blank"
                       >
-                        {platformData.platform === "Instagram"
-                          ? SocialMediaIcon(
-                              platformData,
-                              "/assets/images/instagram.png"
-                            )
-                          : platformData.platform === "Youtube"
-                          ? SocialMediaIcon(
-                              platformData,
-                              "/assets/images/youtube.png"
-                            )
-                          : platformData.platform === "Twitter"
-                          ? SocialMediaIcon(
-                              platformData,
-                              "/assets/images/twitter.png"
-                            )
-                          : platformData.platform === "Facebook" &&
-                            SocialMediaIcon(
-                              platformData,
-                              "/assets/images/facebook.png"
-                            )}
+                        {SocialMediaIcon(
+                          platformData,
+                          `/assets/images/${platformData.platform.toLowerCase()}.png`
+                        )}
                       </IconButton>
                     </Box>
                   ))}
