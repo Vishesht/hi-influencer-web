@@ -1,5 +1,11 @@
 import React from "react";
-import { Button, Box, Typography } from "@mui/material";
+import {
+  Button,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
 const CustomButton = ({
   isEnabled,
@@ -8,10 +14,14 @@ const CustomButton = ({
   children,
   description,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Check if the screen is mobile
+
   return (
     <Box
       sx={{
         display: "flex",
+        flexDirection: isMobile ? "column" : "row", // Responsive layout
         alignItems: "center",
         justifyContent: "center",
         padding: 2,
@@ -24,29 +34,11 @@ const CustomButton = ({
         boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
       }}
     >
-      {isInfluencer && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={isEnabled ? onClick : undefined}
-          disabled={!isEnabled}
-          sx={{
-            fontSize: 12,
-            minWidth: 150,
-            mr: 2,
-            opacity: isEnabled ? 1 : 0.5,
-            cursor: isEnabled ? "pointer" : "not-allowed",
-          }}
-        >
-          {children}
-        </Button>
-      )}
-      <Box sx={{}}>
+      <Box sx={{ textAlign: "left" }}>
         {!isEnabled && (
           <Typography
             variant="body1"
             sx={{
-              textAlign: "left",
               color: "text.secondary",
             }}
           >
@@ -57,9 +49,7 @@ const CustomButton = ({
           <Typography
             variant="body2"
             sx={{
-              ml: 2,
-              marginTop: 0.5,
-              textAlign: "left",
+              mt: 0.5,
               color: "text.secondary",
             }}
           >
@@ -67,6 +57,29 @@ const CustomButton = ({
           </Typography>
         )}
       </Box>
+      {isInfluencer && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={isEnabled ? onClick : undefined}
+          disabled={!isEnabled}
+          sx={{
+            fontSize: 14, // Slightly larger for better visibility
+            minWidth: 150,
+            mt: isMobile ? 1 : 0, // Add margin bottom for mobile
+            mr: isMobile ? 0 : 2, // Add margin right for desktop
+            opacity: isEnabled ? 1 : 0.5,
+            cursor: isEnabled ? "pointer" : "not-allowed",
+            "&:hover": {
+              backgroundColor: isEnabled
+                ? theme.palette.primary.dark
+                : undefined,
+            },
+          }}
+        >
+          {children}
+        </Button>
+      )}
     </Box>
   );
 };
