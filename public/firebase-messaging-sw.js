@@ -13,24 +13,27 @@ firebase.initializeApp({
   measurementId: "G-2KMYMVR8ST",
 });
 
-const messaging = firebase.messaging();
+const isSupported = firebase.messaging.isSupported();
 
-// Handle background notifications
-messaging.onBackgroundMessage((payload) => {
-  console.log("Received background message: ", payload);
+if (isSupported) {
+  const messaging = firebase.messaging();
+  // Handle background notifications
+  messaging.onBackgroundMessage((payload) => {
+    console.log("Received background message: ", payload);
 
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.icon || "/default-icon.png", // optional icon
-    data: {
-      click_action: payload.notification.click_action, // optional click action
-    },
-  };
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+      body: payload.notification.body,
+      icon: payload.notification.icon || "/default-icon.png", // optional icon
+      data: {
+        click_action: payload.notification.click_action, // optional click action
+      },
+    };
 
-  // Show the notification
-  return self.registration.showNotification(
-    notificationTitle,
-    notificationOptions
-  );
-});
+    // Show the notification
+    return self.registration.showNotification(
+      notificationTitle,
+      notificationOptions
+    );
+  });
+}
