@@ -13,6 +13,9 @@ import {
   styled,
   AppBar,
   Toolbar,
+  Grid,
+  Card,
+  CardContent,
 } from "@mui/material";
 import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
 import { auth, provider, signInWithPopup } from "../firebase";
@@ -303,14 +306,58 @@ export default function LoginPage() {
           title="Select Your Role"
           content="Please choose your role:"
           actions={
-            <>
-              <Button onClick={() => handleRoleSelection("creator")}>
-                Join as Creator/Influencer
-              </Button>
-              <Button onClick={() => handleRoleSelection("brand")}>
-                Join as Brand/Client
-              </Button>
-            </>
+            <Grid container spacing={2} direction={{ xs: "column", sm: "row" }}>
+              <Grid item xs={12} sm={6}>
+                <Card
+                  variant="outlined"
+                  sx={{
+                    cursor: "pointer",
+                    transition: "0.3s",
+                    boxShadow: 2,
+                    "&:hover": {
+                      boxShadow: 4,
+                      backgroundColor: "rgba(0, 0, 0, 0.05)",
+                    },
+                  }}
+                  onClick={() => handleRoleSelection("creator")}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      align="center"
+                      sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+                    >
+                      Join as Creator/Influencer
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Card
+                  variant="outlined"
+                  sx={{
+                    cursor: "pointer",
+                    transition: "0.3s",
+                    boxShadow: 2,
+                    "&:hover": {
+                      boxShadow: 4,
+                      backgroundColor: "rgba(0, 0, 0, 0.05)",
+                    },
+                  }}
+                  onClick={() => handleRoleSelection("brand")}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      align="center"
+                      sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+                    >
+                      Join as Brand/Client
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
           }
         />
         <Loading loading={loader} />
