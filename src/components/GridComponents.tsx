@@ -11,6 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import { styled } from "@mui/system";
 import Image from "next/image";
+import { capitalizeWords } from "@/common/utils";
 
 const PlatformList = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -46,9 +47,7 @@ const GridComponent = ({ data }) => {
           sm: "repeat(3, 1fr)", // 3 items per row on small screens (sm, e.g., tablets)
           md: "repeat(4, 1fr)", // 4 items per row on medium screens (md, e.g., laptops)
           lg: "repeat(5, 1fr)", // 5 items per row on large screens (lg, e.g., desktops)
-          xl: "repeat(6, 1fr)", // 6 items per row on extra-large screens (xl)
         },
-        gap: 2,
         mt: 4,
       }}
     >
@@ -61,11 +60,11 @@ const GridComponent = ({ data }) => {
               marginTop: 4,
               marginBottom: 4,
               textTransform: "none",
-              width: "100%", // Make buttons take full width
             }}
           >
             <Card
               sx={{
+                width: "200px",
                 borderRadius: 2,
                 boxShadow: 3,
                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -82,18 +81,19 @@ const GridComponent = ({ data }) => {
             >
               <Box
                 sx={{
-                  height: "180px", // Fixed height for images
-                  width: "100%", // Full width
-                  position: "relative", // Required for absolutely positioned children
+                  height: "180px",
+                  width: "100%",
+                  position: "relative",
                 }}
               >
                 <Image
                   src={item.photoURL}
                   alt="User Image"
-                  layout="fill" // Fills the parent Box
-                  objectFit="cover" // Ensures the image covers the container without distortion
+                  layout="fill"
+                  objectFit="cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   style={{
-                    display: "block", // Prevents any unwanted spacing below the image
+                    display: "block",
                   }}
                 />
               </Box>
@@ -104,7 +104,9 @@ const GridComponent = ({ data }) => {
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
-                  flex: 1, // Allow this section to grow
+                  flex: 1,
+                  pl: 0.8,
+                  pr: 0.8,
                 }}
               >
                 <Typography
@@ -112,15 +114,17 @@ const GridComponent = ({ data }) => {
                   sx={{
                     fontFamily: "initial",
                     fontWeight: "bold",
+                    fontSize: { xs: "0.8rem", sm: "1.2rem" }, // Responsive font size
                   }}
                 >
-                  {item.name}
+                  {capitalizeWords(item.name)}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="text.secondary"
                   sx={{
                     fontFamily: "sans-serif",
+                    fontSize: { xs: "0.7rem", sm: "0.8rem" }, // Responsive font size
                   }}
                 >
                   {item.category}
@@ -130,6 +134,7 @@ const GridComponent = ({ data }) => {
                   color="text.secondary"
                   sx={{
                     fontFamily: "sans-serif",
+                    fontSize: { xs: "0.7rem", sm: "0.8rem" }, // Responsive font size
                   }}
                 >
                   {item.state}

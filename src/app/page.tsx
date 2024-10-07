@@ -104,11 +104,16 @@ export default function Home() {
             WebkitBackgroundClip: "text",
             color: "transparent",
             fontFamily: "Helvetica",
+            fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // Responsive font size
           }}
         >
           Connect brands with influencers.
         </Typography>
-        <Typography color="grey" variant="body1" sx={{ mt: 2 }}>
+        <Typography
+          color="grey"
+          variant="body1"
+          sx={{ mt: 2, fontSize: { xs: "0.9rem", sm: "1rem" } }} // Responsive font size
+        >
           Connect with top Instagram, YouTube, and Facebook influencers to
           create engaging content and promote your brand effectively.
         </Typography>
@@ -120,14 +125,18 @@ export default function Home() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            flexDirection: isMobile ? "column" : "row",
+            flexDirection: { xs: "column", sm: "row" }, // Responsive flex direction
+            gap: 2, // Add gap between items
+            maxWidth: "90%", // Limit maximum width
+            mx: "auto", // Center the container
           }}
         >
           <Box
             sx={{
               position: "relative",
-              marginRight: isMobile ? "0" : "10px",
-              marginBottom: isMobile ? "10px" : "0",
+              width: { xs: "100%", sm: "340px" }, // Responsive width for smaller screens
+              marginRight: { sm: "10px", xs: "0" }, // Margin adjustment based on screen size
+              marginBottom: { xs: "10px", sm: "0" }, // Margin adjustment based on screen size
             }}
           >
             <input
@@ -135,12 +144,11 @@ export default function Home() {
               style={{
                 padding: "12px 20px",
                 borderRadius: "50px",
-                width: "340px",
+                width: "100%", // Make input full width
                 border: "1px solid #ddd",
                 backgroundColor: "#fff",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 transition: "box-shadow 0.3s ease, border-color 0.3s ease",
-                fontSize: "16px",
                 outline: "none",
                 color: selectedPlatform ? "black" : "#999",
               }}
@@ -163,18 +171,19 @@ export default function Home() {
             )}
           </Box>
 
-          <Box sx={{ position: "relative" }}>
+          <Box
+            sx={{ position: "relative", width: { xs: "100%", sm: "340px" } }}
+          >
             <input
               value={selectedCategory || "Enter keywords, niches or categories"}
               style={{
                 padding: "12px 20px",
                 borderRadius: "50px",
-                width: "340px",
+                width: "100%", // Make input full width
                 border: "1px solid #ddd",
                 backgroundColor: "#fff",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 transition: "box-shadow 0.3s ease, border-color 0.3s ease",
-                fontSize: "16px",
                 outline: "none",
                 color: selectedCategory ? "black" : "#999",
               }}
