@@ -125,10 +125,11 @@ export default function LoginPage() {
       }
     } catch (error) {
       setLoader(false);
-      console.error(
-        "Error logging in with Gmail or sending data to API:",
-        error
-      );
+      if (error.code === "auth/popup-closed-by-user") {
+        console.log("Popup closed without selecting an account.");
+      } else {
+        console.error("Error during login:", error);
+      }
     }
   };
 
