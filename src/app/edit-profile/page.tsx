@@ -166,8 +166,8 @@ const EditProfile: React.FC = () => {
     );
   };
 
-  const validateIndianPhoneNumber = (number) => {
-    const phoneNumberPattern = /^[789]\d{9}$/;
+  const validatePhoneNumber = (number) => {
+    const phoneNumberPattern = /^\d{10}$/;
     return phoneNumberPattern.test(number);
   };
 
@@ -186,7 +186,7 @@ const EditProfile: React.FC = () => {
           "Username is not valid. It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
         );
         return;
-      } else if (phoneNumber && !validateIndianPhoneNumber(phoneNumber)) {
+      } else if (phoneNumber && !validatePhoneNumber(phoneNumber)) {
         handleAlert("Please enter a valid phone number");
         return;
       }
