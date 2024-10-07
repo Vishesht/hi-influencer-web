@@ -88,12 +88,6 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
         }
       } else {
         // Redirect non-logged-in users to /login if trying to access protected routes
-        if (navigator.userAgent.includes("Instagram")) {
-          // Open your Instagram profile link
-          alert("Open the website in external browser for better experience");
-          window.open("https://www.hiinfluencer.in", "_blank");
-          return;
-        }
         if (
           path !== "/login" &&
           path !== "/signup" &&
