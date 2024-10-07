@@ -79,7 +79,7 @@ const Orders: React.FC = () => {
       setLoader(false);
     } catch (err) {
       setLoader(false);
-      console.log("Error fetching orders", err);
+      // console.log("Error fetching orders", err);
     }
   };
 
@@ -96,7 +96,7 @@ const Orders: React.FC = () => {
       setRequests(filteredRequest);
     } catch (err) {
       setLoader(false);
-      console.log("Error fetching orders", err);
+      // console.log("Error fetching orders", err);
       if (err.status === 404) {
         setRequests([]);
       }

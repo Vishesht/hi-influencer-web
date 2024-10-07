@@ -76,21 +76,22 @@ const InfluencerProfile = () => {
   const [copyModalOpen, setCopyModalOpen] = useState(false);
   const [urlToCopy, setUrlToCopy] = useState("");
 
-  useEffect(() => {
-    const fetchUser = async (username) => {
-      try {
-        const response = await axios.get(`${BaseUrl}/api/user/${username}`);
-        dispatch(influencerData(response?.data));
-        setLoader(false);
-      } catch (err) {
-        setLoader(false);
+  const fetchUser = async (username) => {
+    try {
+      setLoader(true);
+      const response = await axios.get(`${BaseUrl}/api/user/${username}`);
+      dispatch(influencerData(response?.data));
+      setLoader(false);
+    } catch (err) {
+      setLoader(false);
 
-        if (err.response.data.message === "User not found") {
-          setError(err.response.data.message);
-        }
+      if (err.response.data.message === "User not found") {
+        setError(err.response.data.message);
       }
-    };
-    setLoader(true);
+    }
+  };
+
+  useEffect(() => {
     path && fetchUser(extractUserId(path));
   }, [path]);
 
@@ -124,32 +125,17 @@ const InfluencerProfile = () => {
   }
 
   const SocialMediaIcon = (platformData: any, link: any) => {
-    const formattedLink = platformData.platformLink.startsWith("http")
-      ? platformData.platformLink
-      : `https://${platformData.platformLink}`;
     return (
-      <IconButton
-        href={formattedLink}
-        target="_blank"
-        sx={{
-          p: 0,
-          borderRadius: "50%",
-          transition: "transform 0.3s ease",
-          "&:hover": {
-            transform: "scale(1.05)",
-          },
-        }}
-      >
-        <Image
-          src={link}
-          alt={platformData.platform}
-          width={24}
-          height={24}
-          style={{ borderRadius: "50%" }}
-        />
-      </IconButton>
+      <Image
+        src={link}
+        alt={platformData.platform}
+        width={24}
+        height={24}
+        style={{ borderRadius: "50%" }}
+      />
     );
   };
+
   return (
     <>
       <ProfileContainer>
@@ -176,17 +162,27 @@ const InfluencerProfile = () => {
               }}
             >
               <Box>
-                <Image
-                  src={influencer?.photoURL}
-                  alt="User Image"
-                  width={80}
-                  height={80}
-                  // layout="responsive"
-                  style={{
-                    objectFit: "cover",
-                    borderRadius: 200,
-                  }}
-                />
+                {influencer?.photoURL ? (
+                  <Image
+                    src={influencer.photoURL}
+                    alt="User Image"
+                    width={80}
+                    height={80}
+                    style={{
+                      objectFit: "cover",
+                      borderRadius: 200,
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 200,
+                      backgroundColor: "#ccc",
+                    }}
+                  />
+                )}
               </Box>
 
               <Container>
@@ -232,31 +228,47 @@ const InfluencerProfile = () => {
                   alignItems="center"
                   flexDirection={{ xs: "column", sm: "row" }}
                 >
-                  <IconButton href={platformData.platformLink} target="_blank">
-                    {platformData.platform === "Instagram"
-                      ? SocialMediaIcon(
-                          platformData,
-                          "/assets/images/instagram.png"
-                        )
-                      : platformData.platform === "Youtube"
-                      ? SocialMediaIcon(
-                          platformData,
-                          "/assets/images/youtube.png"
-                        )
-                      : platformData.platform === "Twitter"
-                      ? SocialMediaIcon(
-                          platformData,
-                          "/assets/images/twitter.png"
-                        )
-                      : platformData.platform === "Facebook" &&
-                        SocialMediaIcon(
-                          platformData,
-                          "/assets/images/facebook.png"
-                        )}
+                  <IconButton
+                    href={
+                      platformData.platformLink.startsWith("http")
+                        ? platformData.platformLink
+                        : `https://${platformData.platformLink}`
+                    }
+                    target="_blank"
+                    sx={{
+                      p: 0,
+                      borderRadius: "50%",
+                      transition: "transform 0.3s ease",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                      },
+                    }}
+                  >
+                    {platformData.platform === "Instagram" &&
+                      SocialMediaIcon(
+                        platformData,
+                        "/assets/images/instagram.png"
+                      )}
+                    {platformData.platform === "Youtube" &&
+                      SocialMediaIcon(
+                        platformData,
+                        "/assets/images/youtube.png"
+                      )}
+                    {platformData.platform === "Twitter" &&
+                      SocialMediaIcon(
+                        platformData,
+                        "/assets/images/twitter.png"
+                      )}
+                    {platformData.platform === "Facebook" &&
+                      SocialMediaIcon(
+                        platformData,
+                        "/assets/images/facebook.png"
+                      )}
                   </IconButton>
                   <Typography
                     sx={{
                       fontFamily: "sans-serif",
+                      ml: 1,
                     }}
                   >
                     {platformData.platform}
