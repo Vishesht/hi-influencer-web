@@ -131,7 +131,6 @@ const SocialMediaLinks = () => {
           username: username,
         },
       });
-      console.log("firstresponse", response);
       if (response.data.available) {
         console.log("Username is available");
         return { available: true, message: response.data.message };

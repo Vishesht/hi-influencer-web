@@ -325,7 +325,12 @@ export default function LoginPage() {
                     <Typography
                       variant="h6"
                       align="center"
-                      sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+                      sx={{
+                        fontSize: { xs: "1rem", sm: "1.2rem" },
+                        fontWeight: 600,
+                        color: "#1976d2",
+                        mt: 0.6,
+                      }}
                     >
                       Join as Creator/Influencer
                     </Typography>
@@ -350,7 +355,12 @@ export default function LoginPage() {
                     <Typography
                       variant="h6"
                       align="center"
-                      sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+                      sx={{
+                        fontSize: { xs: "1rem", sm: "1.2rem" },
+                        fontWeight: 600,
+                        color: "#1976d2",
+                        mt: 0.6,
+                      }}
                     >
                       Join as Brand/Client
                     </Typography>
