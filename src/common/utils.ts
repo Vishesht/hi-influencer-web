@@ -197,3 +197,10 @@ export const formatDate = (dateStr) => {
 };
 
 export const adminUserId = "5fc5f033-df88-49fe-980c-becd3c43e1d3";
+
+export const capitalizeWords = (str) => {
+  return str
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
