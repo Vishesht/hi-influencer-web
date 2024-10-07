@@ -79,24 +79,21 @@ const GridComponent = ({ data }) => {
                 overflow: "hidden", // Prevent overflow
               }}
             >
-              <Box
-                sx={{
-                  height: "180px",
-                  width: "100%",
-                  position: "relative",
-                }}
+              <div
+                style={{ position: "relative", width: "100%", height: "300px" }}
               >
                 <Image
                   src={item.photoURL}
                   alt="User Image"
-                  layout="fill"
-                  objectFit="cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  fill
                   style={{
+                    objectFit: "cover",
                     display: "block",
                   }}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority // Add this line
                 />
-              </Box>
+              </div>
 
               <CardContent
                 sx={{

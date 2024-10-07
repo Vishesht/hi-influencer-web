@@ -24,7 +24,6 @@ const ServiceWorkerToast = () => {
   };
 
   useEffect(() => {
-    // Only register the service worker if messaging is supported
     if (typeof window !== "undefined" && messaging) {
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
@@ -42,10 +41,11 @@ const ServiceWorkerToast = () => {
           .catch((err) => {
             console.error("Service Worker registration failed:", err);
           });
+      } else {
+        console.error("Service Worker is not supported in this browser.");
       }
     }
 
-    // Clean up the event listener when the component unmounts
     return () => {
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.removeEventListener(
@@ -58,7 +58,6 @@ const ServiceWorkerToast = () => {
 
   return (
     <>
-      {/* Toast Container to display the toasts */}
       <ToastContainer />
     </>
   );

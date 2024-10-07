@@ -63,7 +63,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     // Only request permission if in the client
     if (typeof window !== "undefined" && data?.id) {
-      requestPermission();
+      // requestPermission();
     }
   }, [data?.id]);
 
@@ -113,7 +113,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   if (path === "/chat" && data) {
     return (
       <>
-        <ServiceWorkerToast />
+        {/* <ServiceWorkerToast /> */}
         {children}
       </>
     );
@@ -127,7 +127,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
         minHeight: "100vh", // Full height of the viewport
       }}
     >
-      <ServiceWorkerToast />
+      {/* <ServiceWorkerToast /> */}
       <Header />
       <Box sx={{ flexGrow: 1, pt: 10 }}>{children}</Box>
       <Footer />
