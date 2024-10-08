@@ -33,7 +33,8 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ key: "css" }}>
           <StoreProvider>
             <AuthProvider>
-              <AuthRedirectWrapper>{children}</AuthRedirectWrapper>
+              {/* <AuthRedirectWrapper></AuthRedirectWrapper> */}
+              {children}
             </AuthProvider>
           </StoreProvider>
         </AppRouterCacheProvider>
