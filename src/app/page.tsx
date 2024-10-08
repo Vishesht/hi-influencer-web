@@ -12,7 +12,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import ListModal from "@/components/ListModal";
 import axios from "axios";
-import { BaseUrl } from "@/common/utils";
+import { BaseUrl, detectBrowser } from "@/common/utils";
 import { useAppSelector } from "@/lib/hooks";
 import GridComponent from "@/components/GridComponents";
 import Loading from "@/components/LoadingSpinner";
@@ -28,6 +28,20 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = React.useState("");
   const data = useAppSelector((state) => state.login.userData);
   const [loader, setLoader] = React.useState(false);
+  const [browser, setBrowser] = React.useState("");
+
+  React.useEffect(() => {
+    const detectedBrowser = detectBrowser();
+    setBrowser(detectedBrowser);
+  }, []);
+
+  if (browser === "Unknown Browser") {
+    return (
+      <div>
+        Current browser is not supported. Please use the default browser
+      </div>
+    );
+  }
 
   React.useEffect(() => {
     const fetchUsers = async () => {
