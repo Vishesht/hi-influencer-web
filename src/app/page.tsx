@@ -1,6 +1,7 @@
 "use client";
 import { useAppSelector } from "@/lib/hooks";
 import { usePathname, useRouter } from "next/navigation";
+import Home from "./home/page";
 
 export default function MainLayout() {
   const path = usePathname();
@@ -11,7 +12,7 @@ export default function MainLayout() {
 
   if (data) {
     if (path === "/" || path === "/login" || path === "/signup") {
-      router.push("/home");
+      return <Home />;
     } else {
       router.push("/signup");
     }
