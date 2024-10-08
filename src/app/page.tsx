@@ -35,14 +35,23 @@ export default function Home() {
       } else if (userAgent.includes("MSIE") || userAgent.includes("Trident")) {
         return "Internet Explorer";
       } else {
-        window.open("https://www.hiinfluencer.in", "_blank");
-        return "Unknown Browser";
+        const unknownBrowser = `Unknown Browser: ${userAgent}`;
+        // window.open("https://www.hiinfluencer.in", "_blank");
+        // Create a temporary anchor element
+        const anchor = document.createElement("a");
+        anchor.href = "https://www.hiinfluencer.in";
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer"; // Security measure
+        document.body.appendChild(anchor);
+        anchor.click(); // Programmatically click the link
+        document.body.removeChild(anchor); // Clean up
+        return unknownBrowser;
       }
     };
 
     const browser = detectBrowser();
     console.log(`User is using: ${browser}`);
-    browser && alert(browser);
+    alert(browser);
   }, []);
 
   React.useEffect(() => {
