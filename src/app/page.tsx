@@ -15,5 +15,7 @@ export default function MainLayout() {
     } else {
       router.push(path);
     }
+  } else {
+    router.push("/login");
   }
 }
