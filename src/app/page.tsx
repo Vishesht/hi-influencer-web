@@ -1,14 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Box,
-  Container,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  IconButton,
-} from "@mui/material";
+import { Box, Container, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ListModal from "@/components/ListModal";
 import axios from "axios";
@@ -18,10 +11,8 @@ import GridComponent from "@/components/GridComponents";
 import Loading from "@/components/LoadingSpinner";
 
 export default function Home() {
-  const theme = useTheme();
   const [platformModalOpen, setPlatformModalOpen] = React.useState(false);
   const [categoryModalOpen, setCategoryModalOpen] = React.useState(false);
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [userList, setUserList] = React.useState([]);
   const [filteredUsers, setFilteredUsers] = React.useState([]);
   const [selectedPlatform, setSelectedPlatform] = React.useState("");
