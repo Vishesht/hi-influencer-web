@@ -16,7 +16,6 @@ import { BaseUrl } from "@/common/utils";
 import { useAppSelector } from "@/lib/hooks";
 import GridComponent from "@/components/GridComponents";
 import Loading from "@/components/LoadingSpinner";
-import Header from "@/components/header";
 
 export default function Home() {
   const theme = useTheme();
@@ -94,158 +93,153 @@ export default function Home() {
   }, [selectedPlatform, selectedCategory, userList]);
 
   return (
-    <>
-      <Header />
-      <Box sx={{ pt: 10 }}>
-        <Container sx={{ textAlign: "center", mt: 3 }}>
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{
-              fontWeight: "bold",
-              background: "linear-gradient(90deg, #FF76C6, #B64DFF)",
-              WebkitBackgroundClip: "text",
-              color: "transparent",
-              fontFamily: "Helvetica",
-              fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // Responsive font size
-            }}
-          >
-            Connect brands with influencers.
-          </Typography>
-          <Typography
-            color="grey"
-            variant="body1"
-            sx={{ mt: 2, fontSize: { xs: "0.9rem", sm: "1rem" } }} // Responsive font size
-          >
-            Connect with top Instagram, YouTube, and Facebook influencers to
-            create engaging content and promote your brand effectively.
-          </Typography>
+    <Box>
+      <Container sx={{ textAlign: "center", mt: 3 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            fontWeight: "bold",
+            background: "linear-gradient(90deg, #FF76C6, #B64DFF)",
+            WebkitBackgroundClip: "text",
+            color: "transparent",
+            fontFamily: "Helvetica",
+            fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // Responsive font size
+          }}
+        >
+          Connect brands with influencers.
+        </Typography>
+        <Typography
+          color="grey"
+          variant="body1"
+          sx={{ mt: 2, fontSize: { xs: "0.9rem", sm: "1rem" } }} // Responsive font size
+        >
+          Connect with top Instagram, YouTube, and Facebook influencers to
+          create engaging content and promote your brand effectively.
+        </Typography>
 
-          {/* Input fields with cross buttons */}
-          <Container
+        {/* Input fields with cross buttons */}
+        <Container
+          sx={{
+            mt: 4,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: { xs: "column", sm: "row" }, // Responsive flex direction
+            gap: 2, // Add gap between items
+            maxWidth: "90%", // Limit maximum width
+            mx: "auto", // Center the container
+          }}
+        >
+          <Box
             sx={{
-              mt: 4,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: { xs: "column", sm: "row" }, // Responsive flex direction
-              gap: 2, // Add gap between items
-              maxWidth: "90%", // Limit maximum width
-              mx: "auto", // Center the container
+              position: "relative",
+              width: { xs: "100%", sm: "340px" }, // Responsive width for smaller screens
+              marginRight: { sm: "10px", xs: "0" }, // Margin adjustment based on screen size
+              marginBottom: { xs: "10px", sm: "0" }, // Margin adjustment based on screen size
             }}
           >
-            <Box
-              sx={{
-                position: "relative",
-                width: { xs: "100%", sm: "340px" }, // Responsive width for smaller screens
-                marginRight: { sm: "10px", xs: "0" }, // Margin adjustment based on screen size
-                marginBottom: { xs: "10px", sm: "0" }, // Margin adjustment based on screen size
+            <input
+              value={selectedPlatform || "Choose a platform"}
+              style={{
+                padding: "12px 20px",
+                borderRadius: "50px",
+                width: "100%", // Make input full width
+                border: "1px solid #ddd",
+                backgroundColor: "#fff",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+                outline: "none",
+                color: selectedPlatform ? "black" : "#999",
               }}
-            >
-              <input
-                value={selectedPlatform || "Choose a platform"}
-                style={{
-                  padding: "12px 20px",
-                  borderRadius: "50px",
-                  width: "100%", // Make input full width
-                  border: "1px solid #ddd",
-                  backgroundColor: "#fff",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  transition: "box-shadow 0.3s ease, border-color 0.3s ease",
-                  outline: "none",
-                  color: selectedPlatform ? "black" : "#999",
+              onClick={() => setPlatformModalOpen(true)}
+              readOnly
+            />
+            {selectedPlatform && (
+              <IconButton
+                onClick={handleRemovePlatform}
+                sx={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "gray",
                 }}
-                onClick={() => setPlatformModalOpen(true)}
-                readOnly
-              />
-              {selectedPlatform && (
-                <IconButton
-                  onClick={handleRemovePlatform}
-                  sx={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "gray",
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              )}
-            </Box>
+              >
+                <CloseIcon />
+              </IconButton>
+            )}
+          </Box>
 
-            <Box
-              sx={{ position: "relative", width: { xs: "100%", sm: "340px" } }}
-            >
-              <input
-                value={
-                  selectedCategory || "Enter keywords, niches or categories"
-                }
-                style={{
-                  padding: "12px 20px",
-                  borderRadius: "50px",
-                  width: "100%", // Make input full width
-                  border: "1px solid #ddd",
-                  backgroundColor: "#fff",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  transition: "box-shadow 0.3s ease, border-color 0.3s ease",
-                  outline: "none",
-                  color: selectedCategory ? "black" : "#999",
+          <Box
+            sx={{ position: "relative", width: { xs: "100%", sm: "340px" } }}
+          >
+            <input
+              value={selectedCategory || "Enter keywords, niches or categories"}
+              style={{
+                padding: "12px 20px",
+                borderRadius: "50px",
+                width: "100%", // Make input full width
+                border: "1px solid #ddd",
+                backgroundColor: "#fff",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+                outline: "none",
+                color: selectedCategory ? "black" : "#999",
+              }}
+              onClick={() => setCategoryModalOpen(true)}
+              readOnly
+            />
+            {selectedCategory && (
+              <IconButton
+                onClick={handleRemoveCategory}
+                sx={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "gray",
                 }}
-                onClick={() => setCategoryModalOpen(true)}
-                readOnly
-              />
-              {selectedCategory && (
-                <IconButton
-                  onClick={handleRemoveCategory}
-                  sx={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "gray",
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-              )}
-            </Box>
-          </Container>
-
-          {/* Conditional rendering for filtered users */}
-          {filteredUsers.length > 0 ? (
-            <GridComponent data={filteredUsers} />
-          ) : loader ? (
-            <Loading loading={loader} />
-          ) : (
-            <Typography variant="h6" sx={{ mt: 4, color: "gray" }}>
-              No data found.
-            </Typography>
-          )}
+              >
+                <CloseIcon />
+              </IconButton>
+            )}
+          </Box>
         </Container>
 
-        <ListModal
-          title={"Select Platform"}
-          platformModalOpen={platformModalOpen}
-          setPlatformModalOpen={() => setPlatformModalOpen(false)}
-          socialMediaPlatforms={[
-            "Instagram",
-            "Facebook",
-            "Youtube",
-            "Twitter",
-            "Others",
-          ]}
-          onSelect={handlePlatformSelect}
-        />
+        {/* Conditional rendering for filtered users */}
+        {filteredUsers.length > 0 ? (
+          <GridComponent data={filteredUsers} />
+        ) : loader ? (
+          <Loading loading={loader} />
+        ) : (
+          <Typography variant="h6" sx={{ mt: 4, color: "gray" }}>
+            No data found.
+          </Typography>
+        )}
+      </Container>
 
-        <ListModal
-          title={"Select Category"}
-          platformModalOpen={categoryModalOpen}
-          setPlatformModalOpen={() => setCategoryModalOpen(false)}
-          socialMediaPlatforms={uniqueCategories}
-          onSelect={handleCategorySelect}
-        />
-      </Box>
-    </>
+      <ListModal
+        title={"Select Platform"}
+        platformModalOpen={platformModalOpen}
+        setPlatformModalOpen={() => setPlatformModalOpen(false)}
+        socialMediaPlatforms={[
+          "Instagram",
+          "Facebook",
+          "Youtube",
+          "Twitter",
+          "Others",
+        ]}
+        onSelect={handlePlatformSelect}
+      />
+
+      <ListModal
+        title={"Select Category"}
+        platformModalOpen={categoryModalOpen}
+        setPlatformModalOpen={() => setCategoryModalOpen(false)}
+        socialMediaPlatforms={uniqueCategories}
+        onSelect={handleCategorySelect}
+      />
+    </Box>
   );
 }

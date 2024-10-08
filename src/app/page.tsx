@@ -13,7 +13,7 @@ export default function MainLayout() {
     if (path === "/" || path === "/login" || path === "/signup") {
       router.push("/home");
     } else {
-      router.push(path);
+      router.push("/signup");
     }
   } else {
     router.push("/login");
