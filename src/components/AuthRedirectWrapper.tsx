@@ -17,32 +17,29 @@ import Loading from "./LoadingSpinner";
 const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const loginData = useAppSelector((state) => state.login);
-  const isAdmin = loginData?.isAdmin;
-  const data = loginData?.userData;
   const { user, loading } = useAuth();
+  const loginData = useAppSelector((state) => state.login);
   const router = useRouter();
   const path = usePathname();
 
-  const useProfilePathCheck = () => {
-    const profilePathRegex = ProfileCheckRegex;
-    return profilePathRegex.test(path);
+  const isAdmin = loginData?.isAdmin;
+  const data = loginData?.userData;
+
+  const isUserProfile = ProfileCheckRegex.test(path);
+
+  // Function to update FCM token
+  const updateFcmToken = async (token: string) => {
+    const cred = { email: data?.email, fcmToken: token };
+
+    try {
+      const response = await axios.put(`${BaseUrl}/api/update-fcm-token`, cred);
+      console.log("Token saved", response);
+    } catch (error) {
+      console.log("Token save error", error);
+    }
   };
 
-  const isUserProfile: boolean = useProfilePathCheck();
-
-  const updateFcmToken = async (token) => {
-    const cred = {
-      email: data?.email,
-      fcmToken: token,
-    };
-
-    await axios
-      .put(`${BaseUrl}/api/update-fcm-token`, cred)
-      .then((res) => console.log("Token saved", res))
-      .catch((err) => console.log("Token saved Err", err));
-  };
-
+  // Request notification permission and handle token
   const requestPermission = async () => {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
@@ -56,50 +53,35 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
         console.error("Error obtaining token:", error);
       }
     } else {
-      console.error("Permission not granted for Notification");
+      console.error("Notification permission not granted");
     }
   };
 
+  // Effect for requesting permission on mount
   useEffect(() => {
-    // Only request permission if in the client
     if (typeof window !== "undefined" && data?.id) {
       requestPermission();
     }
   }, [data?.id]);
 
+  // Effect for handling redirects based on auth state
   useEffect(() => {
-    if (!loading) {
-      // Handle admin access logic
-      if (isAdmin) {
-        // If an admin is trying to access /admin, redirect to /admin/dashboard
-        if (path === "/admin") {
-          router.push("/admin/dashboard");
-        }
-      } else {
-        if (path === "/admin" || path.startsWith("/admin")) {
-          router.push("/admin");
-        }
-      }
+    if (loading) return;
 
-      // Redirect logic for logged-in users on login/signup pages
-      if (data) {
-        if (path === "/login" || path === "/signup") {
-          router.push("/");
-        }
-      } else {
-        // Redirect non-logged-in users to /login if trying to access protected routes
-        if (
-          path !== "/login" &&
-          path !== "/signup" &&
-          !isUserProfile &&
-          !path.startsWith("/admin")
-        ) {
-          router.push("/login");
-        }
+    if (isAdmin && path === "/admin") {
+      router.push("/admin/dashboard");
+    } else if (!isAdmin && path.startsWith("/admin")) {
+      router.push("/admin");
+    } else if (data) {
+      if (path === "/login" || path === "/signup") {
+        router.push("/");
       }
+    } else if (!isUserProfile && path !== "/login" && path !== "/signup") {
+      router.push("/login");
     }
   }, [user, loading, path, router, isAdmin, isUserProfile]);
 
+  // Show loading spinner while loading
   if (loading) {
     return <Loading loading={loading} />;
   }
@@ -109,7 +91,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
     return <>{children}</>;
   }
 
-  // Allow chat access and show ServiceWorkerToast if data is available
+  // Allow access to chat page with service worker toast
   if (path === "/chat" && data) {
     return (
       <>
@@ -120,13 +102,7 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh", // Full height of the viewport
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <ServiceWorkerToast />
       <Header />
       <Box sx={{ flexGrow: 1, pt: 10 }}>{children}</Box>

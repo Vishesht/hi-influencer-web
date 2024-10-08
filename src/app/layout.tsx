@@ -11,6 +11,7 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -24,19 +25,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AppRouterCacheProvider options={{ key: "css" }}>
-          <StoreProvider>
-            <AuthProvider>
+        <AuthProvider>
+          <AppRouterCacheProvider options={{ key: "css" }}>
+            <StoreProvider>
               <AuthRedirectWrapper>{children}</AuthRedirectWrapper>
-            </AuthProvider>
-          </StoreProvider>
-        </AppRouterCacheProvider>
+            </StoreProvider>
+          </AppRouterCacheProvider>
+        </AuthProvider>
       </body>
     </html>
   );
