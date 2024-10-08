@@ -39,7 +39,7 @@ const PlatformList = styled(Box)(({ theme }) => ({
   flexDirection: "row",
   gap: theme.spacing(2),
   alignItems: "center",
-  padding: 8,
+  paddingTop: 16,
 }));
 
 const ShareButton = styled(IconButton)(({ theme }) => ({
@@ -166,8 +166,8 @@ const InfluencerProfile = () => {
                   <Image
                     src={influencer.photoURL}
                     alt="User Image"
-                    width={80}
-                    height={80}
+                    width={90}
+                    height={90}
                     style={{
                       objectFit: "cover",
                       borderRadius: 200,
@@ -176,8 +176,8 @@ const InfluencerProfile = () => {
                 ) : (
                   <div
                     style={{
-                      width: 80,
-                      height: 80,
+                      width: 90,
+                      height: 90,
                       borderRadius: 200,
                       backgroundColor: "#ccc",
                     }}
@@ -197,8 +197,9 @@ const InfluencerProfile = () => {
                       sx={{
                         fontWeight: "bold",
                         fontFamily: "Roboto, sans-serif",
+                        fontSize: { xs: "1rem", sm: "1.2rem" },
                       }}
-                      variant="h5"
+                      variant={"h5"}
                     >
                       {influencer?.name}
                     </Typography>
@@ -213,6 +214,7 @@ const InfluencerProfile = () => {
                   sx={{
                     color: "text.secondary",
                     fontFamily: "Roboto, sans-serif",
+                    fontSize: { xs: "0.8rem", sm: "1rem" },
                   }}
                   variant="body1"
                 >
