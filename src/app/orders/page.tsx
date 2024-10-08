@@ -26,6 +26,10 @@ import ReviewPopup from "@/components/Review";
 import { sendNotification } from "@/api/commonApi";
 import Loading from "@/components/LoadingSpinner";
 
+interface OrderCardProps {
+  bgColor?: string;
+}
+
 const StyledBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
 }));
@@ -35,7 +39,7 @@ const FilterBox = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(3),
 }));
 
-const OrderCard = styled(Card)(({ theme, bgColor }) => ({
+const OrderCard = styled(Card)<OrderCardProps>(({ theme, bgColor }) => ({
   marginBottom: theme.spacing(2),
   boxShadow: theme.shadows[3],
   backgroundColor: bgColor,
