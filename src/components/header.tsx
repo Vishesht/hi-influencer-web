@@ -187,7 +187,7 @@ const Header = () => {
   const onLogoClick = () => {
     if (path.startsWith("/admin") && isAdmin) {
       router.push("/admin/dashboard");
-    } else if (path.startsWith("/admin") && !isAdmin) {
+    } else if (path.startsWith("/admin/") && !isAdmin) {
       router.push("/admin");
     } else {
       router.push("/");

@@ -154,18 +154,34 @@ const ProfilePage = () => {
             overflow: "hidden",
             mx: "auto",
             mb: 2,
+            backgroundColor:
+              !user?.photoURL || !data?.photoURL ? "#e0e0e0" : "transparent",
           }}
         >
-          <Image
-            src={user?.photoURL || data?.photoURL}
-            alt="User Image"
-            width={150}
-            height={150}
-            // layout="responsive"
-            style={{
-              objectFit: "cover",
-            }}
-          />
+          {user?.photoURL || data?.photoURL ? (
+            <Image
+              src={user?.photoURL || data?.photoURL}
+              alt=""
+              width={150}
+              height={150}
+              style={{
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <span style={{ color: "#999" }}>
+                {loader ? "loading..." : "No Image"}
+              </span>
+            </div>
+          )}
         </Box>
 
         {/* User Name */}
