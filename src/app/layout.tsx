@@ -31,11 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AppRouterCacheProvider options={{ key: "css" }}>
-          <StoreProvider>
-            <AuthProvider>
-              <AuthRedirectWrapper>{children}</AuthRedirectWrapper>
-            </AuthProvider>
-          </StoreProvider>
+          <StoreProvider>{children}</StoreProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
