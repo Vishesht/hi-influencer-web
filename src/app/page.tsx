@@ -21,6 +21,31 @@ export default function Home() {
   const [loader, setLoader] = React.useState(false);
 
   React.useEffect(() => {
+    const detectBrowser = () => {
+      const userAgent = navigator.userAgent;
+
+      if (userAgent.includes("Chrome")) {
+        return "Chrome";
+      } else if (userAgent.includes("Firefox")) {
+        return "Firefox";
+      } else if (userAgent.includes("Safari")) {
+        return "Safari";
+      } else if (userAgent.includes("Edge")) {
+        return "Edge";
+      } else if (userAgent.includes("MSIE") || userAgent.includes("Trident")) {
+        return "Internet Explorer";
+      } else {
+        window.open("https://www.hiinfluencer.in", "_blank");
+        return "Unknown Browser";
+      }
+    };
+
+    const browser = detectBrowser();
+    console.log(`User is using: ${browser}`);
+    browser && alert(browser);
+  }, []);
+
+  React.useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(

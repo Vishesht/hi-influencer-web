@@ -31,13 +31,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AuthProvider>
-          <AppRouterCacheProvider options={{ key: "css" }}>
-            <StoreProvider>
-              <AuthRedirectWrapper>{children}</AuthRedirectWrapper>
-            </StoreProvider>
-          </AppRouterCacheProvider>
-        </AuthProvider>
+        {/* <AuthProvider> */}
+        <AppRouterCacheProvider options={{ key: "css" }}>
+          <StoreProvider>
+            {children}
+            {/* <AuthRedirectWrapper></AuthRedirectWrapper> */}
+          </StoreProvider>
+        </AppRouterCacheProvider>
+        {/* </AuthProvider> */}
       </body>
     </html>
   );
