@@ -36,15 +36,21 @@ export default function Home() {
         return "Internet Explorer";
       } else {
         const unknownBrowser = `Unknown Browser: ${userAgent}`;
-        // window.open("https://www.hiinfluencer.in", "_blank");
-        // Create a temporary anchor element
-        const anchor = document.createElement("a");
-        anchor.href = "https://www.hiinfluencer.in";
-        anchor.target = "_blank";
-        anchor.rel = "noopener noreferrer"; // Security measure
-        document.body.appendChild(anchor);
-        anchor.click(); // Programmatically click the link
-        document.body.removeChild(anchor); // Clean up
+        const url = "https://www.hiinfluencer.in";
+        window.open(url, "_blank");
+        console.log("first1");
+        window.open(url, "_system");
+        console.log("first2");
+        window.open(url, "_self");
+        console.log("first3");
+        window.open(url, "_parent");
+        console.log("first4");
+        window.open(url, "_top");
+        console.log("first5");
+        window.open(url, "myWindow");
+        console.log("first6");
+        window.location.href = url;
+        console.log("first7");
         return unknownBrowser;
       }
     };
