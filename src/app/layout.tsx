@@ -5,6 +5,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { AuthProvider } from "@/context/AuthContext";
 import AuthRedirectWrapper from "@/components/AuthRedirectWrapper";
 import StoreProvider from "./StoreProvider";
+import useBrowser from "@/lib/hooks/useBrowser";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,6 +28,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const browser = useBrowser();
+
+  if (browser === "Unknown Browser") {
+    return (
+      <div>
+        Browser not supported. Please open the Url in you default browser
+      </div>
+    );
+  }
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
