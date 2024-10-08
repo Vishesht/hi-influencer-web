@@ -67,38 +67,38 @@ const AuthRedirectWrapper: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [data?.id]);
 
-  useEffect(() => {
-    if (!loading) {
-      // Handle admin access logic
-      if (isAdmin) {
-        // If an admin is trying to access /admin, redirect to /admin/dashboard
-        if (path === "/admin") {
-          router.push("/admin/dashboard");
-        }
-      } else {
-        if (path === "/admin" || path.startsWith("/admin")) {
-          router.push("/admin");
-        }
-      }
+  // useEffect(() => {
+  //   if (!loading) {
+  //     // Handle admin access logic
+  //     if (isAdmin) {
+  //       // If an admin is trying to access /admin, redirect to /admin/dashboard
+  //       if (path === "/admin") {
+  //         router.push("/admin/dashboard");
+  //       }
+  //     } else {
+  //       if (path === "/admin" || path.startsWith("/admin")) {
+  //         router.push("/admin");
+  //       }
+  //     }
 
-      // Redirect logic for logged-in users on login/signup pages
-      if (data) {
-        if (path === "/login" || path === "/signup") {
-          router.push("/");
-        }
-      } else {
-        // Redirect non-logged-in users to /login if trying to access protected routes
-        if (
-          path !== "/login" &&
-          path !== "/signup" &&
-          !isUserProfile &&
-          !path.startsWith("/admin")
-        ) {
-          router.push("/login");
-        }
-      }
-    }
-  }, [user, loading, path, router, isAdmin, isUserProfile]);
+  //     // Redirect logic for logged-in users on login/signup pages
+  //     if (data) {
+  //       if (path === "/login" || path === "/signup") {
+  //         router.push("/");
+  //       }
+  //     } else {
+  //       // Redirect non-logged-in users to /login if trying to access protected routes
+  //       if (
+  //         path !== "/login" &&
+  //         path !== "/signup" &&
+  //         !isUserProfile &&
+  //         !path.startsWith("/admin")
+  //       ) {
+  //         router.push("/login");
+  //       }
+  //     }
+  //   }
+  // }, [user, loading, path, router, isAdmin, isUserProfile]);
 
   if (loading) {
     return <Loading loading={loading} />;
