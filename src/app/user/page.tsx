@@ -154,18 +154,34 @@ const ProfilePage = () => {
             overflow: "hidden",
             mx: "auto",
             mb: 2,
+            backgroundColor:
+              !user?.photoURL && !data?.photoURL ? "grey" : "transparent", // Set grey background if no image
           }}
         >
-          <Image
-            src={user?.photoURL || data?.photoURL}
-            alt="User Image"
-            width={150}
-            height={150}
-            // layout="responsive"
-            style={{
-              objectFit: "cover",
-            }}
-          />
+          {user?.photoURL || data?.photoURL ? (
+            <Image
+              src={user.photoURL || data.photoURL}
+              alt="User Image"
+              width={150}
+              height={150}
+              style={{
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "white", // Optional: Change text color if you want to display something
+              }}
+            >
+              No Image
+            </Box>
+          )}
         </Box>
 
         {/* User Name */}
