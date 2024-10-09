@@ -3,13 +3,6 @@ import {
   TextField,
   MenuItem,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Select,
   InputLabel,
   FormControl,
@@ -22,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { BaseUrl, imgPlaceholderImg } from "@/common/utils";
 import { add } from "@/lib/features/login/loginSlice";
 import { useAppSelector } from "@/lib/hooks";
+import { validateUsername } from "@/common/validations";
 
 // List of social media platforms
 export const socialMediaPlatforms = [
@@ -76,6 +70,15 @@ const SocialMediaLinks = () => {
   };
   // Handle form submission with API call
   const handleSubmit = async () => {
+    if (!userName) {
+      alert("Username cannot be empty. Please provide a valid username.");
+      return;
+    } else if (!validateUsername(userName)) {
+      alert(
+        "Username is not valid. It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
+      );
+      return;
+    }
     if (userName.length < 6) {
       alert("Username must be at least 6 characters long");
       return null;

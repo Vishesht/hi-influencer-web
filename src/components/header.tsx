@@ -319,10 +319,21 @@ const Header = () => {
               {data?.photoURL || user?.displayName?.[0]}
             </Avatar>
             <Box sx={{ ml: 2 }}>
-              <Typography variant="body1">
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
+                }}
+              >
                 {data?.name || user?.displayName}
               </Typography>
-              <Typography variant="body2" color="textSecondary">
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                sx={{
+                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                }}
+              >
                 {data?.email || user?.email}
               </Typography>
             </Box>

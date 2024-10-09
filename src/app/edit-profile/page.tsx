@@ -35,11 +35,11 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
 import AlertDialog from "@/components/Alert";
-import { showAlert } from "@/lib/features/alert/alertSlice";
 import PackagesSetup from "@/components/packagesSetup";
 import Image from "next/image";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Loading from "@/components/LoadingSpinner";
+import { validatePhoneNumber, validateUsername } from "@/common/validations";
 // Styled components
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -78,7 +78,7 @@ const EditProfile: React.FC = () => {
   const [platform, setPlatform] = useState<any[]>([]);
   const [packages, setPackages] = useState<any[]>([]);
   const [userData, setUserData] = useState<any>();
-  const [loader, setLoader] = useState<any>();
+  const [loader, setLoader] = useState<boolean>(false);
   const [newPlatform, setNewPlatform] = useState({
     name: "",
     link: "",
@@ -130,16 +130,38 @@ const EditProfile: React.FC = () => {
     fetchUserData();
   }, []);
 
-  const reloadUserData = () => {
-    fetchUserData();
-  };
+  function deletePromotion(name, criteria) {
+    // Create a new array without the item to be deleted
+    const newPackages = packages.filter((promo) => {
+      if (promo.name === name) {
+        // Check for Promotions
+        if (name === "Promotions" && promo.data.platform) {
+          return promo.data.platform !== criteria;
+        }
+        // Check for Book Appointment
+        else if (name === "Book Appointment" && promo.data.appointmentOffer) {
+          return promo.data.appointmentOffer !== criteria;
+        }
+      }
+      return true; // Keep this item
+    });
+    // Update the state with the new array
+    setPackages(newPackages);
+  }
 
+  const reloadUserData = (deletedItem) => {
+    userData?.packages?.length > 0 && fetchUserData();
+    deletePromotion(
+      deletedItem?.name,
+      deletedItem?.data?.platform || deletedItem?.data?.appointmentOffer
+    );
+  };
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    setLoader(true);
     if (file) {
+      setLoader(true);
       const storageRef = ref(storage, `images/${username + "-" + file.name}`);
       try {
         await uploadBytes(storageRef, file);
@@ -154,40 +176,21 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  const handleAlert = (msg) => {
-    dispatch(
-      showAlert({
-        message: msg,
-        confirmText: "Ok",
-        // cancelText: "No",
-        onConfirm: () => console.log("Confirmed"),
-        // onCancel: () => console.log("Cancelled"),
-      })
-    );
-  };
-
-  const validatePhoneNumber = (number) => {
-    const phoneNumberPattern = /^\d{10}$/;
-    return phoneNumberPattern.test(number);
-  };
-
   const handleSave = async (downloadURL?) => {
     try {
       if (!name) {
-        handleAlert("Name cannot be empty. Please provide a valid name.");
+        alert("Name cannot be empty. Please provide a valid name.");
         return;
       } else if (!username) {
-        handleAlert(
-          "Username cannot be empty. Please provide a valid username."
-        );
+        alert("Username cannot be empty. Please provide a valid username.");
         return;
       } else if (!validateUsername(username)) {
-        handleAlert(
+        alert(
           "Username is not valid. It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
         );
         return;
       } else if (phoneNumber && !validatePhoneNumber(phoneNumber)) {
-        handleAlert("Please enter a valid phone number");
+        alert("Please enter a valid phone number");
         return;
       }
       setLoader(true);
@@ -224,9 +227,6 @@ const EditProfile: React.FC = () => {
       console.error("Error updating profile:", error);
     }
   };
-
-  const validateUsername = (username: string) =>
-    /^[a-z0-9_]+$/.test(username.trim());
 
   const handleAddPlatform = () => {
     if (newPlatform.name && newPlatform.link) {

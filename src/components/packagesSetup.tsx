@@ -19,9 +19,7 @@ const PackagesSetup = ({ fromEdit, packages, onSavePackages, reloadData }) => {
   const [savedPackages, setSavedPackages] = useState([]);
 
   useEffect(() => {
-    if (packages?.length > 0) {
-      setSavedPackages(packages);
-    }
+    setSavedPackages(packages);
   }, [packages]);
 
   const packagesData = [

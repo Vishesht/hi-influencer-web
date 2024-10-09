@@ -303,30 +303,30 @@ const InfluencerProfile = () => {
                 </Box>
               ))}
             </PlatformList>
-            <Button
+            {/* <Button
               variant="outlined"
               onClick={() => CreateChat(influencer?.id)}
               sx={{
                 ml: 1,
                 mt: 2,
-                borderColor: "green.500", // Border color
-                color: "green.500", // Text color
+                borderColor: "green.500",
+                color: "green.500",
                 "&:hover": {
-                  borderColor: "green.600", // Darker border on hover
-                  color: "green.600", // Darker text on hover
+                  borderColor: "green.600",
+                  color: "green.600",
                 },
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 1,
-                padding: { xs: "4px 8px", sm: "6px 12px" }, // Smaller padding
-                flexWrap: "wrap", // Allow wrapping
-                fontSize: { xs: "0.8rem", sm: "0.9rem" }, // Smaller font size
+                padding: { xs: "4px 8px", sm: "6px 12px" },
+                flexWrap: "wrap",
+                fontSize: { xs: "0.8rem", sm: "0.9rem" },
               }}
             >
-              <ChatIcon sx={{ marginRight: 0.5 }} /> {/* Chat icon */}
-              <Typography variant="body2">Chat</Typography> {/* Chat text */}
-            </Button>
+              <ChatIcon sx={{ marginRight: 0.5 }} />
+              <Typography variant="body2">Chat</Typography>
+            </Button> */}
             <Typography
               sx={{
                 color: "text.secondary",
