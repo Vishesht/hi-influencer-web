@@ -13,7 +13,7 @@ import {
 import SavedPackage from "./SavedPackage";
 import { validatePromotion } from "@/common/validations";
 
-const PackagesSetup = ({ packages, onSavePackages, reloadData }) => {
+const PackagesSetup = ({ fromEdit, packages, onSavePackages, reloadData }) => {
   const [selectedPackage, setSelectedPackage] = useState("");
   const [formData, setFormData] = useState({});
   const [savedPackages, setSavedPackages] = useState([]);
@@ -364,6 +364,7 @@ const PackagesSetup = ({ packages, onSavePackages, reloadData }) => {
         <Grid container spacing={3} direction={{ xs: "column", sm: "row" }}>
           {savedPackages?.map((pkg) => (
             <SavedPackage
+              fromEdit={fromEdit}
               key={pkg.name}
               pkg={pkg}
               isEdit={false}

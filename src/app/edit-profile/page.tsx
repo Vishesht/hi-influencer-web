@@ -284,26 +284,54 @@ const EditProfile: React.FC = () => {
                 onChange={handleImageUpload}
               />
               <EditIconWrapper>
-                <Image
-                  src={imgUrl}
-                  alt="User Image"
-                  width={150}
-                  height={150}
-                  // layout="responsive"
-                  style={{
-                    objectFit: "cover",
-                  }}
-                />
-                <EditIconStyled
-                  // component="span"
-                  color="primary"
-                  onClick={() =>
-                    document.getElementById("profile-image-upload")?.click()
-                  }
-                >
-                  <EditIcon />
-                </EditIconStyled>
+                {imgUrl ? (
+                  <>
+                    <Image
+                      src={imgUrl}
+                      alt="User Image"
+                      width={150}
+                      height={150}
+                      style={{
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <EditIconStyled
+                      color="primary"
+                      onClick={() =>
+                        document.getElementById("profile-image-upload")?.click()
+                      }
+                    >
+                      <EditIcon />
+                    </EditIconStyled>
+                  </>
+                ) : (
+                  <Box
+                    sx={{
+                      width: 150,
+                      height: 150,
+                      backgroundColor: "grey", // Fallback background color
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%", // Optional: for rounded appearance
+                      color: "white", // Optional: text color for fallback message
+                    }}
+                    onClick={() =>
+                      document.getElementById("profile-image-upload")?.click()
+                    }
+                  >
+                    No Image
+                    <EditIconStyled
+                      color="primary"
+                      sx={{ marginLeft: 1 }} // Optional: spacing between text and icon
+                    >
+                      <EditIcon />
+                    </EditIconStyled>
+                  </Box>
+                )}
               </EditIconWrapper>
+
               <Grid
                 item
                 xs={12}
@@ -478,6 +506,7 @@ const EditProfile: React.FC = () => {
             </Grid>
             {!userData?.isClient && (
               <PackagesSetup
+                fromEdit={true}
                 reloadData={reloadUserData}
                 packages={packages}
                 onSavePackages={handleSavedPackages}

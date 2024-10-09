@@ -228,7 +228,7 @@ const AdminUsers = () => {
                 <Card>
                   <CardContent>
                     <Image
-                      src={user.photoURL}
+                      src={user?.photoURL}
                       alt="User Image"
                       width={200}
                       height={200}
