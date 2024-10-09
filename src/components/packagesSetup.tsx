@@ -378,10 +378,10 @@ const PackagesSetup = ({ fromEdit, packages, onSavePackages, reloadData }) => {
 
   return (
     <div style={{ marginTop: 24 }}>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h6" gutterBottom>
         Setup Your Packages
       </Typography>
-      <Typography variant="body1" gutterBottom>
+      <Typography variant="body2" color="grey" gutterBottom>
         This section allows you to create and manage your packages for
         promotions, collaborations, and other services you offer. Customize each
         package with specific details such as pricing, platform, and description

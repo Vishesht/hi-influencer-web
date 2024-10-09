@@ -149,8 +149,8 @@ const ProfilePage = () => {
         <Box
           sx={{
             borderRadius: "50%",
-            width: 150,
-            height: 150,
+            width: 120,
+            height: 120,
             overflow: "hidden",
             mx: "auto",
             mb: 2,
@@ -162,8 +162,8 @@ const ProfilePage = () => {
             <Image
               src={user?.photoURL || data?.photoURL}
               alt="User Image"
-              width={150}
-              height={150}
+              width={120}
+              height={120}
               style={{
                 objectFit: "cover",
               }}
@@ -186,7 +186,7 @@ const ProfilePage = () => {
 
         {/* User Name */}
         <Box display="flex" justifyContent="center" gap={0} alignItems="center">
-          <Typography variant="h4">
+          <Typography variant="h6">
             {user?.name || firebaseData?.displayName || data?.name}
           </Typography>
           {user?.verified && (
@@ -197,13 +197,13 @@ const ProfilePage = () => {
         </Box>
 
         {user?.category && (
-          <Typography variant="h6" color="textSecondary">
+          <Typography variant="body1" color="textSecondary">
             {user?.username + " - " + user?.category}
           </Typography>
         )}
 
         {user?.bio && (
-          <Typography variant="body1" mt={2}>
+          <Typography color="grey" variant="body2" mt={2}>
             {user?.bio}
           </Typography>
         )}
@@ -231,7 +231,7 @@ const ProfilePage = () => {
                   {platform.platform === "Telegram" && <TelegramIcon />}
 
                   <Box ml={1}>
-                    <Typography variant="body1">
+                    {/* <Typography variant="body1">
                       <a
                         href={platform.link}
                         target="_blank"
@@ -239,9 +239,9 @@ const ProfilePage = () => {
                       >
                         {platform.platform}
                       </a>
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {platform.followers}
+                    </Typography> */}
+                    <Typography variant="body2" color="#6C63FF">
+                      {platform.followers} Followers
                     </Typography>
                   </Box>
                 </SocialMediaCard>
