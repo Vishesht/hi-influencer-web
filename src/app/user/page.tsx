@@ -101,8 +101,8 @@ const ProfilePage = () => {
   }, []);
 
   const fetchUserData = async () => {
-    setLoader(true);
     try {
+      setLoader(true);
       if (!data.id) {
         console.error("User ID not found in local storage.");
         return;
@@ -111,6 +111,7 @@ const ProfilePage = () => {
       setUser(response.data);
       setLoader(false);
     } catch (error) {
+      setLoader(false);
       console.error("Error fetching user data:", error);
     }
   };

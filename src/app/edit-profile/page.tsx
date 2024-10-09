@@ -78,7 +78,7 @@ const EditProfile: React.FC = () => {
   const [platform, setPlatform] = useState<any[]>([]);
   const [packages, setPackages] = useState<any[]>([]);
   const [userData, setUserData] = useState<any>();
-  const [loader, setLoader] = useState<any>();
+  const [loader, setLoader] = useState<boolean>(false);
   const [newPlatform, setNewPlatform] = useState({
     name: "",
     link: "",
@@ -130,16 +130,38 @@ const EditProfile: React.FC = () => {
     fetchUserData();
   }, []);
 
-  const reloadUserData = () => {
-    fetchUserData();
-  };
+  function deletePromotion(name, criteria) {
+    // Create a new array without the item to be deleted
+    const newPackages = packages.filter((promo) => {
+      if (promo.name === name) {
+        // Check for Promotions
+        if (name === "Promotions" && promo.data.platform) {
+          return promo.data.platform !== criteria;
+        }
+        // Check for Book Appointment
+        else if (name === "Book Appointment" && promo.data.appointmentOffer) {
+          return promo.data.appointmentOffer !== criteria;
+        }
+      }
+      return true; // Keep this item
+    });
+    // Update the state with the new array
+    setPackages(newPackages);
+  }
 
+  const reloadUserData = (deletedItem) => {
+    userData?.packages?.length > 0 && fetchUserData();
+    deletePromotion(
+      deletedItem?.name,
+      deletedItem?.data?.platform || deletedItem?.data?.appointmentOffer
+    );
+  };
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    setLoader(true);
     if (file) {
+      setLoader(true);
       const storageRef = ref(storage, `images/${username + "-" + file.name}`);
       try {
         await uploadBytes(storageRef, file);

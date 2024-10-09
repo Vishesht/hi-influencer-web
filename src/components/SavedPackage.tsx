@@ -25,6 +25,7 @@ import { BaseUrl } from "@/common/utils";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
 // Custom styled Card with better spacing and shadow
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -71,13 +72,17 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
 
   const handleDelete = async (pkg) => {
     try {
-      await axios.delete(`${BaseUrl}/api/deletePackage/${data?.id}`, {
-        data: { name: pkg?.name },
-      });
-      reloadData();
+      const res = await axios.delete(
+        `${BaseUrl}/api/deletePackage/${data?.id}`,
+        {
+          data: { name: pkg?.name },
+        }
+      );
+      reloadData(pkg);
       handleCloseMenu();
     } catch (error) {
-      throw error.response?.data || { message: "An error occurred" };
+      reloadData(pkg);
+      console.log("err", error);
     }
   };
   const resFontSize = { xs: "0.7em", sm: "0.8rem" };
@@ -142,7 +147,6 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
                     "linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)",
                   color: "white",
                   boxShadow: 2,
-                  marginTop: 2,
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -162,6 +166,13 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
                   )}
                   {pkg?.data?.platform === "Twitter" && (
                     <TwitterIcon
+                      sx={{
+                        marginRight: 1,
+                      }}
+                    />
+                  )}
+                  {pkg?.data?.platform === "YouTube" && (
+                    <YouTubeIcon
                       sx={{
                         marginRight: 1,
                       }}
@@ -251,7 +262,6 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
               onClick={handleOpen}
               fullWidth
               sx={{
-                mt: 2,
                 fontSize: { xs: "0.8rem", sm: "1rem" },
                 backgroundColor: "#1DA1F2",
               }}

@@ -307,7 +307,7 @@ export default function LoginPage() {
           title="Select Your Role"
           content="Please choose your role:"
           actions={
-            <Grid container spacing={2} direction={{ xs: "column", sm: "row" }}>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Card
                   variant="outlined"
@@ -327,13 +327,15 @@ export default function LoginPage() {
                       variant="h6"
                       align="center"
                       sx={{
-                        fontSize: { xs: "1rem", sm: "1.2rem" },
+                        fontSize: { xs: "0.8rem", sm: "1rem" },
                         fontWeight: 600,
                         color: "#1976d2",
                         mt: 0.6,
                       }}
                     >
-                      Join as Creator/Influencer
+                      <span>Join as</span>
+                      <br />
+                      <span>Creator/Influencer</span>
                     </Typography>
                   </CardContent>
                 </Card>
@@ -357,13 +359,15 @@ export default function LoginPage() {
                       variant="h6"
                       align="center"
                       sx={{
-                        fontSize: { xs: "1rem", sm: "1.2rem" },
+                        fontSize: { xs: "0.8rem", sm: "1rem" },
                         fontWeight: 600,
                         color: "#1976d2",
                         mt: 0.6,
                       }}
                     >
-                      Join as Brand/Client
+                      <span>Join as</span>
+                      <br />
+                      <span>Brand/Client</span>
                     </Typography>
                   </CardContent>
                 </Card>
