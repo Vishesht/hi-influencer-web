@@ -279,7 +279,7 @@ const Orders: React.FC = () => {
               <Grid item xs={12} sm={6} md={4} key={item._id}>
                 <OrderCard bgColor={getStatusBackgroundColor(item.status)}>
                   <CardContent>
-                    <Typography variant="h5" gutterBottom>
+                    <Typography variant="h6" gutterBottom>
                       Package Name: {item.orderDetails[0].pkgName}
                     </Typography>
                     {item?.requestedChanges && (
@@ -295,11 +295,11 @@ const Orders: React.FC = () => {
                       influencer={tabIndex === 0 ? true : false}
                       influencerDetails={item?.influencerDetails}
                     />
-                    <Typography variant="body1" gutterBottom>
+                    <Typography variant="body2" gutterBottom>
                       Status: <strong>{item.status}</strong>
                     </Typography>
                     {item.status === "Payment Completed" && (
-                      <Typography variant="body1" gutterBottom>
+                      <Typography variant="body2" gutterBottom>
                         {tabIndex === 0
                           ? "Note: Please allow some time for the influencer to complete your task. In the meantime, feel free to check the chat section for updates or to inquire about your task."
                           : "Alert: Please begin working on the task assigned to you."}
@@ -448,7 +448,21 @@ const Orders: React.FC = () => {
                             onClick={() =>
                               handleAcceptOrder(item._id, item, "Testing")
                             }
-                            sx={{ marginRight: 1 }}
+                            sx={{
+                              marginRight: 1,
+                              padding: { xs: "8px 16px", sm: "10px 20px" },
+                              borderRadius: 2,
+                              boxShadow: 2,
+                              transition:
+                                "background-color 0.3s ease, transform 0.3s ease",
+                              "&:hover": {
+                                backgroundColor: "green.700",
+                                transform: "scale(1.05)",
+                              },
+                              "&:active": {
+                                transform: "scale(0.95)",
+                              },
+                            }}
                           >
                             Mark Completed
                           </Button>

@@ -103,7 +103,7 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
             flexDirection: "column",
             justifyContent: "space-between",
             height: "100%",
-            padding: { xs: 2, sm: 3 }, // Responsive padding
+            padding: { xs: 2, sm: 3 },
           }}
         >
           <Box sx={{ flexGrow: 1 }}>

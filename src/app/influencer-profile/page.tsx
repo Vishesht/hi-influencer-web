@@ -23,8 +23,9 @@ import { Verified, Share } from "@mui/icons-material";
 import { influencerData } from "@/lib/features/influencer/influencerSlice";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Loading from "@/components/LoadingSpinner";
+import ChatIcon from "@mui/icons-material/Chat";
 
 const ProfileContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(1), // Default for mobile
@@ -68,7 +69,9 @@ const ShareModalContent = styled(Box)(({ theme }) => ({
 const InfluencerProfile = () => {
   const dispatch = useAppDispatch();
   const path = usePathname();
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
+  const userData = useAppSelector((state) => state.login.userData);
   const data = useAppSelector((state) => state.influencer);
   const influencer = data?.influencer;
   const extractUserId = (url) => url.split("/").pop();
@@ -135,6 +138,25 @@ const InfluencerProfile = () => {
         style={{ borderRadius: "50%" }}
       />
     );
+  };
+
+  const saveChat = async (userId1, userId2) => {
+    try {
+      const response = await axios.post(`${BaseUrl}/service/create-chat`, {
+        userId1,
+        userId2,
+      });
+      console.log("saveChat", response.data);
+      setLoader(false);
+      router.push("/chat");
+    } catch (error) {
+      setLoader(false);
+      console.log("Error saving chat:", error);
+    }
+  };
+
+  const CreateChat = (influencerId) => {
+    saveChat(userData?.id, influencerId);
   };
 
   return (
@@ -223,6 +245,7 @@ const InfluencerProfile = () => {
                 </Typography>
               </Container>
             </Container>
+
             <PlatformList>
               {influencer?.platform.map((platformData: any, index: any) => (
                 <Box
@@ -280,7 +303,30 @@ const InfluencerProfile = () => {
                 </Box>
               ))}
             </PlatformList>
-
+            <Button
+              variant="outlined"
+              onClick={() => CreateChat(influencer?.id)}
+              sx={{
+                ml: 1,
+                mt: 2,
+                borderColor: "green.500", // Border color
+                color: "green.500", // Text color
+                "&:hover": {
+                  borderColor: "green.600", // Darker border on hover
+                  color: "green.600", // Darker text on hover
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 1,
+                padding: { xs: "4px 8px", sm: "6px 12px" }, // Smaller padding
+                flexWrap: "wrap", // Allow wrapping
+                fontSize: { xs: "0.8rem", sm: "0.9rem" }, // Smaller font size
+              }}
+            >
+              <ChatIcon sx={{ marginRight: 0.5 }} /> {/* Chat icon */}
+              <Typography variant="body2">Chat</Typography> {/* Chat text */}
+            </Button>
             <Typography
               sx={{
                 color: "text.secondary",
