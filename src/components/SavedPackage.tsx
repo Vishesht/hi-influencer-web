@@ -27,7 +27,6 @@ import { BaseUrl } from "@/common/utils";
 const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   borderRadius: theme.shape.borderRadius,
-  height: "350px", // Fixed height for uniformity
   boxShadow: theme.shadows[4],
   transition: "transform 0.3s ease-in-out",
   "&:hover": {
@@ -36,7 +35,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const SavedPackage = ({ pkg, isEdit, influencer, reloadData }) => {
+const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
   const router = useRouter();
   const packageData = packagesData?.find((data) => data.name === pkg.name);
   const packageDescription = packageData ? packageData.description : "";
@@ -55,30 +54,16 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData }) => {
       router.push("/login");
     }
   };
+
   const handleClose = () => setOpenModal(false);
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  // Function to handle closing the dialog
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-  // Menu for MoreVertRoundedIcon
   const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleCloseMenu = () => {
     setAnchorEl(null);
-  };
-
-  const handleEdit = () => {
-    // Handle edit action here (you might want to redirect or open an edit modal)
-    console.log("Edit package:", pkg);
-    handleCloseMenu();
   };
 
   const handleDelete = async (pkg) => {
@@ -89,129 +74,173 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData }) => {
       reloadData();
       handleCloseMenu();
     } catch (error) {
-      // Handle error here, e.g., throw it to be handled by the component
       throw error.response?.data || { message: "An error occurred" };
     }
   };
+  const resFontSize = { xs: "0.7em", sm: "0.8rem" };
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-      {/* Adjust grid sizes for responsiveness */}
-      <StyledCard>
+    <Grid
+      item
+      xs={fromEdit ? 8 : 4}
+      sm={fromEdit ? 10 : 5}
+      md={fromEdit ? 10 : 5}
+      lg={fromEdit ? 10 : 4}
+    >
+      <StyledCard
+        sx={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <CardContent
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
             height: "100%",
+            padding: { xs: 2, sm: 3 }, // Responsive padding
           }}
         >
-          <Box>
-            <Box sx={{ display: "flex" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          <Box sx={{ flexGrow: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: { xs: "0.9rem", sm: "1.2rem" },
+                  }}
+                >
                   {pkg.name}
                 </Typography>
                 <Typography
                   color="grey"
                   variant="body2"
-                  sx={{ marginBottom: 1 }}
+                  sx={{
+                    marginBottom: 1,
+                    fontSize: { xs: "0.7rem", sm: "0.9rem" },
+                  }}
                 >
                   {packageDescription}
                 </Typography>
               </Box>
               {!isEdit && <MoreVertRoundedIcon onClick={handleClickMenu} />}
             </Box>
-            {/* Existing package-specific details here */}
+
+            {/* Package-specific details */}
             {pkg.name === "Promotions" && (
-              <>
-                <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-                  <strong>Platform:</strong> {pkg?.data?.platform}
+              <Box
+                sx={{
+                  padding: 3,
+                  borderRadius: 2,
+                  background:
+                    "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+                  color: "white",
+                  boxShadow: 2,
+                  marginTop: 2,
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "linear-gradient(135deg, #FF5733, #FFC300)", // You can also set a solid color if preferred
+                    background: "linear-gradient(135deg, #FF5733, #FFC300)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    letterSpacing: 1.5,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {pkg?.data?.platform}
                 </Typography>
-                <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-                  <strong>Video Price:</strong> Rs.{pkg?.data?.videoPrice}
+
+                <Typography variant="body2" sx={{ fontSize: resFontSize }}>
+                  <strong>Video / Reels:</strong> Rs.{pkg?.data?.videoPrice}
                 </Typography>
-                <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-                  <strong>Image Price:</strong> Rs.{pkg?.data?.imagePrice}
+                <Typography variant="body2" sx={{ fontSize: resFontSize }}>
+                  <strong>Image:</strong> Rs.{pkg?.data?.imagePrice}
                 </Typography>
-                <Typography variant="body2">
-                  <strong>Story Price:</strong> Rs.{pkg?.data?.storyPrice}
+                <Typography variant="body2" sx={{ fontSize: resFontSize }}>
+                  <strong>Story:</strong> Rs.{pkg?.data?.storyPrice}
                 </Typography>
-              </>
+              </Box>
             )}
 
             {pkg.name === "Book Appointment" && (
               <Box
                 sx={{
-                  padding: 1,
-                  border: "1px solid #e0e0e0",
+                  padding: 2,
                   borderRadius: 2,
-                  backgroundColor: "#f9f9f9",
-                  marginBottom: 2,
+                  marginTop: 2,
+                  background:
+                    "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)", // Gradient background
+                  color: "white", // Set text color to white for better contrast
+                  border: "1px solid transparent", // Remove the border or set to transparent to not interfere with gradient
+                  boxShadow: 2, // Optional: add some shadow for depth
                 }}
                 onClick={handleOpenDialog}
               >
-                <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                  Appointment Details
-                </Typography>
-
-                <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-                  <strong>Service Offered:</strong> {pkg.data.appointmentOffer}
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "linear-gradient(135deg, #FF5733, #FFC300)", // You can also set a solid color if preferred
+                    background: "linear-gradient(135deg, #FF5733, #FFC300)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    letterSpacing: 1.5,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {pkg.data.appointmentOffer}
                 </Typography>
 
                 <Typography
                   variant="body2"
                   sx={{
-                    marginBottom: 0.5,
-                    width: "300px", // Fixed width
+                    marginBottom: 1,
+                    display: "-webkit-box",
                     overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 3, // Limit to 3 lines
+                    lineHeight: 1.5,
                   }}
                 >
-                  <strong>Description:</strong> {pkg.data.appointmentDesc}
+                  {pkg.data.appointmentDesc}
                 </Typography>
-
                 <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-                  <strong>Location:</strong> {pkg.data.appointmentLocation}
+                  <strong>{pkg.data.appointmentLocation}</strong>
                 </Typography>
-
                 <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-                  <strong>Price:</strong> Rs. {pkg.data.appointmentPrice}
+                  <strong>Rs. {pkg.data.appointmentPrice}</strong>
                 </Typography>
               </Box>
             )}
-            {pkg.name === "Chat" && (
-              <>
-                {/* <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
-                  <strong>Chat Price: </strong>
-                  {pkg?.data?.chatPrice == "0"
-                    ? " Free"
-                    : `Rs.${pkg?.data?.chatPrice}`}
-                </Typography> */}
-              </>
-            )}
-            {/* Other package types */}
           </Box>
+
           {isEdit && influencer?.id !== data?.id && (
             <Button
               variant="contained"
               color="primary"
               onClick={handleOpen}
               fullWidth
+              sx={{ mt: 2, fontSize: { xs: "0.8rem", sm: "1rem" } }}
             >
               Select
             </Button>
           )}
         </CardContent>
       </StyledCard>
+
       <PackageDetailsModal
         influencer={influencer}
         open={openModal}
         onClose={handleClose}
         pkg={pkg}
       />
-      {/* Dialog for full description */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Appointment Details</DialogTitle>
         <DialogContent>
@@ -235,13 +264,11 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData }) => {
         </DialogActions>
       </Dialog>
 
-      {/* Menu for edit and delete */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
       >
-        {/* <MenuItem onClick={handleEdit}>Edit</MenuItem> */}
         <MenuItem onClick={() => handleDelete(pkg)}>Delete</MenuItem>
       </Menu>
     </Grid>

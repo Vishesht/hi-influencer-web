@@ -40,6 +40,7 @@ const PlatformList = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
   alignItems: "center",
   padding: 8,
+  marginTop: 6,
 }));
 
 const ShareButton = styled(IconButton)(({ theme }) => ({
@@ -197,6 +198,7 @@ const InfluencerProfile = () => {
                       sx={{
                         fontWeight: "bold",
                         fontFamily: "Roboto, sans-serif",
+                        fontSize: { xs: "1.2rem", sm: "1.5rem" },
                       }}
                       variant="h5"
                     >
@@ -213,6 +215,7 @@ const InfluencerProfile = () => {
                   sx={{
                     color: "text.secondary",
                     fontFamily: "Roboto, sans-serif",
+                    fontSize: { xs: "0.8rem", sm: "1rem" },
                   }}
                   variant="body1"
                 >
@@ -269,6 +272,7 @@ const InfluencerProfile = () => {
                     sx={{
                       fontFamily: "sans-serif",
                       ml: 1,
+                      fontSize: { xs: "0.8rem", sm: "1rem" },
                     }}
                   >
                     {platformData.platform}
@@ -294,7 +298,11 @@ const InfluencerProfile = () => {
           {influencer?.packages?.length > 0 && (
             <Typography
               variant="h6"
-              sx={{ marginBottom: 2, fontWeight: "bold" }}
+              sx={{
+                marginBottom: 2,
+                fontWeight: "bold",
+                fontSize: { xs: "1rem", sm: "1.2rem" },
+              }}
             >
               Packages
             </Typography>

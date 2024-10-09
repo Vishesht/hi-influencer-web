@@ -30,31 +30,37 @@ export const showChatComponent = (selectedChat, chatData, userId) => {
               // Helper function to get formatted date
               const getDateLabel = (date) => {
                 const today = new Date();
-                const diffTime = today - date; // Time difference in milliseconds
+                
+                // Normalize to midnight
+                today.setHours(0, 0, 0, 0);
+                const normalizedDate = new Date(date);
+                normalizedDate.setHours(0, 0, 0, 0);
+            
+                const diffTime = today - normalizedDate; // Time difference in milliseconds
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
-                const isCurrentYear =
-                  today.getFullYear() === date.getFullYear();
-
-                if (diffDays < 1) {
-                  return "Today";
-                } else if (diffDays < 2) {
-                  return "Yesterday";
-                } else if (diffDays <= 7) {
-                  return date.toLocaleString("en-US", { weekday: "short" }); // Show day of the week
+                const isCurrentYear = today.getFullYear() === normalizedDate.getFullYear();
+            
+                if (diffDays === 0) {
+                    return "Today";
+                } else if (diffDays === 1) {
+                    return "Yesterday";
+                } else if (diffDays < 8) {
+                    return normalizedDate.toLocaleString("en-US", { weekday: "short" }); // Show day of the week
                 } else if (!isCurrentYear) {
-                  return date.toLocaleDateString("en-US", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  });
+                    return normalizedDate.toLocaleDateString("en-US", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                    });
                 } else {
-                  return date.toLocaleDateString("en-US", {
-                    weekday: "short", // Show day of the week
-                    day: "2-digit",
-                    month: "short",
-                  });
+                    return normalizedDate.toLocaleDateString("en-US", {
+                        weekday: "short", // Show day of the week
+                        day: "2-digit",
+                        month: "short",
+                    });
                 }
-              };
+            };
+            
 
               // Check if we need to display the date separator
               const showDateSeparator =

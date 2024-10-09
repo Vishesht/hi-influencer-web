@@ -506,6 +506,7 @@ const EditProfile: React.FC = () => {
             </Grid>
             {!userData?.isClient && (
               <PackagesSetup
+                fromEdit={true}
                 reloadData={reloadUserData}
                 packages={packages}
                 onSavePackages={handleSavedPackages}

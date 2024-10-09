@@ -160,7 +160,7 @@ const ProfilePage = () => {
         >
           {user?.photoURL || data?.photoURL ? (
             <Image
-              src={user.photoURL || data.photoURL}
+              src={user?.photoURL || data?.photoURL}
               alt="User Image"
               width={150}
               height={150}
