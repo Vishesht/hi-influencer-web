@@ -21,7 +21,7 @@ import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
 import { auth, provider, signInWithPopup } from "../firebase";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { BaseUrl, imgPlaceholderImg } from "@/common/utils";
+import { BaseUrl, generateUsername, imgPlaceholderImg } from "@/common/utils";
 import { loginUser } from "@/api/loginUser";
 import { useAppDispatch } from "@/lib/hooks";
 import { add } from "@/lib/features/login/loginSlice";
@@ -80,11 +80,21 @@ export default function LoginPage() {
     try {
       const res = await loginUser(email, password);
       dispatch(add(res.user));
-      router.push("/");
+      setResponse(res);
+      const userData = await axios.get(`${BaseUrl}/api/users/${res?.user?.id}`);
+      if (userData) {
+        router.push("/");
+      }
       setLoader(false);
     } catch (error) {
       setLoader(false);
-      console.log("first", error);
+      if (
+        error?.response?.data?.message === "Data not found" &&
+        error.status === 404
+      ) {
+        setOpenDialog(true);
+      }
+      console.log("firsterr", error);
     }
   };
 
@@ -150,10 +160,11 @@ export default function LoginPage() {
       email: response.user.email,
       isClient: true,
       photoURL: imgPlaceholderImg,
+      username: generateUsername(),
     };
     setLoader(true);
     try {
-      await axios.post(`${BaseUrl}/api/users`, updatedData, {
+      const res = await axios.post(`${BaseUrl}/api/users`, updatedData, {
         headers: {
           "Content-Type": "application/json",
         },
