@@ -22,6 +22,9 @@ import { useRouter } from "next/navigation";
 import { packagesData } from "@/common";
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import TwitterIcon from "@mui/icons-material/Twitter";
 
 // Custom styled Card with better spacing and shadow
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -136,26 +139,46 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
                   padding: 3,
                   borderRadius: 2,
                   background:
-                    "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+                    "linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)",
                   color: "white",
                   boxShadow: 2,
                   marginTop: 2,
                 }}
               >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "linear-gradient(135deg, #FF5733, #FFC300)", // You can also set a solid color if preferred
-                    background: "linear-gradient(135deg, #FF5733, #FFC300)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    letterSpacing: 1.5,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {pkg?.data?.platform}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  {pkg?.data?.platform === "Instagram" && (
+                    <InstagramIcon
+                      sx={{
+                        marginRight: 1,
+                      }}
+                    />
+                  )}
+                  {pkg?.data?.platform === "Facebook" && (
+                    <FacebookIcon
+                      sx={{
+                        marginRight: 1,
+                      }}
+                    />
+                  )}
+                  {pkg?.data?.platform === "Twitter" && (
+                    <TwitterIcon
+                      sx={{
+                        marginRight: 1,
+                      }}
+                    />
+                  )}
+                  <Typography
+                    variant="body1"
+                    color="white"
+                    sx={{
+                      fontWeight: "bold",
+                      letterSpacing: 1.5,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {pkg?.data?.platform}
+                  </Typography>
+                </Box>
 
                 <Typography variant="body2" sx={{ fontSize: resFontSize }}>
                   <strong>Video / Reels:</strong> Rs.{pkg?.data?.videoPrice}
@@ -227,7 +250,11 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
               color="primary"
               onClick={handleOpen}
               fullWidth
-              sx={{ mt: 2, fontSize: { xs: "0.8rem", sm: "1rem" } }}
+              sx={{
+                mt: 2,
+                fontSize: { xs: "0.8rem", sm: "1rem" },
+                backgroundColor: "#1DA1F2",
+              }}
             >
               Select
             </Button>
