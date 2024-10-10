@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { BaseUrl, imgPlaceholderImg } from "@/common/utils";
 import { add } from "@/lib/features/login/loginSlice";
 import { useAppSelector } from "@/lib/hooks";
-import { validateUsername } from "@/common/validations";
+import { validatePlatforms, validateUsername } from "@/common/validations";
 
 // List of social media platforms
 export const socialMediaPlatforms = [
@@ -75,7 +75,7 @@ const SocialMediaLinks = () => {
       return;
     } else if (!validateUsername(userName)) {
       alert(
-        "Username is not valid. It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
+        "It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
       );
       return;
     }
@@ -87,13 +87,21 @@ const SocialMediaLinks = () => {
       alert("Phone number must be at least 10 digits long");
       return;
     }
+    if (!userAvailableData?.available) {
+      alert("Username not available");
+      return;
+    }
     if (selectedPlatforms.length > 0 && phoneNumber) {
       const platformData = selectedPlatforms.map((platform) => ({
         platform: platform,
         platformLink: linkData[platform]?.platformLink || "",
         followers: linkData[platform]?.followers || "",
       }));
-
+      const validationResult = validatePlatforms(platformData);
+      if (validationResult?.error) {
+        alert(validationResult?.message);
+        return;
+      }
       const updatedData = {
         id: data.id,
         name: data.name,
@@ -127,6 +135,19 @@ const SocialMediaLinks = () => {
   };
 
   const checkUsernameAvailability = async (username) => {
+    if (!username) {
+      let msg = "Username cannot be empty. Please provide a valid username.";
+      return { available: false, message: msg };
+    }
+    if (!validateUsername(username)) {
+      let msg =
+        "It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters.";
+      return { available: false, message: msg };
+    }
+    if (username.length < 6) {
+      let msg = "Username must be at least 6 characters long";
+      return { available: false, message: msg };
+    }
     try {
       // Make a GET request to the backend API to check username availability
       const response = await axios.get(`${BaseUrl}/api/check-username`, {

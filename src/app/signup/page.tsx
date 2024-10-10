@@ -130,16 +130,18 @@ export default function SignUpPage() {
   };
 
   const handleSignUp = async (event) => {
+    event.preventDefault();
+
     if (password !== confirmPassword) {
       alert("The password and confirmation do not match.");
       return;
     }
+
     if (!isOtpVerified) {
       alert("Please verify the OTP first.");
       return;
     }
 
-    event.preventDefault();
     try {
       const res = await registerUser(name, email, password);
       setResponse(res);
@@ -211,12 +213,7 @@ export default function SignUpPage() {
             Join us and connect with top influencers!
           </Typography>
         </Box>
-        <Box
-          component="form"
-          noValidate
-          onSubmit={handleSignUp}
-          sx={{ width: "100%", pt: 1, pb: 4 }}
-        >
+        <Box component="form" noValidate sx={{ width: "100%", pt: 1, pb: 4 }}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -355,7 +352,7 @@ export default function SignUpPage() {
             disabled={!isOtpVerified}
           />
           <Button
-            type="submit"
+            type="button"
             fullWidth
             variant="contained"
             sx={{
@@ -365,6 +362,7 @@ export default function SignUpPage() {
               "&:hover": { backgroundColor: "#1A3A8E" },
             }}
             disabled={!isOtpVerified}
+            onClick={handleSignUp}
           >
             Sign Up
           </Button>
@@ -392,7 +390,7 @@ export default function SignUpPage() {
         title="Select Your Role"
         content="Please choose your role:"
         actions={
-          <Grid container spacing={2} direction={{ xs: "column", sm: "row" }}>
+          <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Card
                 variant="outlined"
@@ -407,15 +405,21 @@ export default function SignUpPage() {
                 }}
                 onClick={() => handleRoleSelection("creator")}
               >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
-                  >
-                    Join as Creator/Influencer
-                  </Typography>
-                </CardContent>
+                <Typography
+                  variant="h6"
+                  align="center"
+                  sx={{
+                    fontSize: { xs: "0.8rem", m: "1rem" },
+                    fontWeight: 600,
+                    color: "#1976d2",
+                    p: 1,
+                    px: 3,
+                  }}
+                >
+                  Join as
+                  <br />
+                  Influencer
+                </Typography>
               </Card>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -432,15 +436,21 @@ export default function SignUpPage() {
                 }}
                 onClick={() => handleRoleSelection("brand")}
               >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
-                  >
-                    Join as Brand/Client
-                  </Typography>
-                </CardContent>
+                <Typography
+                  variant="h6"
+                  align="center"
+                  sx={{
+                    fontSize: { xs: "0.8rem", m: "1rem" },
+                    fontWeight: 600,
+                    color: "#1976d2",
+                    p: 1,
+                    px: 3,
+                  }}
+                >
+                  Join as
+                  <br />
+                  Brand/Client
+                </Typography>
               </Card>
             </Grid>
           </Grid>
