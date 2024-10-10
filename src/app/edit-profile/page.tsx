@@ -186,7 +186,7 @@ const EditProfile: React.FC = () => {
         return;
       } else if (!validateUsername(username)) {
         alert(
-          "Username is not valid. It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
+          "It must contain only lowercase letters (a-z), numbers (0-9), and underscores (_). Please ensure there are no spaces or special characters."
         );
         return;
       } else if (phoneNumber && !validatePhoneNumber(phoneNumber)) {

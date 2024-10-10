@@ -333,22 +333,21 @@ export default function LoginPage() {
                   }}
                   onClick={() => handleRoleSelection("creator")}
                 >
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      align="center"
-                      sx={{
-                        fontSize: { xs: "0.8rem", sm: "1rem" },
-                        fontWeight: 600,
-                        color: "#1976d2",
-                        mt: 0.6,
-                      }}
-                    >
-                      <span>Join as</span>
-                      <br />
-                      <span>Creator/Influencer</span>
-                    </Typography>
-                  </CardContent>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    sx={{
+                      fontSize: { xs: "0.8rem", m: "1rem" },
+                      fontWeight: 600,
+                      color: "#1976d2",
+                      p: 1,
+                      px: 3,
+                    }}
+                  >
+                    Join as
+                    <br />
+                    Influencer
+                  </Typography>
                 </Card>
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -365,22 +364,21 @@ export default function LoginPage() {
                   }}
                   onClick={() => handleRoleSelection("brand")}
                 >
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      align="center"
-                      sx={{
-                        fontSize: { xs: "0.8rem", sm: "1rem" },
-                        fontWeight: 600,
-                        color: "#1976d2",
-                        mt: 0.6,
-                      }}
-                    >
-                      <span>Join as</span>
-                      <br />
-                      <span>Brand/Client</span>
-                    </Typography>
-                  </CardContent>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    sx={{
+                      fontSize: { xs: "0.8rem", m: "1rem" },
+                      fontWeight: 600,
+                      color: "#1976d2",
+                      p: 1,
+                      px: 3,
+                    }}
+                  >
+                    Join as
+                    <br />
+                    Brand/Client
+                  </Typography>
                 </Card>
               </Grid>
             </Grid>

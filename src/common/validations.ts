@@ -66,3 +66,16 @@ export const validatePhoneNumber = (number) => {
   const phoneNumberPattern = /^\d{10}$/;
   return phoneNumberPattern.test(number);
 };
+
+export const validatePlatforms = (data) => {
+  for (const item of data) {
+    if (!item.platform || !item.platformLink || !item.followers) {
+      return {
+        error: true,
+        message:
+          "Each platform must have a valid platform, platformLink, and followers.",
+      };
+    }
+  }
+  return { error: false, message: "All platforms are valid." };
+};
