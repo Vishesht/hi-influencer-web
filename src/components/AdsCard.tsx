@@ -115,16 +115,17 @@ const AdCard: React.FC<AdCardProps> = ({
     setApplicantsData([]);
     setPopupOpen(false);
   };
-
   return (
     <StyledCard>
       <ImageContainer>
-        <IconButton
-          onClick={onPrev}
-          style={{ position: "absolute", left: 0, zIndex: 1 }}
-        >
-          <ArrowBackIosIcon />
-        </IconButton>
+        {ad.adsImages?.length > 1 && (
+          <IconButton
+            onClick={onPrev}
+            style={{ position: "absolute", left: 0, zIndex: 1 }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+        )}
         <AdImage
           src={
             ad.adsImages[currentIndex] ||
@@ -132,12 +133,58 @@ const AdCard: React.FC<AdCardProps> = ({
           }
           alt={ad.title}
         />
-        <IconButton
-          onClick={onNext}
-          style={{ position: "absolute", right: 0, zIndex: 1 }}
+        {ad.adsImages?.length > 1 && (
+          <IconButton
+            onClick={onNext}
+            style={{ position: "absolute", right: 0, zIndex: 1 }}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        )}
+        <Button
+          // disabled={isApplied || isApproved}
+          variant="contained"
+          color="primary"
+          sx={{
+            position: "absolute",
+            right: 10,
+            bottom: 10,
+            height: 30,
+            width: 80,
+            borderRadius: "20px",
+            textTransform: "none",
+            fontWeight: 500,
+            backgroundColor: isApplied
+              ? "#FFC400"
+              : isApproved
+              ? "#28a745"
+              : "#24A0ED", // Conditional background color
+            "&:hover": {
+              backgroundColor: isApplied
+                ? "#FFB000"
+                : isApproved
+                ? "#218838"
+                : "#007bff",
+            },
+          }}
+          onClick={
+            isApplied
+              ? () => null
+              : isApproved
+              ? () => null
+              : myAds
+              ? onEditClick
+              : onApply
+          }
         >
-          <ArrowForwardIosIcon />
-        </IconButton>
+          {myAds
+            ? "Edit"
+            : isApplied
+            ? "Applied"
+            : isApproved
+            ? "Joined"
+            : "Apply"}
+        </Button>
       </ImageContainer>
       <DetailsContainer>
         <Typography sx={{ fontSize: 19, fontWeight: 600, marginBottom: 1 }}>
@@ -168,7 +215,7 @@ const AdCard: React.FC<AdCardProps> = ({
           </Typography>
         </DetailItem>
         <DetailItem>
-          <CalendarTodayIcon fontSize="small" />
+          <CalendarTodayIcon fontSize="inherit" />
           <DetailLabel variant="body2">Posted At:</DetailLabel>
           <Typography variant="body2" color="textSecondary">
             {new Date(ad.createdAt).toLocaleDateString()}
@@ -192,48 +239,6 @@ const AdCard: React.FC<AdCardProps> = ({
               {ad.budget}
             </Typography>
           </DetailItem>
-
-          <Button
-            // disabled={isApplied || isApproved}
-            variant="contained"
-            color="primary"
-            sx={{
-              height: 30,
-              width: 80,
-              borderRadius: "20px",
-              textTransform: "none",
-              fontWeight: 500,
-              backgroundColor: isApplied
-                ? "#FFC400"
-                : isApproved
-                ? "#28a745"
-                : "#24A0ED", // Conditional background color
-              "&:hover": {
-                backgroundColor: isApplied
-                  ? "#FFB000"
-                  : isApproved
-                  ? "#218838"
-                  : "#007bff",
-              },
-            }}
-            onClick={
-              isApplied
-                ? () => null
-                : isApproved
-                ? () => router.push("/payment")
-                : myAds
-                ? onEditClick
-                : onApply
-            }
-          >
-            {myAds
-              ? "Edit"
-              : isApplied
-              ? "Applied"
-              : isApproved
-              ? "Pay"
-              : "Apply"}
-          </Button>
         </Box>
         {myAds && (
           <DetailItem>
