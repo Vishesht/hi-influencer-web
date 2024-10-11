@@ -100,7 +100,8 @@ const Ads: React.FC = () => {
   const handleNextImage = (adId) => {
     setCurrentImageIndices((prev) => {
       const currentIndex = prev[adId] ?? 0;
-      const ad = adsData.find((ad) => ad._id === adId);
+      const addData = filter === 'all' ? adsData : myAdsData
+      const ad = addData.find((ad) => ad._id === adId);
       const totalImages = ad?.adsImages.length || 0;
 
       return {
@@ -113,7 +114,8 @@ const Ads: React.FC = () => {
   const handlePrevImage = (adId) => {
     setCurrentImageIndices((prev) => {
       const currentIndex = prev[adId] ?? 0;
-      const ad = adsData.find((ad) => ad._id === adId);
+      const addData = filter === 'all' ? adsData : myAdsData
+      const ad = addData.find((ad) => ad._id === adId);
       const totalImages = ad?.adsImages.length || 0;
 
       return {
@@ -138,7 +140,6 @@ const Ads: React.FC = () => {
       console.error("Error applying for ad:", error);
     }
   };
-
   return (
     <StyledContainer>
       <Box
@@ -160,7 +161,6 @@ const Ads: React.FC = () => {
             backgroundColor: "#F653E1",
             marginLeft: "20px",
             padding: "4px 10px",
-            borderRadius: "50px",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             fontWeight: "bold",
             fontSize: "16px",

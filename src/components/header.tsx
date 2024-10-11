@@ -242,9 +242,9 @@ const Header = () => {
           {/* Desktop Nav Links */}
           {!isMobile && !path.startsWith("/admin") && data && (
             <>
-              {/* <Button onClick={() => router.push("/ads")} color="inherit">
+              <Button onClick={() => router.push("/ads")} color="inherit">
                 Ads
-              </Button> */}
+              </Button>
               <Button onClick={() => router.push("/chat")} color="inherit">
                 Chat
               </Button>
@@ -347,13 +347,13 @@ const Header = () => {
             >
               <ListItemText primary="Profile" sx={{ color: "black" }} />
             </ListItem> */}
-            {/* <ListItem
+            <ListItem
               component="div"
               sx={{ backgroundColor: "#fff" }}
               onClick={() => handleListItemClick("/ads")}
             >
               <ListItemText primary="Ads" sx={{ color: "black" }} />
-            </ListItem> */}
+            </ListItem>
             <ListItem
               component="div"
               sx={{ backgroundColor: "#fff" }}

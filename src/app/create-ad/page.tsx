@@ -125,6 +125,23 @@ const CreateAds: React.FC = ({ searchParams }) => {
   };
 
   const handleSubmit = async () => {
+    setErrorMessage("");
+    if (!title) {
+      setErrorMessage("Please add the title");
+      return;
+    } else if (!description) {
+      setErrorMessage("Please add the description");
+      return;
+    } else if (!selectedCategories) {
+      setErrorMessage("Please select the category");
+      return;
+    } else if (!selectedState) {
+      setErrorMessage("Please select the state");
+      return;
+    } else if (!budget) {
+      setErrorMessage("Please select the price");
+      return;
+    }
     setLoading(true); // Start loader
     try {
       const uploadedImageUrls = await uploadImages();
@@ -139,7 +156,7 @@ const CreateAds: React.FC = ({ searchParams }) => {
         desc: description,
         category: selectedCategories,
         budget,
-        adsImages: [...existingImages, ...uploadedImageUrls], // Combine existing and new images
+        adsImages: [...existingImages, ...uploadedImageUrls],
       };
 
       if (!searchParams?.edit) {
@@ -190,7 +207,7 @@ const CreateAds: React.FC = ({ searchParams }) => {
   return (
     <StyledContainer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h5" gutterBottom>
           {searchParams?.edit ? "Edit Ad" : "Create a New Ad"}
         </Typography>
         {searchParams?.edit && (
@@ -236,7 +253,7 @@ const CreateAds: React.FC = ({ searchParams }) => {
             />
             <ImageGrid>
               {/* Display existing images */}
-              {existingImages.map((url, index) => (
+              {existingImages?.map((url, index) => (
                 <UploadPreview
                   key={index}
                   onClick={() => handleImageClick(url)}
