@@ -17,6 +17,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { truncateText } from "@/common/utils";
 import ApplicantsPopup from "./ApplicantsPopup";
 import { useRouter } from "next/navigation";
+import AdDetailPopup from "./AdDetailPopup";
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -96,6 +97,7 @@ const AdCard: React.FC<AdCardProps> = ({
   refreshData,
 }) => {
   const [popupOpen, setPopupOpen] = useState(false);
+  const [selectedAd, setSelectedAd] = useState(null);
   const [applicantsData, setApplicantsData] = useState([]);
   const [applicant, setApplicants] = useState("");
   const router = useRouter();
@@ -114,6 +116,16 @@ const AdCard: React.FC<AdCardProps> = ({
     refreshData();
     setApplicantsData([]);
     setPopupOpen(false);
+  };
+
+  const handleOpenDetailPopup = () => {
+    setSelectedAd(ad);
+    setPopupOpen(true);
+  };
+
+  const handleCloseDetailPopup = () => {
+    setPopupOpen(false);
+    setSelectedAd(null);
   };
   return (
     <StyledCard>
@@ -187,10 +199,17 @@ const AdCard: React.FC<AdCardProps> = ({
         </Button>
       </ImageContainer>
       <DetailsContainer>
-        <Typography sx={{ fontSize: 19, fontWeight: 600, marginBottom: 1 }}>
+        <Typography
+          sx={{ fontSize: 16, fontWeight: 600, cursor: "pointer" }}
+          onClick={handleOpenDetailPopup}
+        >
           {ad.title}
         </Typography>
-        <Typography variant="body2" sx={{ marginBottom: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{ marginBottom: 2, cursor: "pointer" }}
+          onClick={handleOpenDetailPopup}
+        >
           {truncateText(ad?.desc, 100)}
         </Typography>
         <DetailItem>
@@ -289,6 +308,11 @@ const AdCard: React.FC<AdCardProps> = ({
         open={popupOpen}
         onClose={handleClosePopup}
         applicantIds={applicantsData}
+      />
+      <AdDetailPopup
+        open={popupOpen}
+        onClose={handleCloseDetailPopup}
+        ad={selectedAd}
       />
     </StyledCard>
   );
