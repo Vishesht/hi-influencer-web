@@ -120,6 +120,13 @@ const ProfilePage = () => {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    if(!user?.isInfluencer && !verifyData?.userDetailsMissing){
+      verifyAcc(user?.id)
+    }
+  }, [user])
+  
+
   const filteredArr = user?.platform?.filter(
     (item) => item.platformLink.trim() !== ""
   );

@@ -26,6 +26,7 @@ import {
   socialMediaPlatforms,
   genderList,
   categories,
+  imgPlaceholderImg,
 } from "@/common/utils";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
@@ -167,7 +168,6 @@ const EditProfile: React.FC = () => {
         await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(storageRef);
         setImageUri(downloadURL);
-        handleSave(downloadURL);
         setLoader(false);
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -191,6 +191,18 @@ const EditProfile: React.FC = () => {
         return;
       } else if (phoneNumber && !validatePhoneNumber(phoneNumber)) {
         alert("Please enter a valid phone number");
+        return;
+      }else  if (imageUri === imgPlaceholderImg) {
+        alert("Please upload your image.");
+        return
+      }else if (!selectedCategory) {
+        alert("Select the Category from the list");
+        return;
+      }else if (packages?.length === 0) {
+        alert("Please select the packages you would like to receive");
+        return;
+      }else if (!selectedState) {
+        alert("Please select your current state.");
         return;
       }
       setLoader(true);
