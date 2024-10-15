@@ -97,6 +97,7 @@ const AdCard: React.FC<AdCardProps> = ({
   refreshData,
 }) => {
   const [popupOpen, setPopupOpen] = useState(false);
+  const [popupOpen1, setPopupOpen1] = useState(false);
   const [selectedAd, setSelectedAd] = useState(null);
   const [applicantsData, setApplicantsData] = useState([]);
   const [applicant, setApplicants] = useState("");
@@ -120,11 +121,11 @@ const AdCard: React.FC<AdCardProps> = ({
 
   const handleOpenDetailPopup = () => {
     setSelectedAd(ad);
-    setPopupOpen(true);
+    setPopupOpen1(true);
   };
 
   const handleCloseDetailPopup = () => {
-    setPopupOpen(false);
+    setPopupOpen1(false);
     setSelectedAd(null);
   };
   return (
@@ -310,7 +311,7 @@ const AdCard: React.FC<AdCardProps> = ({
         applicantIds={applicantsData}
       />
       <AdDetailPopup
-        open={popupOpen}
+        open={popupOpen1}
         onClose={handleCloseDetailPopup}
         ad={selectedAd}
       />
