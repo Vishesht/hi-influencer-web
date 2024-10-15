@@ -1,11 +1,12 @@
 import axios from "axios";
 import { BaseUrl } from "@/common/utils";
 
-export const sendNotification = async (toEmail, title, body) => {
+export const sendNotification = async (toEmail, title, body, html = "") => {
   const notificationData = {
     email: toEmail,
     title: title,
     body: body,
+    html: html,
   };
 
   try {
