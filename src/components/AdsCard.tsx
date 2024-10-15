@@ -45,7 +45,7 @@ const AdImage = styled("img")(({ theme }) => ({
 
 const DetailsContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
-  height: "340px",
+  height: "380px",
 }));
 
 const DetailItem = styled(Box)(({ theme }) => ({

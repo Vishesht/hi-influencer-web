@@ -120,7 +120,7 @@ const SocialMediaLinks = () => {
         });
 
         dispatch(add({ ...data, phoneNumber: phoneNumber }));
-        router.push("/");
+        router.push("/edit-profile");
       } catch (error) {
         console.error("Error updating profile:", error);
       }
