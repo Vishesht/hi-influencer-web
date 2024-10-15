@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import {
   Container,
@@ -20,7 +20,12 @@ import TelegramIcon from "@mui/icons-material/Telegram";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { styled } from "@mui/system";
 import { useRouter } from "next/navigation";
-import { BaseUrl, checkUserDetails, cleanImageUrl } from "@/common/utils";
+import {
+  BaseUrl,
+  adminEmail,
+  checkUserDetails,
+  cleanImageUrl,
+} from "@/common/utils";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { useAppSelector } from "@/lib/hooks";
@@ -29,9 +34,11 @@ import Image from "next/image";
 import ProfilePromotion from "@/components/ProfilePromotion";
 import Loading from "@/components/LoadingSpinner";
 import ReusableSnackbar from "@/components/ReusableSnackbar";
+import { sendNotification } from "@/api/commonApi";
 
 interface User {
   id: string;
+  email: string;
   emailVerified: boolean;
   photoURL: string;
   platform: Array<any>;
@@ -87,6 +94,7 @@ const ProfilePage = () => {
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const [loader, setLoader] = useState(false);
+  const hasVerified = useRef(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: any) => {
@@ -121,11 +129,11 @@ const ProfilePage = () => {
   }, []);
 
   useEffect(() => {
-    if(!user?.isInfluencer && !verifyData?.userDetailsMissing){
-      verifyAcc(user?.id)
+    if (user && !user.isInfluencer && !verifyData?.userDetailsMissing) {
+      verifyAcc(user.id);
+      hasVerified.current = true;
     }
-  }, [user])
-  
+  }, [user?.isInfluencer]);
 
   const filteredArr = user?.platform?.filter(
     (item) => item.platformLink.trim() !== ""
@@ -140,6 +148,10 @@ const ProfilePage = () => {
     try {
       const res = await axios.put(`${BaseUrl}/api/users/${id}/influencer`);
       if (res.status == 200) {
+        const title = "New Account Request";
+        const desc = `You have received a new influencer joining request from the email: ${user.email}.`;
+
+        sendNotification(adminEmail, title, desc);
         setSnackbarOpen(true);
         setSnackbarMessage(verificationText);
         fetchUserData();

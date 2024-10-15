@@ -115,10 +115,23 @@ const AdminUsers = () => {
         `${BaseUrl}/api/users/${user?.id}/influencer?verified=true`
       );
       const title = "Account Verified";
-      const desc =
-        "Your account has been successfully verified. You are now listed and eligible to start receiving deals.";
+      const desc = `Your account has been successfully verified. You are now listed and eligible to start receiving deals. For more details, please visit our website: www.hiinfluencer.in`;
+      const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6;">
+        <h1 style="color: #4CAF50;">Account Verified</h1>
+        <p>Your account has been successfully verified.</p>
+        <p>You are now listed and eligible to start receiving deals.</p>
+        <p>For more details, please visit our website: 
+          <a href="http://www.hiinfluencer.in" style="color: #4CAF50; text-decoration: none;">www.hiinfluencer.in</a>.
+        </p>
+        <p>Thank you for joining us!</p>
+        <footer style="margin-top: 20px; font-size: 0.8em; color: #777;">
+          <p>&copy; ${new Date().getFullYear()} HiInfluencer. All rights reserved.</p>
+        </footer>
+      </div>
+    `;
       if (res.status == 200) {
-        sendNotification(user.email, title, desc);
+        sendNotification(user.email, title, desc, html);
         setSnackbarOpen(true);
         setSnackbarMessage(verificationText);
         fetchUsers();
