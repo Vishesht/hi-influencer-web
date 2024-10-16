@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 export const showChatComponent = (selectedChat, chatData, userId) => {
   return (
@@ -30,39 +31,38 @@ export const showChatComponent = (selectedChat, chatData, userId) => {
               // Helper function to get formatted date
               const getDateLabel = (date) => {
                 const today = new Date();
-                
-                // Normalize to midnight
                 today.setHours(0, 0, 0, 0);
                 const normalizedDate = new Date(date);
                 normalizedDate.setHours(0, 0, 0, 0);
-            
-                const diffTime = today - normalizedDate; // Time difference in milliseconds
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
-                const isCurrentYear = today.getFullYear() === normalizedDate.getFullYear();
-            
-                if (diffDays === 0) {
-                    return "Today";
-                } else if (diffDays === 1) {
-                    return "Yesterday";
-                } else if (diffDays < 8) {
-                    return normalizedDate.toLocaleString("en-US", { weekday: "short" }); // Show day of the week
-                } else if (!isCurrentYear) {
-                    return normalizedDate.toLocaleDateString("en-US", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                    });
-                } else {
-                    return normalizedDate.toLocaleDateString("en-US", {
-                        weekday: "short", // Show day of the week
-                        day: "2-digit",
-                        month: "short",
-                    });
-                }
-            };
-            
 
-              // Check if we need to display the date separator
+                const diffTime = today - normalizedDate;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const isCurrentYear =
+                  today.getFullYear() === normalizedDate.getFullYear();
+
+                if (diffDays === 0) {
+                  return "Today";
+                } else if (diffDays === 1) {
+                  return "Yesterday";
+                } else if (diffDays < 8) {
+                  return normalizedDate.toLocaleString("en-US", {
+                    weekday: "short",
+                  });
+                } else if (!isCurrentYear) {
+                  return normalizedDate.toLocaleDateString("en-US", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  });
+                } else {
+                  return normalizedDate.toLocaleDateString("en-US", {
+                    weekday: "short",
+                    day: "2-digit",
+                    month: "short",
+                  });
+                }
+              };
+
               const showDateSeparator =
                 !previousMsgDate ||
                 msgDate.toDateString() !== previousMsgDate.toDateString();
@@ -101,13 +101,24 @@ export const showChatComponent = (selectedChat, chatData, userId) => {
                       style={{ wordWrap: "break-word" }}
                     >
                       <Typography variant="body2">{msg.text}</Typography>
-                      <Typography variant="caption" color="textSecondary">
-                        {new Date(msg.timestamp).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </Typography>
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <Typography variant="caption" color="textSecondary">
+                          {new Date(msg.timestamp).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </Typography>
+                        {isCurrentUser && index === messages.length - 1 && (
+                          <Box display="flex" alignItems="center">
+                            {msg.read ? (
+                              <DoneAllIcon color="primary" fontSize="small" />
+                            ) : (
+                              <DoneAllIcon color="disabled" fontSize="small" />
+                            )}
+                          </Box>
+                        )}
+                      </Box>
                     </Box>
                   </Box>
                 </React.Fragment>
