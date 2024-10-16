@@ -1,7 +1,14 @@
 // Import the necessary Firebase functions and services
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import { getDatabase, onValue, push, ref, set } from "firebase/database";
+import {
+  getDatabase,
+  onValue,
+  push,
+  ref,
+  set,
+  update,
+} from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { getMessaging, isSupported } from "firebase/messaging";
 
@@ -32,6 +39,7 @@ if (typeof window !== "undefined" && isSupported()) {
   messaging = getMessaging(app);
 }
 
+// Function to save a message to Firebase
 export const saveMessageToFirebase = (chatId: string, message: any) => {
   const messagesRef = ref(db, `chats/${chatId}/messages`);
   const newMessageRef = push(messagesRef);
@@ -45,6 +53,25 @@ export const getChatDataFromFirebase = (callback: (data: any) => void) => {
     const data = snapshot.val();
     callback(data); // Call the callback with the retrieved data
   });
+};
+
+// Function to update the read status of a message
+export const updateMessageReadStatus = async (
+  chatId: string,
+  messageId: string,
+  readStatus: boolean
+) => {
+  try {
+    // Reference to the specific message in the chat
+    const messageRef = ref(db, `chats/${chatId}/messages/${messageId}`);
+
+    // Update the read status of the message
+    await update(messageRef, {
+      read: readStatus,
+    });
+  } catch (error) {
+    console.error("Error updating message read status:", error);
+  }
 };
 
 // Export Firebase services and modules

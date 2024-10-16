@@ -17,7 +17,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Menu";
 import SendIcon from "@mui/icons-material/Send";
 import Header from "@/components/header";
-import { getChatDataFromFirebase, saveMessageToFirebase } from "../firebase";
+import {
+  getChatDataFromFirebase,
+  saveMessageToFirebase,
+  updateMessageReadStatus,
+} from "../firebase";
 import axios from "axios";
 import { BaseUrl, adminUserId } from "@/common/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -39,6 +43,7 @@ const ChatScreen = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const data = useAppSelector((state) => state.login.userData);
   const hasFetchedChatData = useRef(false);
+  const isMounted = useRef(false);
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -62,11 +67,11 @@ const ChatScreen = () => {
     }
   };
 
-  const CreateChat = () => {
-    if (adminUserId !== data?.id) {
-      saveChat(data.id, adminUserId);
-    }
-  };
+  // const CreateChat = () => {
+  //   if (adminUserId !== data?.id) {
+  //     saveChat(data.id, adminUserId);
+  //   }
+  // };
 
   useEffect(() => {
     if (data?.id && !hasFetchedChatData.current) {
@@ -74,6 +79,15 @@ const ChatScreen = () => {
       hasFetchedChatData.current = true;
     }
   }, [data?.id, selectedChat]);
+
+  useEffect(() => {
+    isMounted.current = true;
+
+    return () => {
+      isMounted.current = false;
+      setSelectedChat(null);
+    };
+  }, []);
 
   useEffect(() => {
     if (selectedChat?.id && data?.id) {
@@ -86,39 +100,36 @@ const ChatScreen = () => {
             messages: item[key].messages || {},
           }));
 
-          // Ensure selectedChat is valid before accessing its id
-          if (selectedChat && selectedChat.id) {
-            const filteredChat = chats.find(
-              (chat) => chat.id === selectedChat.id
-            );
+          const filteredChat = chats.find(
+            (chat) => chat.id === selectedChat.id
+          );
 
-            if (filteredChat) {
-              setChatData([filteredChat]);
-            } else {
-              setChatData([]);
-            }
+          if (filteredChat) {
+            setChatData([filteredChat]);
+
+            // Update read status for the current user
+            Object.keys(filteredChat.messages).forEach((messageId) => {
+              const message = filteredChat.messages[messageId];
+              if (message.sender !== data.id && !message.read) {
+                if (isMounted.current) {
+                  updateMessageReadStatus(selectedChat.id, messageId, true);
+                }
+              }
+            });
           } else {
-            // Handle case where selectedChat is null or doesn't have an id
-            setChatData([]); // or any appropriate fallback
+            setChatData([]);
           }
-        } else {
-          // handleSendMessage(adminUserId, "Welcome to the Hi Influencer App!");
-          // setTimeout(() => {
-          //   handleSendMessage(
-          //     adminUserId,
-          //     "If you need help or have any questions about our website, just send us a message here. We’re here to help you soon!"
-          //   );
-          // }, 2000);
         }
       });
     }
-  }, [selectedChat]);
+  }, [selectedChat, data]);
 
   const handleSendMessage = (senderId, msg) => {
     if (msg.trim() === "" || !selectedChat) return;
     const message = {
       text: msg,
       sender: senderId,
+      read: false,
       timestamp: Date.now(),
     };
     selectedChat?.id && saveMessageToFirebase(selectedChat?.id, message);
@@ -144,17 +155,17 @@ const ChatScreen = () => {
     );
   });
 
-  const saveChat = async (userId1, userId2) => {
-    try {
-      await axios.post(`${BaseUrl}/service/create-chat`, {
-        userId1,
-        userId2,
-      });
-      data?.id && getChatData(data?.id);
-    } catch (error) {
-      console.error("Error saving chat:", error);
-    }
-  };
+  // const saveChat = async (userId1, userId2) => {
+  //   try {
+  //     await axios.post(`${BaseUrl}/service/create-chat`, {
+  //       userId1,
+  //       userId2,
+  //     });
+  //     data?.id && getChatData(data?.id);
+  //   } catch (error) {
+  //     console.error("Error saving chat:", error);
+  //   }
+  // };
 
   return (
     <>
