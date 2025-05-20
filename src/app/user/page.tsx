@@ -128,12 +128,12 @@ const ProfilePage = () => {
     fetchUserData();
   }, []);
 
-  useEffect(() => {
-    if (user && !user.isInfluencer && !verifyData?.userDetailsMissing) {
-      verifyAcc(user.id);
-      hasVerified.current = true;
-    }
-  }, [user?.isInfluencer]);
+  // useEffect(() => {
+  //   if (user && !user.isInfluencer && !verifyData?.userDetailsMissing) {
+  //     verifyAcc(user.id);
+  //     hasVerified.current = true;
+  //   }
+  // }, [user?.isInfluencer]);
 
   const filteredArr = user?.platform?.filter(
     (item) => item.platformLink.trim() !== ""

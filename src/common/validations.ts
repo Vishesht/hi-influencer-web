@@ -25,6 +25,17 @@ export const validatePromotion = (promotion) => {
     }
   }
 
+  if (promotion.name === "Ask for Collaboration") {
+    const collabFields = ["collaborationOffer", "collaborationPrice"];
+    collabFields.forEach((field) => {
+      if (!(field in data)) {
+        errors.push(`Error for ${platform}: Missing ${field}`);
+      } else if (Number(data[field]) <= 0) {
+        errors.push(`Error for ${platform}: ${field} must be greater than 0`);
+      }
+    });
+  }
+
   // Validate for "Book Appointment"
   if (promotion.name === "Book Appointment") {
     const appointmentFields = [

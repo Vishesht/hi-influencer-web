@@ -253,6 +253,34 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
                 </Typography>
               </Box>
             )}
+            {pkg.name === "Ask for Collaboration" && (
+              <Box
+                sx={{
+                  padding: 2,
+                  borderRadius: 2,
+                  marginTop: 2,
+                  background: "linear-gradient(135deg, #FF7E5F, #FF6F20)", // Gradient background
+                  color: "white", // Set text color to white for better contrast
+                  border: "1px solid transparent", // Remove the border or set to transparent to not interfere with gradient
+                  boxShadow: 2, // Optional: add some shadow for depth
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: "bold",
+                    letterSpacing: 1.5,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {pkg.data.collaborationOffer}
+                </Typography>
+
+                <Typography variant="body2" sx={{ marginBottom: 0.5 }}>
+                  <strong>Rs. {pkg.data.collaborationPrice}</strong>
+                </Typography>
+              </Box>
+            )}
           </Box>
 
           {isEdit && influencer?.id !== data?.id && (

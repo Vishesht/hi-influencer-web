@@ -70,6 +70,11 @@ const PackageDetailsModal = ({
         alert("Please fill all the fields");
         return null;
       }
+    } else if (item?.pkgName === "Ask for Collaboration") {
+      if (!item?.collaborationOffer || !item?.collaborationPrice) {
+        alert("Please fill all the fields");
+        return null;
+      }
     }
 
     try {
@@ -377,6 +382,26 @@ const PackageDetailsModal = ({
             <TextField
               label="Reason for Invitation"
               name="invitationReason"
+              onChange={handleChange}
+              fullWidth
+              variant="outlined"
+              margin="normal"
+            />
+          </>
+        )}
+        {pkg.name === "Ask for Collaboration" && (
+          <>
+            <TextField
+              label="Collaboration Offer"
+              name="collaborationOffer"
+              onChange={handleChange}
+              fullWidth
+              variant="outlined"
+              margin="normal"
+            />
+            <TextField
+              label="Collaboration Price"
+              name="collaborationPrice"
               onChange={handleChange}
               fullWidth
               variant="outlined"
