@@ -358,6 +358,18 @@ const Orders: React.FC = () => {
                           <b>Type:</b> {item.orderDetails[0].selectedMedia}
                         </Typography>
                       )}
+                      {item.orderDetails[0].collaborationOffer && (
+                        <Typography variant="body2">
+                          <b>Collaboration Offer:</b>{" "}
+                          {item.orderDetails[0].collaborationOffer}
+                        </Typography>
+                      )}
+                      {item.orderDetails[0].collaborationPrice && (
+                        <Typography variant="body2">
+                          <b>Collaboration Price:</b>{" "}
+                          {item.orderDetails[0].collaborationPrice}
+                        </Typography>
+                      )}
                       {item.orderDetails[0].name && (
                         <Typography variant="body2">
                           <b>Name:</b> {item.orderDetails[0].name}

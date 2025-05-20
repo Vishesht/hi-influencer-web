@@ -28,6 +28,11 @@ const PackagesSetup = ({ fromEdit, packages, onSavePackages, reloadData }) => {
       description:
         "Promote through video, images, or story posts to maximize engagement and visibility.",
     },
+    {
+      name: "Ask for Collaboration",
+      description:
+        "Collaborate with brands or influencers to create engaging content and expand your reach.",
+    },
     // {
     //   name: "Free Promotion",
     //   description:
@@ -87,6 +92,12 @@ const PackagesSetup = ({ fromEdit, packages, onSavePackages, reloadData }) => {
         return null;
       } else if (
         selectedPackage === "Book Appointment" &&
+        validation?.length > 0
+      ) {
+        alert(validation[0]);
+        return null;
+      } else if (
+        selectedPackage === "Ask for Collaboration" &&
         validation?.length > 0
       ) {
         alert(validation[0]);
@@ -339,6 +350,54 @@ const PackagesSetup = ({ fromEdit, packages, onSavePackages, reloadData }) => {
                 placeholder="Price"
                 value={formData.chatPrice || ""}
                 onChange={handleInputChange}
+              />
+            </Grid>
+          </Grid>
+        );
+      case "Ask for Collaboration":
+        return (
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Collaboration Offer"
+                name="collaborationOffer"
+                placeholder="e.g., Brand partnership, sponsored content, etc."
+                value={formData.collaborationOffer || ""}
+                onChange={handleInputChange}
+                variant="outlined"
+                helperText="Describe the type of collaboration you are looking for."
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Collaboration Price"
+                name="collaborationPrice"
+                type="number"
+                placeholder="e.g., Rs. 5000"
+                value={formData.collaborationPrice || ""}
+                onChange={handleInputChange}
+                variant="outlined"
+                helperText="Specify the price for the collaboration."
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Collaboration Description"
+                name="collaborationDesc"
+                placeholder="e.g., Details about the collaboration"
+                value={formData.collaborationDesc || ""}
+                onChange={handleInputChange}
+                variant="outlined"
+                helperText="Provide details about the collaboration."
+                required
+                multiline
+                rows={4} // You can set this to control the initial height (number of visible rows)
+                maxRows={6} // Optional: Limit the maximum number of rows
               />
             </Grid>
           </Grid>
