@@ -111,7 +111,7 @@ const SavedPackage = ({ pkg, isEdit, influencer, reloadData, fromEdit }) => {
             padding: { xs: 2, sm: 3 },
           }}
         >
-          <Box sx={{ flexGrow: 1 }}>
+          <Box sx={{ flexGrow: 1, mb: 1 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Box sx={{ flexGrow: 1 }}>
                 <Typography
