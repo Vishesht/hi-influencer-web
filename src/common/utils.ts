@@ -11,6 +11,9 @@ export const imgPlaceholderImg =
 export const womenPlaceholderImg =
   "https://randomuser.me/api/portraits/women/41.jpg";
 
+export const aiChatbotLogo =
+  "https://media.istockphoto.com/id/1221348467/vector/chat-bot-ai-and-customer-service-support-concept-vector-flat-person-illustration-smiling.jpg?s=612x612&w=0&k=20&c=emMSOYb4jWIVQQBVpYvP9LzGwPXXhcmbpZHlE6wgR78=";
+
 export const indianStates = [
   "Andaman and Nicobar Islands",
   "Andhra Pradesh",

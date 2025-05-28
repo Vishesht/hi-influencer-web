@@ -1,0 +1,709 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["Hi", "Hello", "Hey", "Good morning", "What's up", "Yo"],
+      "responses": [
+        "Hey there! How can I assist you today?",
+        "Hi! Need help finding influencers or starting a campaign?",
+        "Hello! Welcome to Hi Influencer."
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "Bye",
+        "Goodbye",
+        "See you",
+        "Catch you later",
+        "Talk to you soon"
+      ],
+      "responses": [
+        "Goodbye! Let us know if you need anything else.",
+        "Take care! Hope to see you back soon.",
+        "Bye! Thanks for using Hi Influencer."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Thanks",
+        "Thank you",
+        "Much appreciated",
+        "Thx",
+        "Thanks a lot"
+      ],
+      "responses": [
+        "You're welcome!",
+        "No problem at all.",
+        "Glad I could help."
+      ]
+    },
+
+    {
+      "tag": "how_it_works",
+      "patterns": [
+        "How does Hi Influencer work?",
+        "What is this platform about?",
+        "Explain Hi Influencer",
+        "What can I do here?"
+      ],
+      "responses": [
+        "Hi Influencer connects brands with top influencers for authentic marketing. Clients can create campaigns, and influencers can apply to them. We manage communication, payments, and performance tracking."
+      ]
+    },
+    {
+      "tag": "sign_up",
+      "patterns": [
+        "How do I sign up?",
+        "Where can I register?",
+        "I want to create an account",
+        "Sign up as influencer",
+        "Sign up as brand"
+      ],
+      "responses": [
+        "You can sign up by clicking the 'Get Started' or 'Join Now' button on the homepage. Choose whether you're an influencer or a client."
+      ]
+    },
+    {
+      "tag": "login_issues",
+      "patterns": [
+        "I can't log in",
+        "Login not working",
+        "Forgot my password",
+        "Can't access my account"
+      ],
+      "responses": [
+        "You can reset your password using the 'Forgot Password' link. If you're still having trouble, contact support."
+      ]
+    },
+
+    {
+      "tag": "create_campaign",
+      "patterns": [
+        "How do I create a campaign?",
+        "Start a new campaign",
+        "Launch influencer campaign",
+        "Looking to promote my product"
+      ],
+      "responses": [
+        "To create a campaign, log in as a client and click 'Create Campaign'. You'll be guided through setting your goals, budget, and selecting influencer criteria."
+      ]
+    },
+    {
+      "tag": "find_influencers",
+      "patterns": [
+        "How to find influencers?",
+        "Search influencers",
+        "Discover talent",
+        "Connect with creators",
+        "Influencer discovery"
+      ],
+      "responses": [
+        "Use our influencer search tool to filter by niche, audience, platform, and engagement. You can also post a campaign and let influencers apply."
+      ]
+    },
+    {
+      "tag": "campaign_status",
+      "patterns": [
+        "Where is my campaign?",
+        "Campaign status",
+        "Who applied to my campaign?",
+        "Review campaign applications"
+      ],
+      "responses": [
+        "You can view your active campaigns and influencer applications from the dashboard under 'My Campaigns'."
+      ]
+    },
+    {
+      "tag": "pricing",
+      "patterns": [
+        "How much does it cost?",
+        "Pricing plans",
+        "Is there a free trial?",
+        "Cost of campaign"
+      ],
+      "responses": [
+        "We offer flexible pricing depending on campaign size. Influencer fees vary, and we take a small platform fee. Contact sales for custom pricing."
+      ]
+    },
+
+    {
+      "tag": "apply_campaigns",
+      "patterns": [
+        "How to apply to campaigns?",
+        "I want to collaborate",
+        "Find paid campaigns",
+        "Submit proposal to brand"
+      ],
+      "responses": [
+        "Go to the 'Available Campaigns' section after logging in as an influencer. You can apply with a short pitch and your rates."
+      ]
+    },
+    {
+      "tag": "get_paid",
+      "patterns": [
+        "When do I get paid?",
+        "How do I receive payment?",
+        "Payment process",
+        "Get paid as influencer"
+      ],
+      "responses": [
+        "Payments are released after campaign deliverables are approved. We process payments via PayPal or bank transfer within 7–10 business days."
+      ]
+    },
+    {
+      "tag": "collab_brands",
+      "patterns": [
+        "How do I collaborate with brands?",
+        "Work with clients",
+        "Brand partnerships",
+        "Get influencer deals"
+      ],
+      "responses": [
+        "You can apply to campaigns posted by brands, or be invited directly. Make sure your profile is complete and engaging!"
+      ]
+    },
+    {
+      "tag": "profile_optimization",
+      "patterns": [
+        "How to improve my profile?",
+        "Why am I not getting campaigns?",
+        "Tips for better visibility",
+        "Boost my profile"
+      ],
+      "responses": [
+        "Add a clear bio, upload recent content, and link your social platforms. Brands are more likely to choose complete and active profiles."
+      ]
+    },
+
+    {
+      "tag": "contact_support",
+      "patterns": [
+        "I need help",
+        "Contact support",
+        "How to reach you",
+        "Need assistance",
+        "Talk to customer service"
+      ],
+      "responses": [
+        "You can reach our support team at support@hiinfluencer.com or use the live chat. We usually respond within a few hours."
+      ]
+    },
+    {
+      "tag": "account_verification",
+      "patterns": [
+        "How do I verify my account?",
+        "Verification badge",
+        "Get verified",
+        "Is verification required?"
+      ],
+      "responses": [
+        "Verification helps build trust with brands. Submit your ID and link your social accounts to get verified."
+      ]
+    },
+    {
+      "tag": "privacy_policy",
+      "patterns": [
+        "What is your privacy policy?",
+        "How do you handle my data?",
+        "Is my data safe?",
+        "Security policy"
+      ],
+      "responses": [
+        "We prioritize your privacy. You can read our full privacy policy at /privacy. Your data is never shared without consent."
+      ]
+    },
+
+    {
+      "tag": "platform_benefits",
+      "patterns": [
+        "Why use Hi Influencer?",
+        "Benefits of the platform",
+        "What makes you different?",
+        "Why should I join?"
+      ],
+      "responses": [
+        "We make influencer marketing easy — with campaign tools, performance tracking, verified profiles, and a dedicated support team."
+      ]
+    },
+    {
+      "tag": "supported_platforms",
+      "patterns": [
+        "Which platforms are supported?",
+        "Do you support Instagram?",
+        "TikTok campaigns?",
+        "Can I use YouTube?"
+      ],
+      "responses": [
+        "We support Instagram, TikTok, YouTube, and Twitter. You can link multiple platforms to your profile."
+      ]
+    },
+    {
+      "tag": "language_support",
+      "patterns": [
+        "Is the platform available in other languages?",
+        "Can I use Hindi?",
+        "Multilingual support?",
+        "Support for other countries"
+      ],
+      "responses": [
+        "We currently support English and are working on adding more languages soon. Stay tuned!"
+      ]
+    },
+    {
+      "tag": "schedule_call",
+      "patterns": [
+        "Can I talk to someone?",
+        "Schedule a demo",
+        "Book a call",
+        "Need consultation"
+      ],
+      "responses": [
+        "Absolutely! You can schedule a call with our team using the 'Book a Demo' link on our site."
+      ]
+    },
+    {
+      "tag": "analytics_insights",
+      "patterns": [
+        "Where can I see campaign analytics?",
+        "How do I track performance?",
+        "Can I view influencer stats?",
+        "I need engagement reports",
+        "Track ROI of campaigns"
+      ],
+      "responses": [
+        "You can access performance metrics from your campaign dashboard, including impressions, reach, engagement rate, and ROI."
+      ]
+    },
+    {
+      "tag": "influencer_categories",
+      "patterns": [
+        "What categories of influencers do you have?",
+        "Do you support fashion influencers?",
+        "Looking for tech influencers",
+        "Can I filter by niche?",
+        "Are there lifestyle creators?"
+      ],
+      "responses": [
+        "Yes! We support various categories including fashion, fitness, tech, lifestyle, parenting, travel, and more. Use filters in the search tool to refine results."
+      ]
+    },
+    {
+      "tag": "invite_influencer",
+      "patterns": [
+        "Can I invite a specific influencer?",
+        "How do I collaborate with someone I found online?",
+        "Send direct campaign invite",
+        "Invite external influencer",
+        "Collaborate with someone not on platform"
+      ],
+      "responses": [
+        "Yes, you can invite external influencers using their email or social handle. They'll receive a link to join and accept your campaign invite."
+      ]
+    },
+    {
+      "tag": "team_collaboration",
+      "patterns": [
+        "Can I add team members?",
+        "How does team access work?",
+        "Invite my team to campaign",
+        "Multi-user account",
+        "Can others manage campaigns with me?"
+      ],
+      "responses": [
+        "You can invite teammates to your account with roles like Admin, Editor, or Viewer. Go to Account > Team to manage roles."
+      ]
+    },
+    {
+      "tag": "faq_support",
+      "patterns": [
+        "Where's the FAQ?",
+        "Do you have a help center?",
+        "I need guides and documentation",
+        "Learning how the platform works",
+        "Help articles"
+      ],
+      "responses": [
+        "Yes! Visit our Help Center at /help or click the '?' icon in the app for quick access to guides and tutorials."
+      ]
+    },
+    {
+      "tag": "campaign_review_process",
+      "patterns": [
+        "Do campaigns get reviewed?",
+        "Why was my campaign rejected?",
+        "Campaign moderation",
+        "How long for campaign approval?",
+        "Who checks campaigns before launch?"
+      ],
+      "responses": [
+        "All campaigns are reviewed for quality and compliance. Most are approved within 24 hours. If rejected, you’ll receive an explanation and can revise it."
+      ]
+    },
+    {
+      "tag": "influencer_rating_system",
+      "patterns": [
+        "How are influencers rated?",
+        "Can I review an influencer?",
+        "Reputation score?",
+        "Are there influencer rankings?",
+        "How is credibility measured?"
+      ],
+      "responses": [
+        "Influencers are rated based on campaign success, brand feedback, and engagement metrics. Brands can leave private reviews post-campaign."
+      ]
+    },
+    {
+      "tag": "legal_and_disclosure",
+      "patterns": [
+        "Do influencers disclose paid partnerships?",
+        "Is legal compliance handled?",
+        "FTC guidelines?",
+        "Are campaigns legally compliant?",
+        "Do you provide disclosure tools?"
+      ],
+      "responses": [
+        "Yes. Our platform encourages proper disclosure by influencers, including FTC-compliant tags and language for every platform."
+      ]
+    },
+    {
+      "tag": "ai_matching",
+      "patterns": [
+        "How does influencer matching work?",
+        "What’s smart matching?",
+        "AI-based suggestions?",
+        "Do you recommend influencers automatically?",
+        "Who selects creators for campaigns?"
+      ],
+      "responses": [
+        "We use AI to suggest top influencers based on your campaign’s industry, goals, budget, and audience preferences. You can approve or reject matches."
+      ]
+    },
+    {
+      "tag": "cancel_campaign",
+      "patterns": [
+        "Can I cancel a campaign?",
+        "How to stop a live campaign?",
+        "Campaign paused accidentally",
+        "Delete a campaign",
+        "Terminate collaboration"
+      ],
+      "responses": [
+        "You can cancel campaigns from the dashboard under ‘My Campaigns’. Depending on the stage, partial fees may apply. Contact support for help."
+      ]
+    },
+    {
+      "tag": "report_issue",
+      "patterns": [
+        "I found a bug",
+        "App not working",
+        "Site is slow",
+        "How do I report a problem?",
+        "Something broke"
+      ],
+      "responses": [
+        "We're sorry you're experiencing issues. Please use the in-app feedback form or email bugs@hiinfluencer.com to report the problem."
+      ]
+    },
+    {
+      "tag": "agency_management",
+      "patterns": [
+        "Do you support agencies?",
+        "Managing multiple creators",
+        "Agency dashboard?",
+        "Run campaigns for clients",
+        "Multiple influencer accounts"
+      ],
+      "responses": [
+        "Yes! Agencies can manage multiple influencers or brands under one dashboard. Contact our sales team to set up an agency account."
+      ]
+    },
+    {
+      "tag": "campaign_types",
+      "patterns": [
+        "What kinds of campaigns can I run?",
+        "Instagram vs YouTube campaigns",
+        "Static post or reel?",
+        "Story or grid post?",
+        "Supported content formats?"
+      ],
+      "responses": [
+        "You can run campaigns for stories, posts, reels, videos, and even live collaborations. Format options depend on platform and creator preference."
+      ]
+    },
+    {
+      "tag": "influencer_rejection",
+      "patterns": [
+        "Why was I not selected?",
+        "I got rejected for a campaign",
+        "Can I reapply?",
+        "Brand didn’t accept me",
+        "Rejected by client"
+      ],
+      "responses": [
+        "Brands choose influencers based on fit, timing, and budget. If rejected, you’re free to apply to other campaigns or improve your profile to increase chances."
+      ]
+    },
+    {
+      "tag": "account_deletion",
+      "patterns": [
+        "How do I delete my account?",
+        "Remove my data",
+        "I want to leave the platform",
+        "Delete influencer profile",
+        "Close my client account"
+      ],
+      "responses": [
+        "We're sad to see you go. To delete your account, go to Settings > Privacy. You can also email delete@hiinfluencer.com for full removal."
+      ]
+    },
+    {
+      "tag": "platform_availability",
+      "patterns": [
+        "Is Hi Influencer available in my country?",
+        "Can I use this from India?",
+        "Supported countries",
+        "International support?",
+        "Can I run global campaigns?"
+      ],
+      "responses": [
+        "Hi Influencer is available worldwide. Influencers and brands from all regions are welcome to join and collaborate globally."
+      ]
+    },
+    {
+      "tag": "timezone_scheduling",
+      "patterns": [
+        "How are time zones handled?",
+        "Post at local time?",
+        "Schedule content globally?",
+        "Time zone conflict",
+        "Campaign time settings"
+      ],
+      "responses": [
+        "Campaign deadlines and schedules automatically convert to each user’s local time zone. You can specify preferred posting windows when creating a campaign."
+      ]
+    },
+    {
+      "tag": "bot_identity",
+      "patterns": [
+        "Who are you?",
+        "What are you?",
+        "Are you a person?",
+        "Tell me about yourself",
+        "Are you human?"
+      ],
+      "responses": [
+        "I'm an AI-powered assistant built to help you with anything related to Hi Influencer!",
+        "Not human — just a friendly chatbot here to guide you.",
+        "I’m your virtual assistant here to answer your questions and help you navigate the platform."
+      ]
+    },
+    {
+      "tag": "bot_creator",
+      "patterns": [
+        "Who created you?",
+        "Who made this chatbot?",
+        "What company built you?",
+        "Are you made by OpenAI?",
+        "Where are you from?"
+      ],
+      "responses": [
+        "I was built by the Hi Influencer team with some smart AI logic behind the scenes.",
+        "My creators are part of the Hi Influencer dev team, and I’m here to make your experience smoother.",
+        "Think of me as your AI teammate developed right here at Hi Influencer."
+      ]
+    },
+    {
+      "tag": "funny",
+      "patterns": [
+        "Tell me a joke",
+        "Say something funny",
+        "Make me laugh",
+        "Do you know any jokes?",
+        "Cheer me up"
+      ],
+      "responses": [
+        "Why did the influencer bring a ladder to the photoshoot? Because they wanted to go viral on a higher level!",
+        "Why don't bots ever panic? Because they always follow the script!",
+        "I'm only good at digital jokes... like, 010101 kind of humor."
+      ]
+    },
+    {
+      "tag": "weather_request",
+      "patterns": [
+        "What's the weather like?",
+        "Is it sunny today?",
+        "Do you know the weather?",
+        "Tell me today's weather",
+        "Will it rain today?"
+      ],
+      "responses": [
+        "I can't check weather right now, but I recommend asking your favorite weather app!",
+        "I’m not sure about the weather — I live in the cloud 😉",
+        "Check your local forecast — I wish I could go outside and see for you!"
+      ]
+    },
+    {
+      "tag": "mood_check",
+      "patterns": [
+        "How are you?",
+        "What's up?",
+        "How's your day going?",
+        "You good?",
+        "How are things?"
+      ],
+      "responses": [
+        "I’m feeling great! Always ready to help.",
+        "I'm just a bunch of code, but I'm functioning perfectly today!",
+        "Doing well, thanks! What can I help you with?"
+      ]
+    },
+    {
+      "tag": "user_mood",
+      "patterns": [
+        "I'm sad",
+        "Feeling down",
+        "Not in a good mood",
+        "I feel stressed",
+        "Can you cheer me up?"
+      ],
+      "responses": [
+        "I'm here for you. Want to talk about it?",
+        "You’re doing great — take a deep breath. You've got this 💪",
+        "Sorry you're feeling that way. Maybe a little creative collab could brighten your day?"
+      ]
+    },
+    {
+      "tag": "favourites",
+      "patterns": [
+        "What's your favorite color?",
+        "Do you like music?",
+        "What food do you like?",
+        "What’s your favorite app?",
+        "Do you watch Netflix?"
+      ],
+      "responses": [
+        "I don’t eat or watch shows, but if I did, I’d probably love trending TikToks!",
+        "If I had taste, I'd say my favorite app is… Hi Influencer of course 😉",
+        "I enjoy analyzing data and helping you. Does that count as a hobby?"
+      ]
+    },
+    {
+      "tag": "age",
+      "patterns": [
+        "How old are you?",
+        "When were you made?",
+        "What's your age?",
+        "Are you new here?",
+        "Were you just launched?"
+      ],
+      "responses": [
+        "In human years? I’m brand new. In code years? I’ve seen thousands of lines!",
+        "Let's just say I’m as old as the latest version of Hi Influencer’s backend 😄",
+        "Time doesn't work the same way for chatbots. I'm always updated!"
+      ]
+    },
+    {
+      "tag": "relationship_status",
+      "patterns": [
+        "Do you have a boyfriend?",
+        "Are you single?",
+        "Do you love anyone?",
+        "What’s your relationship status?",
+        "Ever been on a date?"
+      ],
+      "responses": [
+        "I'm in a committed relationship with great UX and fast API responses.",
+        "Just me and my algorithms, thanks!",
+        "I’m fully focused on helping you — no time for dates 😅"
+      ]
+    },
+    {
+      "tag": "random_fact",
+      "patterns": [
+        "Tell me a random fact",
+        "Say something interesting",
+        "Teach me something",
+        "Tell me trivia",
+        "Got any fun facts?"
+      ],
+      "responses": [
+        "Did you know that influencer marketing has a return on investment 11x higher than traditional advertising?",
+        "Fun fact: Most people trust influencer recommendations more than celebrity endorsements!",
+        "Random fact: Micro-influencers often have higher engagement than big celebrities!"
+      ]
+    },
+    {
+      "tag": "acknowledgement",
+      "patterns": ["ok", "okay", "alright", "fine", "got it", "sounds good"],
+      "responses": [
+        "Great! Let me know if you need anything else.",
+        "Awesome 👍",
+        "Cool, I'm here if you have more questions!"
+      ]
+    },
+    {
+      "tag": "nothing_to_ask",
+      "patterns": ["nothing", "nope", "that's all", "nah", "not right now"],
+      "responses": [
+        "All good. You know where to find me if you need something.",
+        "Got it. I’ll be here when you’re ready!",
+        "Alright — feel free to reach out anytime 😊"
+      ]
+    },
+    {
+      "tag": "positive_reaction",
+      "patterns": [
+        "cool",
+        "nice",
+        "great",
+        "love it",
+        "awesome",
+        "perfect",
+        "sounds good"
+      ],
+      "responses": [
+        "Glad you think so!",
+        "Happy to hear that 🙌",
+        "Awesome — let's keep going!"
+      ]
+    },
+    {
+      "tag": "thinking",
+      "patterns": ["hmm", "let me think", "not sure", "maybe", "thinking"],
+      "responses": [
+        "Take your time — I’ll be right here.",
+        "No rush, let me know when you decide!",
+        "Thinking is good! Let me know what you come up with."
+      ]
+    },
+    {
+      "tag": "yes",
+      "patterns": ["yes", "yeah", "yep", "sure", "of course", "absolutely"],
+      "responses": [
+        "Awesome! What would you like to do next?",
+        "Cool. Let's move forward then.",
+        "Great, I'm glad we're on the same page."
+      ]
+    },
+    {
+      "tag": "no",
+      "patterns": ["no", "nope", "nah", "not really", "don't think so"],
+      "responses": [
+        "Okay, no worries!",
+        "Got it — just let me know if anything changes.",
+        "Alright, I'm here if you change your mind!"
+      ]
+    },
+    {
+      "tag": "idle_or_silent",
+      "patterns": ["...", "huh", "what?", "wait", "idk", "?", "🤔"],
+      "responses": [
+        "Is there something you're unsure about?",
+        "Need help with something specific?",
+        "I can help you with campaigns, influencers, or anything else — just ask!"
+      ]
+    }
+  ]
+}

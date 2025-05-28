@@ -23,7 +23,7 @@ import {
   updateMessageReadStatus,
 } from "../firebase";
 import axios from "axios";
-import { BaseUrl, adminUserId } from "@/common/utils";
+import { BaseUrl, adminUserId, aiChatbotLogo } from "@/common/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { showChatComponent } from "@/components/chat/showChatComponent";
 import ChatInput from "@/components/chat/ChatInput";
@@ -31,6 +31,7 @@ import { sendNotification } from "@/api/commonApi";
 import AlertDialog from "@/components/Alert";
 import { showAlert } from "@/lib/features/alert/alertSlice";
 import { useRouter } from "next/navigation";
+import { getChatbotReply } from "../../chatbot/chatbot";
 
 const ChatScreen = () => {
   const dispatch = useAppDispatch();
@@ -44,8 +45,9 @@ const ChatScreen = () => {
   const data = useAppSelector((state) => state.login.userData);
   const hasFetchedChatData = useRef(false);
   const isMounted = useRef(false);
-
+  const [isChatbot, setIsChatbot] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
+  const messagesEndRef = useRef(null);
 
   const getChatData = async (userId) => {
     try {
@@ -72,6 +74,16 @@ const ChatScreen = () => {
   //     saveChat(data.id, adminUserId);
   //   }
   // };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatData, newMessage]);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     if (data?.id && !hasFetchedChatData.current) {
@@ -126,19 +138,39 @@ const ChatScreen = () => {
 
   const handleSendMessage = (senderId, msg) => {
     if (msg.trim() === "" || !selectedChat) return;
+
     const message = {
       text: msg,
       sender: senderId,
       read: false,
       timestamp: Date.now(),
     };
+
+    // Send user's message
     selectedChat?.id && saveMessageToFirebase(selectedChat?.id, message);
+
+    // If it's the chatbot
+    if (selectedChat?.id === "ai-chatbot") {
+      const chatbotResponse = getChatbotReply(msg); // ⬅️ Generate response
+      const chatbotMessage = {
+        text: chatbotResponse,
+        sender: "chatbot-id-001",
+        read: false,
+        timestamp: Date.now(),
+      };
+      setTimeout(() => {
+        saveMessageToFirebase("ai-chatbot", chatbotMessage);
+      }, 1000);
+    }
+
+    // Send notification if needed
     selectedChat?.id &&
       sendNotification(
         selectedChat?.influencerDetails?.email,
         `${selectedChat?.myDetails?.name} sent a message`,
         msg
       );
+
     setNewMessage("");
   };
 
@@ -201,6 +233,34 @@ const ChatScreen = () => {
               />
               {/* Chat List - Make it scrollable independently */}
               <List style={{ overflowY: "auto", flexGrow: 1 }}>
+                <ListItem
+                  button
+                  key={111}
+                  selected={true}
+                  onClick={() => {
+                    setSelectedChat({
+                      id: "ai-chatbot",
+                      influencerDetails: {
+                        name: "AI Chatbot",
+                        photoURL: aiChatbotLogo,
+                      },
+                      myDetails: {
+                        name: data?.name || "User",
+                      },
+                    });
+                  }}
+                  style={{
+                    backgroundColor:
+                      selectedChat && selectedChat.id === "ai-chatbot"
+                        ? "#f0f0f0"
+                        : "transparent",
+                  }}
+                >
+                  <ListItemAvatar>
+                    <Avatar src={aiChatbotLogo} />
+                  </ListItemAvatar>
+                  <ListItemText primary={"AI Chatbot"} />
+                </ListItem>
                 {filteredChats?.length > 0 ? (
                   filteredChats.map((chat) => (
                     <ListItem
@@ -256,6 +316,34 @@ const ChatScreen = () => {
             />
             {/* Chat List - Make it scrollable independently */}
             <List style={{ overflowY: "auto", flexGrow: 1 }}>
+              <ListItem
+                button
+                key={111}
+                selected={true}
+                onClick={() => {
+                  setSelectedChat({
+                    id: "ai-chatbot",
+                    influencerDetails: {
+                      name: "AI Chatbot",
+                      photoURL: aiChatbotLogo,
+                    },
+                    myDetails: {
+                      name: data?.name || "User",
+                    },
+                  });
+                }}
+                style={{
+                  backgroundColor:
+                    selectedChat && selectedChat.id === "ai-chatbot"
+                      ? "#f0f0f0"
+                      : "transparent",
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar src={aiChatbotLogo} />
+                </ListItemAvatar>
+                <ListItemText primary={"AI Chatbot"} />
+              </ListItem>
               {filteredChats?.length > 0 ? (
                 filteredChats.map((chat) => (
                   <ListItem
@@ -322,6 +410,7 @@ const ChatScreen = () => {
             sx={{ bgcolor: "#f9f9f9" }}
           >
             {showChatComponent(selectedChat, chatData, data?.id)}
+            <div ref={messagesEndRef} />
           </Box>
 
           {/* Fixed Message Input */}
