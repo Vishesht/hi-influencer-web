@@ -150,16 +150,16 @@ const ChatScreen = () => {
     selectedChat?.id && saveMessageToFirebase(selectedChat?.id, message);
 
     // If it's the chatbot
-    if (selectedChat?.id === "ai-chatbot") {
+    if (selectedChat?.id === `ai-chatbot-${senderId}`) {
       const chatbotResponse = getChatbotReply(msg); // ⬅️ Generate response
       const chatbotMessage = {
         text: chatbotResponse,
-        sender: "chatbot-id-001",
+        sender: `chatbot-id-${senderId}`,
         read: false,
         timestamp: Date.now(),
       };
       setTimeout(() => {
-        saveMessageToFirebase("ai-chatbot", chatbotMessage);
+        saveMessageToFirebase(`ai-chatbot-${senderId}`, chatbotMessage);
       }, 1000);
     }
 
@@ -239,7 +239,7 @@ const ChatScreen = () => {
                   selected={true}
                   onClick={() => {
                     setSelectedChat({
-                      id: "ai-chatbot",
+                      id: `ai-chatbot-${data?.id}`,
                       influencerDetails: {
                         name: "AI Chatbot",
                         photoURL: aiChatbotLogo,
@@ -251,7 +251,8 @@ const ChatScreen = () => {
                   }}
                   style={{
                     backgroundColor:
-                      selectedChat && selectedChat.id === "ai-chatbot"
+                      selectedChat &&
+                      selectedChat.id === `ai-chatbot-${data?.id}`
                         ? "#f0f0f0"
                         : "transparent",
                   }}
@@ -322,7 +323,7 @@ const ChatScreen = () => {
                 selected={true}
                 onClick={() => {
                   setSelectedChat({
-                    id: "ai-chatbot",
+                    id: `ai-chatbot-${data?.id}`,
                     influencerDetails: {
                       name: "AI Chatbot",
                       photoURL: aiChatbotLogo,
@@ -334,7 +335,7 @@ const ChatScreen = () => {
                 }}
                 style={{
                   backgroundColor:
-                    selectedChat && selectedChat.id === "ai-chatbot"
+                    selectedChat && selectedChat.id === `ai-chatbot-${data?.id}`
                       ? "#f0f0f0"
                       : "transparent",
                 }}

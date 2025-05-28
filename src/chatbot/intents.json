@@ -2,7 +2,15 @@
   "intents": [
     {
       "tag": "greeting",
-      "patterns": ["Hi", "Hello", "Hey", "Good morning", "What's up", "Yo"],
+      "patterns": [
+        "Hi",
+        "Hlo",
+        "Hello",
+        "Hey",
+        "Good morning",
+        "What's up",
+        "Yo"
+      ],
       "responses": [
         "Hey there! How can I assist you today?",
         "Hi! Need help finding influencers or starting a campaign?",
